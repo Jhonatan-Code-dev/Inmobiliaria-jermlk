@@ -2,11 +2,12 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "35a11701-32e1-4148-ba8b-85730686efa0"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "alguilamax-jermlk": {
+    "alquilamax-jermlk": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -38,8 +39,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "8kB",
+                  "maximumError": "12kB"
                 }
               ],
               "outputHashing": "all"
@@ -56,10 +57,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "alguilamax-jermlk:build:production"
+              "buildTarget": "alquilamax-jermlk:build:production"
             },
             "development": {
-              "buildTarget": "alguilamax-jermlk:build:development"
+              "buildTarget": "alquilamax-jermlk:build:development"
             }
           },
           "defaultConfiguration": "development"

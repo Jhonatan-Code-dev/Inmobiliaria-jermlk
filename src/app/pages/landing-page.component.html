@@ -1,0 +1,191 @@
+<main class="landing-shell">
+  <section class="hero-section">
+    <div class="hero-glow hero-glow-a"></div>
+    <div class="hero-glow hero-glow-b"></div>
+
+    <header class="topbar">
+      <a class="brand" routerLink="/">
+        <span class="brand-mark">A</span>
+        <span>AlquilaMax</span>
+      </a>
+
+      <nav class="topbar-links">
+        <a href="#funciones">Funciones</a>
+        <a href="#operacion">Operacion</a>
+        <a href="#flujo">Flujo</a>
+        <a href="#contacto">Contacto</a>
+        <a class="topbar-login" routerLink="/login">Iniciar sesion</a>
+      </nav>
+    </header>
+
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Plataforma de gestion inmobiliaria</span>
+        <h1>Una operacion inmobiliaria mas clara, elegante y rentable.</h1>
+        <p class="hero-text">
+          AlquilaMax organiza clientes, alquileres, pagos, mora, servicios y proximos vencimientos
+          en una experiencia visual moderna pensada para equipos que necesitan control serio y
+          decisiones rapidas.
+        </p>
+
+        <div class="hero-ribbon">
+          <span>Contratos activos</span>
+          <strong>12</strong>
+          <span class="hero-ribbon-divider"></span>
+          <span>Cobros de esta semana</span>
+          <strong>S/ 18,240</strong>
+        </div>
+
+        <div class="hero-actions">
+          <a class="button button-primary" routerLink="/login">Entrar al sistema</a>
+          <a class="button button-secondary" href="#operacion">Explorar dashboard</a>
+        </div>
+
+        <div class="stats-grid">
+          @for (stat of stats; track stat.label) {
+            <article class="stat-card">
+              <strong>{{ stat.value }}</strong>
+              <span>{{ stat.label }}</span>
+            </article>
+          }
+        </div>
+      </div>
+
+      <aside class="hero-panel" aria-label="Vista previa del sistema">
+        <div class="panel-topbar">
+          <div class="panel-window">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <span class="panel-badge">Live overview</span>
+        </div>
+
+        <div class="panel-main">
+          <div class="panel-header">
+            <div>
+              <span class="panel-kicker">Centro operativo</span>
+              <h2>Resumen ejecutivo</h2>
+            </div>
+
+            <div class="panel-mini-chart" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="panel-balance">
+            <span>Ingresos esperados del mes</span>
+            <strong>S/ 48,750</strong>
+            <small>12 contratos activos, 3 pagos por confirmar y 2 renovaciones en curso</small>
+          </div>
+
+          <div class="panel-columns">
+            <article class="metric-box">
+              <span>Proximos pagos</span>
+              <strong>8</strong>
+              <small>vencen en los proximos 7 dias</small>
+            </article>
+
+            <article class="metric-box">
+              <span>Servicios pendientes</span>
+              <strong>5</strong>
+              <small>agua, luz y mantenimiento</small>
+            </article>
+          </div>
+
+          <div class="notification-list">
+            @for (notification of notifications; track notification.message) {
+              <article class="notification-item">
+                <div>
+                  <span class="notification-type">{{ notification.type }}</span>
+                  <p>{{ notification.message }}</p>
+                </div>
+                <strong>{{ notification.eta }}</strong>
+              </article>
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section-block" id="funciones">
+    <div class="section-heading">
+      <span class="section-tag">Funciones clave</span>
+      <h2>Una plataforma pensada para la operacion diaria completa.</h2>
+      <p>
+        Desde la captacion del cliente hasta el ultimo pago del contrato, AlquilaMax unifica la
+        informacion critica para que el negocio sea predecible, medible y facil de escalar.
+      </p>
+    </div>
+
+    <div class="feature-grid">
+      @for (feature of coreFeatures; track feature.title) {
+        <article class="feature-card">
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.description }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="section-block section-accent" id="operacion">
+    <div class="section-heading section-heading-light">
+      <span class="section-tag">Operacion financiera</span>
+      <h2>Controla pagos, mora y alertas sin perder visibilidad.</h2>
+      <p>
+        El sistema ayuda a calcular cobros, anticipar vencimientos y mantener al dia los servicios
+        esenciales de cada inmueble y cada inquilino.
+      </p>
+    </div>
+
+    <div class="workflow-grid">
+      @for (workflow of workflows; track workflow.title) {
+        <article class="workflow-card">
+          <h3>{{ workflow.title }}</h3>
+          <p>{{ workflow.detail }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="section-block timeline-section" id="flujo">
+    <div class="section-heading">
+      <span class="section-tag">Flujo de trabajo</span>
+      <h2>Una experiencia mas moderna desde el registro hasta la cobranza.</h2>
+      <p>
+        La plataforma conecta operacion comercial, seguimiento financiero y control de servicios en
+        una secuencia clara para que el equipo trabaje con menos friccion.
+      </p>
+    </div>
+
+    <div class="timeline-grid">
+      @for (item of timeline; track item.step) {
+        <article class="timeline-card">
+          <span class="timeline-step">{{ item.step }}</span>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.detail }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="section-block cta-block" id="contacto">
+    <div>
+      <span class="section-tag">Preparado para crecer</span>
+      <h2>AlquilaMax ordena la gestion y mejora la cobranza desde el primer dia.</h2>
+      <p>
+        Ideal para administradores, inmobiliarias y equipos que necesitan seguimiento serio de
+        clientes, contratos, pagos y servicios sin procesos dispersos.
+      </p>
+    </div>
+
+    <div class="cta-actions">
+      <a class="button button-primary" routerLink="/login">Acceder al login</a>
+      <a class="button button-secondary" href="mailto:contacto@alquilamax.com">Solicitar demo</a>
+    </div>
+  </section>
+</main>

@@ -1,30 +1,48 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-
-type LoginHighlight = {
-  readonly title: string;
-  readonly detail: string;
-};
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login-page',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
 export class LoginPageComponent {
-  protected readonly highlights: readonly LoginHighlight[] = [
-    {
-      title: 'Cobros y proximos vencimientos',
-      detail: 'Ve alquileres por vencer, pagos parciales y alertas de mora en tiempo real.'
-    },
-    {
-      title: 'Servicios bajo control',
-      detail: 'Recibe seguimiento de luz, agua y otros servicios ligados a cada propiedad.'
-    },
-    {
-      title: 'Equipo y clientes alineados',
-      detail: 'Acceso centralizado para administracion, seguimiento y atencion mas ordenada.'
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
+  username = '';
+  password = '';
+  isLoading = false;
+  error = '';
+  showPassword = false;
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  submit(): void {
+    if (!this.username || !this.password) {
+      this.error = 'Completa usuario y contraseña.';
+      return;
     }
-  ];
+
+    this.isLoading = true;
+    this.error = '';
+
+    this.authService.login(this.username, this.password).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.router.navigateByUrl('/');
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.error = err?.error?.message || 'Credenciales inválidas.';
+      }
+    });
+  }
 }

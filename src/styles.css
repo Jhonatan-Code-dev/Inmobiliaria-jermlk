@@ -1,54 +1,47 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
 
-:root {
-  --amx-font-sans: "Manrope", "Segoe UI", sans-serif;
-  --amx-ink: #10324a;
-  --amx-ink-deep: #0a2233;
-  --amx-ink-soft: #e8f0f4;
-  --amx-mint: #2ea88f;
-  --amx-mint-strong: #1f8e78;
-  --amx-surface: #f4f8fa;
-  --amx-white: #ffffff;
-  --amx-text: #163042;
-  --amx-muted: #5f7482;
-  --amx-border: rgba(16, 50, 74, 0.14);
-  --amx-shadow: 0 24px 80px rgba(10, 34, 51, 0.12);
+@theme {
+  --font-display: "Outfit", "Segoe UI", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+
+  /* Premium "Inmobiliaria" Color Palette */
+  --color-primary-50: #f0f7ff;
+  --color-primary-100: #e0effe;
+  --color-primary-200: #bae0fd;
+  --color-primary-300: #7cc8fb;
+  --color-primary-400: #38a9f8;
+  --color-primary-500: #0e8ce9;
+  --color-primary-600: #026dc7;
+  --color-primary-700: #0352a1;
+  --color-primary-800: #074585;
+  --color-primary-900: #0c3b6e;
+  --color-primary-950: #082449;
+
+  --color-dark-900: #0a0f1d;
+  --color-dark-950: #050811;
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   margin: 0;
-  font-family: var(--amx-font-sans);
-  background:
-    radial-gradient(circle at top left, rgba(46, 168, 143, 0.15), transparent 28%),
-    linear-gradient(180deg, #f8fcfd 0%, #eef5f7 100%);
-  color: var(--amx-text);
+  font-family: var(--font-body);
+  background-color: #f8fafc;
 }
 
-* {
-  box-sizing: border-box;
+.font-display {
+  font-family: var(--font-display);
 }
 
-html,
-body,
-button,
-input,
-textarea,
-select {
-  font-family: var(--amx-font-sans);
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-input {
-  font: inherit;
+.animate-fade-in {
+  animation: fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

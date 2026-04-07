@@ -1,17 +1,15 @@
 import { Routes } from '@angular/router';
-import { LandingPageComponent } from './pages/landing-page.component';
 import { LoginPageComponent } from './pages/login-page.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: LandingPageComponent,
-    title: 'AlquilaMax | Gestion de alquileres y pagos'
+    component: LoginPageComponent,
+    title: 'Inmobiliaria | Acceso al Sistema'
   },
   {
     path: 'login',
-    component: LoginPageComponent,
-    title: 'AlquilaMax | Acceso al sistema'
+    redirectTo: ''
   },
   {
     path: '**',

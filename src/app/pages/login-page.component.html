@@ -1,53 +1,59 @@
-<main class="login-shell">
-  <section class="login-card">
-    <div class="login-copy">
-      <a class="back-link" routerLink="/">Volver a AlquilaMax</a>
-      <span class="login-tag">Acceso seguro</span>
-      <h1>Ingresa al panel de gestion de AlquilaMax.</h1>
-      <p>
-        Accede al software para administrar clientes, alquileres, pagos, servicios y recordatorios
-        operativos desde una sola plataforma.
-      </p>
-
-      <div class="highlight-list">
-        @for (highlight of highlights; track highlight.title) {
-          <article class="highlight-item">
-            <h2>{{ highlight.title }}</h2>
-            <p>{{ highlight.detail }}</p>
-          </article>
-        }
+<main class="shell">
+  <section class="auth-card">
+      <div class="brand">
+        <div class="logo">IN</div>
+        <div>
+          <p class="brand__eyebrow">Acceso seguro</p>
+          <h2>Iniciar sesi&oacute;n</h2>
+        </div>
       </div>
-    </div>
 
-    <form class="login-form">
-      <div class="brand-chip">AlquilaMax</div>
-      <h2>Iniciar sesion</h2>
-      <p class="form-copy">Usa tu correo corporativo para entrar al panel administrativo.</p>
+      <p class="muted">Ingresa tus credenciales para continuar con la gesti&oacute;n del sistema.</p>
 
-      <label class="field">
-        <span>Correo electronico</span>
-        <input type="email" placeholder="admin@alquilamax.com" />
-      </label>
+      @if (error) {
+        <div class="alert" role="alert">{{ error }}</div>
+      }
 
-      <label class="field">
-        <span>Contrasena</span>
-        <input type="password" placeholder="Ingresa tu contrasena" />
-      </label>
-
-      <div class="form-row">
-        <label class="remember">
-          <input type="checkbox" />
-          <span>Mantener sesion activa</span>
+      <form class="form" (submit)="$event.preventDefault(); submit()">
+        <label class="field">
+          <span>Usuario</span>
+          <input
+            type="text"
+            name="username"
+            [(ngModel)]="username"
+            [disabled]="isLoading"
+            autocomplete="username"
+            placeholder="tu.usuario"
+            required
+          />
         </label>
-        <a href="/">Recuperar acceso</a>
+
+        <label class="field">
+          <div class="field__row">
+            <span>Contrase&ntilde;a</span>
+            <button type="button" class="link" (click)="togglePassword()">
+              {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="password"
+            [disabled]="isLoading"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            required
+          />
+        </label>
+
+        <button class="cta" type="submit" [disabled]="isLoading">
+          {{ isLoading ? 'Verificando...' : 'Ingresar al sistema' }}
+        </button>
+      </form>
+
+      <div class="auth-card__footer">
+        <span>Soporte interno para administraci&oacute;n y cobranza</span>
+        <small>&copy; 2026 Inmobiliaria</small>
       </div>
-
-      <button type="button">Entrar al sistema</button>
-
-      <small class="form-note">
-        Esta vista esta preparada como pantalla de acceso inicial para integrar autenticacion real
-        mas adelante.
-      </small>
-    </form>
   </section>
 </main>

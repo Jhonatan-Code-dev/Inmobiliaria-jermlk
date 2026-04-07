@@ -1,0 +1,177 @@
+@if (user(); as currentUser) {
+  <main class="dashboard-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand__logo" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <path d="M32 14L14 28v20a2 2 0 0 0 2 2h12V38h8v12h12a2 2 0 0 0 2-2V28L32 14z" fill="currentColor" />
+          </svg>
+        </div>
+        <div>
+          <p class="brand__eyebrow">Menu principal</p>
+          <h1>Panel Inmobiliario</h1>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Secciones del panel">
+        <a href="#resumen">Resumen</a>
+        <a href="#empresa">Empresa</a>
+        <a href="#cuenta">Cuenta</a>
+      </nav>
+
+      <div class="sidebar__meta">
+        <span>Usuario actual</span>
+        <strong>{{ currentUser.usuario }}</strong>
+      </div>
+
+      <button class="logout" type="button" (click)="logout()" [disabled]="isLoggingOut">
+        {{ isLoggingOut ? 'Cerrando...' : 'Cerrar sesion' }}
+      </button>
+    </aside>
+
+    <section class="content">
+      <header class="hero" id="resumen">
+        <div class="hero__copy">
+          <p class="eyebrow">Panel operativo</p>
+          <h2>Bienvenido, {{ currentUser.usuario }}</h2>
+          <p class="hero__text">
+            Ya estas autenticado. Desde aqui puedes visualizar la informacion principal de tu cuenta y de la empresa asociada.
+          </p>
+        </div>
+
+        @if (empresa(); as currentCompany) {
+          <div class="hero__status" [class.hero__status--danger]="statusTone() === 'danger'" [class.hero__status--warning]="statusTone() === 'warning'">
+            <span>Estado de la empresa</span>
+            <strong>{{ companyStatusLabel() }}</strong>
+            <small>{{ daysRemainingLabel() }}</small>
+          </div>
+        }
+      </header>
+
+      @if (empresa(); as currentCompany) {
+        <section class="stats" aria-label="Resumen de la empresa">
+          <article class="stat-card">
+            <span>Empresa</span>
+            <strong>{{ currentCompany.nombre }}</strong>
+            <small>ID {{ currentCompany.id }}</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Pais y moneda</span>
+            <strong>{{ currentCompany.pais }} / {{ currentCompany.moneda }}</strong>
+            <small>Operacion principal</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Usuarios maximos</span>
+            <strong>{{ currentCompany.maximo_usuarios }}</strong>
+            <small>Capacidad configurada</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Vencimiento</span>
+            <strong>{{ expirationLabel() }}</strong>
+            <small>{{ daysRemainingLabel() }}</small>
+          </article>
+        </section>
+
+        <section class="details-grid">
+          <article class="panel-card" id="empresa">
+            <div class="panel-card__header">
+              <div>
+                <p class="eyebrow">Empresa</p>
+                <h3>Ficha general</h3>
+              </div>
+              <span class="badge" [class.badge--danger]="statusTone() === 'danger'" [class.badge--warning]="statusTone() === 'warning'">
+                {{ companyStatusLabel() }}
+              </span>
+            </div>
+
+            <dl class="detail-list">
+              <div>
+                <dt>Nombre</dt>
+                <dd>{{ currentCompany.nombre }}</dd>
+              </div>
+              <div>
+                <dt>ID de empresa</dt>
+                <dd>{{ currentCompany.id }}</dd>
+              </div>
+              <div>
+                <dt>Pais</dt>
+                <dd>{{ currentCompany.pais }}</dd>
+              </div>
+              <div>
+                <dt>Moneda</dt>
+                <dd>{{ currentCompany.moneda }}</dd>
+              </div>
+              <div>
+                <dt>Usuarios maximos</dt>
+                <dd>{{ currentCompany.maximo_usuarios }}</dd>
+              </div>
+              <div>
+                <dt>Vencimiento</dt>
+                <dd>{{ formatDate(currentCompany.vencimiento) }}</dd>
+              </div>
+              <div>
+                <dt>Creado en</dt>
+                <dd>{{ formatDate(currentCompany.creado_en) }}</dd>
+              </div>
+              <div>
+                <dt>Estado</dt>
+                <dd>{{ currentCompany.estado ? 'Habilitada' : 'Deshabilitada' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="panel-card" id="cuenta">
+            <div class="panel-card__header">
+              <div>
+                <p class="eyebrow">Cuenta</p>
+                <h3>Datos del usuario</h3>
+              </div>
+              <span class="badge badge--neutral">Sesion activa</span>
+            </div>
+
+            <dl class="detail-list">
+              <div>
+                <dt>ID de usuario</dt>
+                <dd>{{ currentUser.id }}</dd>
+              </div>
+              <div>
+                <dt>Usuario</dt>
+                <dd>{{ currentUser.usuario }}</dd>
+              </div>
+              <div>
+                <dt>Empresa asociada</dt>
+                <dd>{{ currentCompany.nombre }}</dd>
+              </div>
+              <div>
+                <dt>ID reportado en usuario</dt>
+                <dd>{{ currentUser.empresa_id }}</dd>
+              </div>
+            </dl>
+
+            <div class="note">
+              <strong>Listo para seguir</strong>
+              <p>Tu autenticacion ya esta funcionando y el frontend recibe correctamente la respuesta del backend. Este panel queda como base para conectar modulos como propiedades, contratos o cobranza.</p>
+            </div>
+          </article>
+        </section>
+      } @else {
+        <section class="panel-card panel-card--empty">
+          <p class="eyebrow">Sin datos</p>
+          <h3>No se encontro informacion de la empresa</h3>
+          <p>La sesion esta activa, pero la respuesta actual no incluye la empresa esperada.</p>
+        </section>
+      }
+    </section>
+  </main>
+} @else {
+  <main class="empty-state">
+    <div class="panel-card panel-card--empty">
+      <p class="eyebrow">Sesion requerida</p>
+      <h2>No hay una sesion activa</h2>
+      <p>Vuelve al login para autenticarte y cargar el panel principal.</p>
+    </div>
+  </main>
+}

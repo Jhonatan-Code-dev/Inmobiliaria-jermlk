@@ -1,124 +1,86 @@
+import { HttpClient, HttpContext, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
-
-export interface User {
-  id: number;
-  usuario: string;
-  empresa_id: number;
-}
-
-export interface Empresa {
-  id: number;
-  nombre: string;
-  pais: string;
-  moneda: string;
-  maximo_usuarios: number;
-  estado: boolean;
-  vencimiento: string;
-  creado_en: string;
-}
-
-export interface AuthResponse {
-  token: string;
-  user: User;
-  empresa: Empresa;
-}
+import { catchError, map, Observable, of, tap, timeout } from 'rxjs';
+import {
+  ApiMessageResponse,
+  LoginPayload,
+  LoginResponse,
+  MeResponse
+} from '../core/auth/auth.models';
+import { SessionStore } from '../core/auth/session.store';
+import { buildApiUrl, injectApiBaseUrl } from '../core/config/api.config';
+import { SKIP_AUTH } from '../core/http/request-context.tokens';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = environment.apiUrl; 
+  private readonly apiBaseUrl = injectApiBaseUrl();
+  private readonly sessionStore = inject(SessionStore);
 
-  private readonly userSubject = new BehaviorSubject<User | null>(this.getStoredUser());
-  private readonly empresaSubject = new BehaviorSubject<Empresa | null>(this.getStoredEmpresa());
+  readonly user = this.sessionStore.user;
+  readonly empresa = this.sessionStore.empresa;
+  readonly isLoggedIn = this.sessionStore.isAuthenticated;
 
-  readonly user$ = this.userSubject.asObservable();
-  readonly empresa$ = this.empresaSubject.asObservable();
+  login(usuario: string, contrasena: string): Observable<LoginResponse> {
+    const payload: LoginPayload = {
+      usuario: usuario.trim(),
+      contrasena
+    };
 
-  get isLoggedIn(): boolean {
-    return !!this.readStorage('token_usuario');
+    return this.http
+      .post<LoginResponse>(buildApiUrl(this.apiBaseUrl, '/auth/login'), payload, {
+        context: new HttpContext().set(SKIP_AUTH, true)
+      })
+      .pipe(tap((response) => this.sessionStore.setSession(response)));
   }
 
-  login(usuario: string, contrasena: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, { usuario, contrasena }).pipe(
-      tap(res => {
-        this.writeStorage('token_usuario', res.token);
-        this.writeStorage('user_data', JSON.stringify(res.user));
-        this.writeStorage('empresa_data', JSON.stringify(res.empresa));
-        
-        this.userSubject.next(res.user);
-        this.empresaSubject.next(res.empresa);
+  logout(): Observable<void> {
+    return this.http
+      .post<ApiMessageResponse>(buildApiUrl(this.apiBaseUrl, '/auth/logout'), {})
+      .pipe(
+        map(() => void 0),
+        catchError(() => of(void 0)),
+        tap(() => this.sessionStore.clearSession())
+      );
+  }
+
+  getMe(): Observable<MeResponse> {
+    return this.http.get<MeResponse>(buildApiUrl(this.apiBaseUrl, '/me')).pipe(
+      tap((response) => this.sessionStore.syncProfile(response))
+    );
+  }
+
+  restoreSession(): Observable<MeResponse | null> {
+    const token = this.sessionStore.getToken();
+    const user = this.sessionStore.user();
+    const empresa = this.sessionStore.empresa();
+
+    if (!token || !user || !empresa) {
+      return of(null);
+    }
+
+    const fallbackSession: MeResponse = {
+      token,
+      user,
+      empresa
+    };
+
+    return this.getMe().pipe(
+      timeout(5000),
+      catchError((error: unknown) => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          this.sessionStore.clearSession();
+          return of(null);
+        }
+
+        return of(fallbackSession);
       })
     );
   }
 
-  logout(): void {
-    this.http.post(`${this.apiUrl}/auth/logout`, {}).subscribe({
-      next: () => this.clearSession(),
-      error: () => this.clearSession()
-    });
-  }
-
-  getMe(): Observable<{ user: User, empresa: Empresa }> {
-    return this.http.get<{ user: User, empresa: Empresa }>(`${this.apiUrl}/me`).pipe(
-      tap(res => {
-        this.userSubject.next(res.user);
-        this.empresaSubject.next(res.empresa);
-      })
-    );
-  }
-
-  private clearSession(): void {
-    this.removeStorage('token_usuario');
-    this.removeStorage('user_data');
-    this.removeStorage('empresa_data');
-    this.userSubject.next(null);
-    this.empresaSubject.next(null);
-  }
-
-  private getStoredUser(): User | null {
-    try {
-      const data = this.readStorage('user_data');
-      return data ? JSON.parse(data) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  private getStoredEmpresa(): Empresa | null {
-    try {
-      const data = this.readStorage('empresa_data');
-      return data ? JSON.parse(data) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  private readStorage(key: string): string | null {
-    try {
-      return localStorage.getItem(key);
-    } catch {
-      return null;
-    }
-  }
-
-  private writeStorage(key: string, value: string): void {
-    try {
-      localStorage.setItem(key, value);
-    } catch {
-      // Ignore storage quota/private mode errors and keep session in memory.
-    }
-  }
-
-  private removeStorage(key: string): void {
-    try {
-      localStorage.removeItem(key);
-    } catch {
-      // Ignore storage access errors during logout cleanup.
-    }
+  clearSession(): void {
+    this.sessionStore.clearSession();
   }
 }

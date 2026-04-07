@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -34,15 +35,21 @@ export class LoginPageComponent {
     this.isLoading = true;
     this.error = '';
 
-    this.authService.login(this.username, this.password).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.router.navigateByUrl('/');
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.error = err?.error?.message || 'Credenciales inválidas.';
-      }
-    });
+    this.authService
+      .login(this.username, this.password)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: () => {
+          this.router.navigateByUrl('/menu');
+        },
+        error: (err) => {
+          if (err?.status === 0) {
+            this.error = 'No se pudo conectar con el backend. Verifica BACKEND_URL y que el servidor API esté levantado.';
+            return;
+          }
+
+          this.error = err?.error?.message || 'Credenciales inválidas.';
+        }
+      });
   }
 }

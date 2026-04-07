@@ -1,59 +1,63 @@
 <main class="shell">
   <section class="auth-card">
-      <div class="brand">
-        <div class="logo">IN</div>
-        <div>
-          <p class="brand__eyebrow">Acceso seguro</p>
-          <h2>Iniciar sesi&oacute;n</h2>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M32 14L14 28v20a2 2 0 0 0 2 2h12V38h8v12h12a2 2 0 0 0 2-2V28L32 14z" fill="currentColor" />
+        </svg>
+      </div>
+      <div>
+        <p class="brand__eyebrow">Acceso seguro</p>
+        <h2>Iniciar sesi&oacute;n</h2>
+      </div>
+    </div>
+
+    <p class="muted">Ingresa tus credenciales para continuar con la gesti&oacute;n del sistema.</p>
+
+    @if (error) {
+      <div class="alert" role="alert">{{ error }}</div>
+    }
+
+    <form class="form" (submit)="$event.preventDefault(); submit()">
+      <label class="field">
+        <span>Usuario</span>
+        <input
+          type="text"
+          name="username"
+          [(ngModel)]="username"
+          [disabled]="isLoading"
+          autocomplete="username"
+          placeholder="tu.usuario"
+          required
+        />
+      </label>
+
+      <label class="field">
+        <div class="field__row">
+          <span>Contrase&ntilde;a</span>
+          <button type="button" class="link" (click)="togglePassword()">
+            {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+          </button>
         </div>
-      </div>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          name="password"
+          [(ngModel)]="password"
+          [disabled]="isLoading"
+          autocomplete="current-password"
+          placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+          required
+        />
+      </label>
 
-      <p class="muted">Ingresa tus credenciales para continuar con la gesti&oacute;n del sistema.</p>
+      <button class="cta" type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Verificando...' : 'Ingresar al sistema' }}
+      </button>
+    </form>
 
-      @if (error) {
-        <div class="alert" role="alert">{{ error }}</div>
-      }
-
-      <form class="form" (submit)="$event.preventDefault(); submit()">
-        <label class="field">
-          <span>Usuario</span>
-          <input
-            type="text"
-            name="username"
-            [(ngModel)]="username"
-            [disabled]="isLoading"
-            autocomplete="username"
-            placeholder="tu.usuario"
-            required
-          />
-        </label>
-
-        <label class="field">
-          <div class="field__row">
-            <span>Contrase&ntilde;a</span>
-            <button type="button" class="link" (click)="togglePassword()">
-              {{ showPassword ? 'Ocultar' : 'Mostrar' }}
-            </button>
-          </div>
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            name="password"
-            [(ngModel)]="password"
-            [disabled]="isLoading"
-            autocomplete="current-password"
-            placeholder="••••••••"
-            required
-          />
-        </label>
-
-        <button class="cta" type="submit" [disabled]="isLoading">
-          {{ isLoading ? 'Verificando...' : 'Ingresar al sistema' }}
-        </button>
-      </form>
-
-      <div class="auth-card__footer">
-        <span>Soporte interno para administraci&oacute;n y cobranza</span>
-        <small>&copy; 2026 Inmobiliaria</small>
-      </div>
+    <div class="auth-card__footer">
+      <span>Soporte interno para administraci&oacute;n y cobranza</span>
+      <small>&copy; 2026 Inmobiliaria</small>
+    </div>
   </section>
 </main>

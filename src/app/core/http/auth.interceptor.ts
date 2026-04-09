@@ -2,11 +2,11 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { SessionStore } from '../auth/session.store';
-import { injectApiBaseUrl } from '../config/api.config';
+import { API_BASE_URL } from '../config/api.config';
 import { SKIP_AUTH } from './request-context.tokens';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const apiBaseUrl = injectApiBaseUrl();
+  const apiBaseUrl = inject(API_BASE_URL);
 
   if (!req.url.startsWith(apiBaseUrl)) {
     return next(req);

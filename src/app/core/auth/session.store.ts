@@ -3,6 +3,7 @@ import { Empresa, LoginResponse, MeResponse, User } from './auth.models';
 
 type SessionState = {
   readonly token: string | null;
+  readonly empresa_id: number | null;
   readonly user: User | null;
   readonly empresa: Empresa | null;
 };
@@ -15,12 +16,14 @@ const SESSION_STORAGE_KEY = 'alquilamax.session';
 export class SessionStore {
   private readonly state = signal<SessionState>({
     token: null,
+    empresa_id: null,
     user: null,
     empresa: null
   });
 
   readonly user = computed(() => this.state().user);
   readonly empresa = computed(() => this.state().empresa);
+  readonly empresaId = computed(() => this.state().empresa_id);
   readonly isAuthenticated = computed(() => Boolean(this.state().token));
 
   constructor() {
@@ -34,6 +37,7 @@ export class SessionStore {
   setSession(session: LoginResponse): void {
     this.commitState({
       token: session.token,
+      empresa_id: session.empresa_id,
       user: session.user,
       empresa: session.empresa
     });
@@ -42,6 +46,7 @@ export class SessionStore {
   syncProfile(profile: MeResponse): void {
     this.commitState({
       token: profile.token || this.state().token,
+      empresa_id: profile.empresa_id || this.state().empresa_id,
       user: profile.user,
       empresa: profile.empresa
     });
@@ -50,6 +55,7 @@ export class SessionStore {
   clearSession(): void {
     this.commitState({
       token: null,
+      empresa_id: null,
       user: null,
       empresa: null
     });
@@ -78,6 +84,7 @@ export class SessionStore {
 
       this.state.set({
         token: typeof parsed.token === 'string' ? parsed.token : null,
+        empresa_id: typeof parsed.empresa_id === 'number' ? parsed.empresa_id : null,
         user: this.isValidUser(parsed.user) ? parsed.user : null,
         empresa: this.isValidEmpresa(parsed.empresa) ? parsed.empresa : null
       });

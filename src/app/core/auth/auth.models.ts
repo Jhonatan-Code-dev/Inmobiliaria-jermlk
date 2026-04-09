@@ -7,12 +7,12 @@ export interface User {
 export interface Empresa {
   id: number;
   nombre: string;
-  pais: string;
+  pais?: string;
   moneda: string;
-  maximo_usuarios: number;
-  estado: boolean;
-  vencimiento: string;
-  creado_en: string;
+  maximo_usuarios?: number;
+  estado?: boolean;
+  vencimiento?: string;
+  creado_en?: string;
 }
 
 export interface LoginPayload {
@@ -22,12 +22,14 @@ export interface LoginPayload {
 
 export interface LoginResponse {
   token: string;
+  empresa_id: number;
   user: User;
   empresa: Empresa;
 }
 
 export interface MeResponse {
   token: string;
+  empresa_id: number;
   user: User;
   empresa: Empresa;
 }

@@ -8,7 +8,7 @@ import {
   MeResponse
 } from '../core/auth/auth.models';
 import { SessionStore } from '../core/auth/session.store';
-import { buildApiUrl, injectApiBaseUrl } from '../core/config/api.config';
+import { ApiUrlBuilder } from '../core/http/api-url.builder';
 import { SKIP_AUTH } from '../core/http/request-context.tokens';
 
 @Injectable({
@@ -16,11 +16,12 @@ import { SKIP_AUTH } from '../core/http/request-context.tokens';
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiBaseUrl = injectApiBaseUrl();
+  private readonly apiUrlBuilder = inject(ApiUrlBuilder);
   private readonly sessionStore = inject(SessionStore);
 
   readonly user = this.sessionStore.user;
   readonly empresa = this.sessionStore.empresa;
+  readonly empresaId = this.sessionStore.empresaId;
   readonly isLoggedIn = this.sessionStore.isAuthenticated;
 
   login(usuario: string, contrasena: string): Observable<LoginResponse> {
@@ -30,7 +31,7 @@ export class AuthService {
     };
 
     return this.http
-      .post<LoginResponse>(buildApiUrl(this.apiBaseUrl, '/auth/login'), payload, {
+      .post<LoginResponse>(this.apiUrlBuilder.build('/auth/login'), payload, {
         context: new HttpContext().set(SKIP_AUTH, true)
       })
       .pipe(tap((response) => this.sessionStore.setSession(response)));
@@ -38,7 +39,7 @@ export class AuthService {
 
   logout(): Observable<void> {
     return this.http
-      .post<ApiMessageResponse>(buildApiUrl(this.apiBaseUrl, '/auth/logout'), {})
+      .post<ApiMessageResponse>(this.apiUrlBuilder.build('/auth/logout'), {})
       .pipe(
         map(() => void 0),
         catchError(() => of(void 0)),
@@ -47,7 +48,7 @@ export class AuthService {
   }
 
   getMe(): Observable<MeResponse> {
-    return this.http.get<MeResponse>(buildApiUrl(this.apiBaseUrl, '/me')).pipe(
+    return this.http.get<MeResponse>(this.apiUrlBuilder.build('/me')).pipe(
       tap((response) => this.sessionStore.syncProfile(response))
     );
   }
@@ -63,6 +64,8 @@ export class AuthService {
 
     const fallbackSession: MeResponse = {
       token,
+      // We assume empresa_id is available if we have the other data from hydration
+      empresa_id: this.sessionStore.empresaId() || 0,
       user,
       empresa
     };

@@ -5,7 +5,9 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { App } from './app';
 import { routes } from './app.routes';
+import { API_BASE_URL } from './core/config/api.config';
 import { authInterceptor } from './core/http/auth.interceptor';
+import { APP_ROUTE_PATHS } from './core/routing/app-routes.constants';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -17,7 +19,8 @@ describe('App', () => {
         provideRouter(routes),
         provideLocationMocks(),
         provideHttpClient(withInterceptors([authInterceptor])),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        { provide: API_BASE_URL, useValue: '/api' }
       ]
     }).compileComponents();
   });
@@ -34,13 +37,14 @@ describe('App', () => {
 
   it('renders login content on root when there is no session', async () => {
     const router = TestBed.inject(Router);
-    await router.navigateByUrl('/');
+    await router.navigateByUrl(APP_ROUTE_PATHS.root);
 
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
 
+    expect(router.url).toBe(APP_ROUTE_PATHS.root);
     expect(fixture.nativeElement.textContent).toContain('Iniciar sesi');
   });
 
@@ -68,14 +72,21 @@ describe('App', () => {
     );
 
     const router = TestBed.inject(Router);
-    await router.navigateByUrl('/menu');
+    await router.navigateByUrl(APP_ROUTE_PATHS.menu);
 
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('Panel Inmobiliario');
+    expect(fixture.nativeElement.textContent).toContain('AlquilaMax');
     expect(fixture.nativeElement.textContent).toContain('Empresa Demo');
+  });
+
+  it('redirects login alias to root route', async () => {
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl(APP_ROUTE_PATHS.login);
+
+    expect(router.url).toBe(APP_ROUTE_PATHS.root);
   });
 });

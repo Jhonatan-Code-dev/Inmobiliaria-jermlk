@@ -18,13 +18,12 @@
       <div class="alert" role="alert">{{ error }}</div>
     }
 
-    <form class="form" (submit)="$event.preventDefault(); submit()">
+    <form class="form" [formGroup]="loginForm" (ngSubmit)="submit()">
       <label class="field">
         <span>Usuario</span>
         <input
           type="text"
-          name="username"
-          [(ngModel)]="username"
+          formControlName="username"
           [disabled]="isLoading"
           autocomplete="username"
           placeholder="tu.usuario"
@@ -41,8 +40,7 @@
         </div>
         <input
           [type]="showPassword ? 'text' : 'password'"
-          name="password"
-          [(ngModel)]="password"
+          formControlName="password"
           [disabled]="isLoading"
           autocomplete="current-password"
           placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"

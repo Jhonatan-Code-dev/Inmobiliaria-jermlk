@@ -1,3 +1,24 @@
 :host {
   display: block;
 }
+
+aside {
+  will-change: transform, width;
+}
+
+main {
+  will-change: padding;
+}
+
+.shell-panel {
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-item-active {
+  animation: active-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes active-pulse {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(-4px); }
+}

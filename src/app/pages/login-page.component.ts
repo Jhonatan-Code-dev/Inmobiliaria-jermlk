@@ -1,23 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { extractHttpErrorMessage, isNetworkError } from '../core/http/http-error.utils';
+import { APP_ROUTE_PATHS } from '../core/routing/app-routes.constants';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
 export class LoginPageComponent {
+  private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  username = '';
-  password = '';
+  readonly loginForm = this.formBuilder.nonNullable.group({
+    username: ['', [Validators.required, Validators.maxLength(80)]],
+    password: ['', [Validators.required, Validators.minLength(3)]]
+  });
+
   isLoading = false;
   error = '';
   showPassword = false;
@@ -27,28 +33,32 @@ export class LoginPageComponent {
   }
 
   submit(): void {
-    if (!this.username || !this.password) {
-      this.error = 'Completa usuario y contraseña.';
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      this.error = 'Completa usuario y contrasena.';
       return;
     }
+
+    const { username, password } = this.loginForm.getRawValue();
 
     this.isLoading = true;
     this.error = '';
 
     this.authService
-      .login(this.username, this.password)
+      .login(username, password)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: () => {
-          this.router.navigateByUrl('/menu');
+          this.router.navigateByUrl(APP_ROUTE_PATHS.menuOverview);
         },
-        error: (err) => {
-          if (err?.status === 0) {
-            this.error = 'No se pudo conectar con el backend. Verifica BACKEND_URL y que el servidor API esté levantado.';
+        error: (error: unknown) => {
+          if (isNetworkError(error)) {
+            this.error =
+              'No se pudo conectar con el backend. Verifica BACKEND_URL y que el servidor API este levantado.';
             return;
           }
 
-          this.error = err?.error?.message || 'Credenciales inválidas.';
+          this.error = extractHttpErrorMessage(error, 'Credenciales invalidas.');
         }
       });
   }

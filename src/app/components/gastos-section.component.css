@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+.delete-modal {
+  animation: delete-modal-enter 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.delete-modal__hero {
+  position: relative;
+}
+
+.delete-modal__hero::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(244, 63, 94, 0.28), transparent);
+}
+
+@keyframes delete-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

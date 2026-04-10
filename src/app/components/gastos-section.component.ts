@@ -21,6 +21,15 @@ type FeedbackState = {
   readonly message: string;
 };
 
+type FilterMode = 'none' | 'anio' | 'rango' | 'fecha';
+
+const FILTER_MODE_OPTIONS = [
+  { value: 'none' as FilterMode, label: 'Sin filtro de tiempo' },
+  { value: 'anio' as FilterMode, label: 'Por año / mes' },
+  { value: 'rango' as FilterMode, label: 'Por rango de fechas' },
+  { value: 'fecha' as FilterMode, label: 'Por fecha exacta' }
+] as const;
+
 const DEFAULT_PAGINATION: GastosPaginacion = {
   total: 0,
   paginas: 0,
@@ -59,6 +68,8 @@ export class GastosSectionComponent implements OnInit {
 
   readonly empresa = this.authService.empresa;
   readonly monthOptions = MONTH_OPTIONS;
+  readonly filterModeOptions = FILTER_MODE_OPTIONS;
+  readonly filterMode = signal<FilterMode>('none');
   readonly metodosPago = signal<MetodoPago[]>([]);
 
   readonly shellPanelClass = 'rounded-xl border border-slate-200 bg-white shadow-sm';
@@ -90,8 +101,7 @@ export class GastosSectionComponent implements OnInit {
   readonly pendingDeleteExpense = signal<Gasto | null>(null);
 
   readonly hasFiltersActive = computed(() => {
-    const filters = this.filtersForm.getRawValue();
-    return Object.values(filters).some((value) => value.trim().length > 0);
+    return this.filterMode() !== 'none';
   });
 
   readonly pageTotalAmount = computed(() =>
@@ -104,17 +114,6 @@ export class GastosSectionComponent implements OnInit {
 
   readonly pageRecordCount = computed(() => this.gastos().length);
   readonly totalRecords = computed(() => this.pagination().total);
-
-  readonly averageTicketLabel = computed(() => {
-    const expenseCount = this.pageRecordCount();
-
-    if (!expenseCount) {
-      return this.formatCurrency(0, this.defaultCurrency());
-    }
-
-    const average = this.pageTotalAmount() / expenseCount;
-    return this.formatCurrency(average, this.defaultCurrency());
-  });
 
   readonly paymentMethodNameById = computed(() => {
     const mapping = new Map<number, string>();
@@ -188,6 +187,7 @@ export class GastosSectionComponent implements OnInit {
   }
 
   clearFilters(): void {
+    this.filterMode.set('none');
     this.filtersForm.reset({
       anio: '',
       mes: '',
@@ -196,6 +196,23 @@ export class GastosSectionComponent implements OnInit {
       fecha: ''
     });
     this.loadGastos(1);
+  }
+
+  setFilterMode(mode: FilterMode): void {
+    this.filterMode.set(mode);
+
+    // Clear fields that don't belong to the new mode
+    if (mode !== 'anio') {
+      this.filtersForm.patchValue({ anio: '', mes: '' });
+    }
+
+    if (mode !== 'rango') {
+      this.filtersForm.patchValue({ desde: '', hasta: '' });
+    }
+
+    if (mode !== 'fecha') {
+      this.filtersForm.patchValue({ fecha: '' });
+    }
   }
 
   loadGastos(page = this.pagination().pagina): void {
@@ -399,7 +416,19 @@ export class GastosSectionComponent implements OnInit {
     }
 
     const rawFilters = this.filtersForm.getRawValue();
-    const exactDate = this.normalizeNullableText(rawFilters.fecha);
+
+    // Normalize: Angular's NumberValueAccessor may produce numbers at runtime
+    // for <input type="number">, so we must safely convert all values to strings.
+    const safe = {
+      anio: String(rawFilters.anio ?? ''),
+      mes: String(rawFilters.mes ?? ''),
+      desde: String(rawFilters.desde ?? ''),
+      hasta: String(rawFilters.hasta ?? ''),
+      fecha: String(rawFilters.fecha ?? '')
+    };
+
+    // Precedence 1: Fecha exacta — ignores all other time filters
+    const exactDate = this.normalizeNullableText(safe.fecha);
 
     if (exactDate) {
       return {
@@ -409,13 +438,45 @@ export class GastosSectionComponent implements OnInit {
       };
     }
 
+    // Precedence 2: Rango de fechas (desde & hasta) — ignores anio and mes
+    const desde = this.normalizeNullableText(safe.desde);
+    const hasta = this.normalizeNullableText(safe.hasta);
+
+    if (desde && hasta) {
+      return {
+        empresa_id: empresaId,
+        pag: page,
+        desde,
+        hasta
+      };
+    }
+
+    // Precedence 3: Año y Mes — filtra por mes específico del año
+    const anio = this.parseNullableNumber(safe.anio);
+    const mes = this.parseMonth(safe.mes);
+
+    if (anio && mes) {
+      return {
+        empresa_id: empresaId,
+        pag: page,
+        anio,
+        mes
+      };
+    }
+
+    // Precedence 4: Solo Año — filtra por año completo
+    if (anio) {
+      return {
+        empresa_id: empresaId,
+        pag: page,
+        anio
+      };
+    }
+
+    // Sin filtros de tiempo — devuelve todos los gastos paginados
     return {
       empresa_id: empresaId,
-      pag: page,
-      anio: this.parseNullableNumber(rawFilters.anio),
-      mes: this.parseMonth(rawFilters.mes),
-      desde: this.normalizeNullableText(rawFilters.desde),
-      hasta: this.normalizeNullableText(rawFilters.hasta)
+      pag: page
     };
   }
 

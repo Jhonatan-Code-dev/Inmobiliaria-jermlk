@@ -36,6 +36,16 @@ export const routes: Routes = [
         path: APP_ROUTE_SEGMENTS.gastos,
         loadComponent: () => import('./pages/gastos-page.component').then(m => m.GastosPageComponent),
         title: 'Inmobiliaria | Egresos'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.clientes,
+        loadComponent: () => import('./pages/clientes-page.component').then(m => m.ClientesPageComponent),
+        title: 'Inmobiliaria | Clientes'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.inmuebles,
+        loadComponent: () => import('./pages/inmuebles-page.component').then(m => m.InmueblesPageComponent),
+        title: 'Inmobiliaria | Inmuebles'
       }
     ]
   },

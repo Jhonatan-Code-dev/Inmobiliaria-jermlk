@@ -2,6 +2,26 @@
   display: block;
 }
 
+.filter-mode-btn {
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-fields {
+  animation: filter-fields-enter 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes filter-fields-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .delete-modal {
   animation: delete-modal-enter 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -31,3 +51,4 @@
     transform: translateY(0) scale(1);
   }
 }
+

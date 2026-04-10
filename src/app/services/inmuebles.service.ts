@@ -49,23 +49,27 @@ export class InmueblesService {
 
   // Unidades CRUD
 
-  listUnidades(inmuebleId: number): Observable<Unidad[]> {
-    return this.http.get<Unidad[]>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades`);
+  listUnidades(inmuebleId: number, empresaId: number): Observable<Unidad[]> {
+    const params = new HttpParams().set('empresa_id', String(empresaId));
+    return this.http.get<Unidad[]>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades`, { params });
   }
 
   createUnidad(inmuebleId: number, payload: any): Observable<Unidad> {
+    // Note: ensure payload has empresa_id if required by backend body
     return this.http.post<Unidad>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades`, payload);
   }
 
-  getUnidadById(inmuebleId: number, unidadId: number): Observable<Unidad> {
-    return this.http.get<Unidad>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`);
+  getUnidadById(inmuebleId: number, unidadId: number, empresaId: number): Observable<Unidad> {
+    const params = new HttpParams().set('empresa_id', String(empresaId));
+    return this.http.get<Unidad>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`, { params });
   }
 
   updateUnidad(inmuebleId: number, unidadId: number, payload: any): Observable<Unidad> {
     return this.http.put<Unidad>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`, payload);
   }
 
-  deleteUnidad(inmuebleId: number, unidadId: number): Observable<ApiMessageResponse> {
-    return this.http.delete<ApiMessageResponse>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`);
+  deleteUnidad(inmuebleId: number, unidadId: number, empresaId: number): Observable<ApiMessageResponse> {
+    const params = new HttpParams().set('empresa_id', String(empresaId));
+    return this.http.delete<ApiMessageResponse>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`, { params });
   }
 }

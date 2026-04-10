@@ -56,7 +56,7 @@ export const DASHBOARD_NAVIGATION_ITEMS: readonly DashboardNavItem[] = [
     id: 'clients',
     path: APP_ROUTE_SEGMENTS.clientes,
     label: 'Clientes',
-    icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M19 8a4 4 0 0 1 0 7.75'
+    icon: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'
   },
   {
     id: 'tickets',

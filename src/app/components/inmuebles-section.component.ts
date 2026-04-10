@@ -356,7 +356,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                     </div>
                     <div class="space-y-1">
                       <label class="text-slate-400 ml-1">Piso</label>
-                      <input type="number" formControlName="numero_piso" class="w-full h-12 px-4 rounded-xl bg-slate-50 outline-none"/>
+                      <input type="number" formControlName="piso" class="w-full h-12 px-4 rounded-xl bg-slate-50 outline-none"/>
                     </div>
                  </div>
                  <div class="flex gap-3 pt-6">
@@ -537,27 +537,40 @@ export class InmueblesSectionComponent implements OnInit {
 
   submitUnidad(): void {
     const item = this.selectedInmueble();
-    if (!item || this.unidadForm.invalid) return;
+    const eid = this.empresa()?.id;
+    if (!item || !eid || this.unidadForm.invalid) return;
     this.isSaving.set(true);
-    const payload = this.unidadForm.getRawValue() as any;
+    const payload = { ...this.unidadForm.getRawValue(), empresa_id: eid } as UnidadPayload;
+    
     const req = this.editingUnidadId() 
       ? this.inmueblesService.updateUnidad(item.id, this.editingUnidadId()!, payload) 
       : this.inmueblesService.createUnidad(item.id, payload);
     
     req.pipe(finalize(() => { this.isSaving.set(false); this.closeUnidadComposer(); }))
-       .subscribe(() => { this.setFeedback('success', 'Unidad actualizada.'); this.viewDetail(item); });
+       .subscribe({
+         next: () => { this.setFeedback('success', 'Unidad actualizada.'); this.viewDetail(item); },
+         error: err => this.setFeedback('error', extractHttpErrorMessage(err, 'Error en la unidad.'))
+       });
   }
 
   openDeleteUnidad(u: Unidad): void { this.pendingDeleteUnidad.set(u); this.confirmDeleteUnidad(); }
   confirmDeleteUnidad(): void {
     const u = this.pendingDeleteUnidad();
     const item = this.selectedInmueble();
-    if (!u || !item) return;
-    this.inmueblesService.deleteUnidad(item.id, u.id).subscribe(() => { 
-      this.setFeedback('success', 'Unidad removida.'); 
-      this.viewDetail(item); 
-      this.pendingDeleteUnidad.set(null); 
-    });
+    const eid = this.empresa()?.id;
+    if (!u || !item || !eid) return;
+    
+    this.isSaving.set(true);
+    this.inmueblesService.deleteUnidad(item.id, u.id, eid)
+      .pipe(finalize(() => this.isSaving.set(false)))
+      .subscribe({
+        next: () => { 
+          this.setFeedback('success', 'Unidad removida.'); 
+          this.viewDetail(item); 
+          this.pendingDeleteUnidad.set(null); 
+        },
+        error: err => this.setFeedback('error', extractHttpErrorMessage(err, 'No se pudo eliminar unidad.'))
+      });
   }
 
   // --- Helpers ---

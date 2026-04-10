@@ -18,7 +18,7 @@
         </svg>
       </div>
       @if (showSidebarLabels()) {
-        <span class="text-sm font-bold tracking-tight text-slate-900">AlquilaMax</span>
+        <span class="text-sm font-bold tracking-tight text-slate-900">Inmobiliaria</span>
       }
     </div>
 
@@ -28,16 +28,18 @@
           [routerLink]="[routePaths.menu, item.path]"
           routerLinkActive
           #rla="routerLinkActive"
-          class="group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors"
-          [ngClass]="rla.isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
+          class="group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all"
+          [ngClass]="rla.isActive ? 'bg-slate-100/80 text-slate-900 shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
           (click)="closeMobileMenu()"
         >
-          <svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0 transition-colors" [ngClass]="rla.isActive ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900'" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path [attr.d]="item.icon"></path>
-          </svg>
+          <div class="flex h-5 w-5 items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" class="h-4 w-4 transition-colors" [ngClass]="rla.isActive ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-900'" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path [attr.d]="item.icon"></path>
+            </svg>
+          </div>
 
           @if (showSidebarLabels()) {
-            <span class="truncate">{{ item.label }}</span>
+            <span class="truncate leading-none mb-[1px]">{{ item.label }}</span>
           }
         </a>
       }

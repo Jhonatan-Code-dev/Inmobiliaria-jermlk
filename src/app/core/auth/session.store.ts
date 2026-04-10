@@ -8,7 +8,7 @@ type SessionState = {
   readonly empresa: Empresa | null;
 };
 
-const SESSION_STORAGE_KEY = 'alquilamax.session';
+const SESSION_STORAGE_KEY = 'inmobiliaria.session';
 
 @Injectable({
   providedIn: 'root'

@@ -384,6 +384,42 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
         </div>
       }
 
+      <!-- Confirmation Modal: Finalizar Contrato -->
+      @if (pendingFinalizarAlquiler()) {
+        <div class="fixed inset-0 z-[150] flex items-center justify-center p-4">
+           <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm shadow-inner" (click)="pendingFinalizarAlquiler.set(null)"></div>
+           <div class="relative w-full max-w-sm bg-white p-8 rounded-[2rem] shadow-2xl animate-zoom text-center">
+              <div class="h-16 w-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-500">
+                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <h3 class="text-lg font-black text-slate-900 uppercase tracking-tighter">¿Finalizar Contrato?</h3>
+              <p class="text-xs font-medium text-slate-500 mt-2 mb-8">Confirmas que el inquilino "{{ pendingFinalizarAlquiler()?.cliente }}" ha cumplido su periodo y la unidad quedará disponible.</p>
+              <div class="flex gap-2">
+                 <button (click)="pendingFinalizarAlquiler.set(null)" class="flex-1 h-11 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-100 hover:bg-slate-50 transition-all">Cancelar</button>
+                 <button (click)="onConfirmFinalizar()" [disabled]="isSaving()" class="flex-1 h-11 rounded-xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-emerald-600 active:scale-95 transition-all">Finalizar</button>
+              </div>
+           </div>
+        </div>
+      }
+
+      <!-- Confirmation Modal: Delete Contrato -->
+      @if (pendingDeleteAlquiler()) {
+        <div class="fixed inset-0 z-[150] flex items-center justify-center p-4">
+           <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" (click)="pendingDeleteAlquiler.set(null)"></div>
+           <div class="relative w-full max-w-sm bg-white p-8 rounded-[2rem] shadow-2xl animate-zoom text-center border-t-8 border-rose-500">
+              <div class="h-16 w-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-4 text-rose-500">
+                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </div>
+              <h3 class="text-lg font-black text-slate-900 uppercase tracking-tighter border-b border-slate-50 pb-2">¿Eliminar Registro?</h3>
+              <p class="text-xs font-medium text-slate-500 mt-4 mb-8 italic">Se borrará todo el historial del contrato con "{{ pendingDeleteAlquiler()?.cliente }}". Esta acción es irreversible.</p>
+              <div class="flex gap-2">
+                 <button (click)="pendingDeleteAlquiler.set(null)" class="flex-1 h-11 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-100 hover:bg-slate-50 transition-all">Desistir</button>
+                 <button (click)="onConfirmDelete()" [disabled]="isSaving()" class="flex-1 h-11 rounded-xl bg-rose-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-rose-700 active:scale-95 transition-all">Eliminar</button>
+              </div>
+           </div>
+        </div>
+      }
+
       <!-- Feedbacks -->
       @if (feedback(); as f) {
         <div class="fixed bottom-8 right-8 z-[200] animate-zoom">
@@ -423,6 +459,9 @@ export class AlquileresSectionComponent implements OnInit {
   readonly isPendientesOpen = signal(false);
   readonly isDetailOpen = signal(false);
   readonly selectedAlquiler = signal<Alquiler | null>(null);
+  
+  readonly pendingFinalizarAlquiler = signal<Alquiler | null>(null);
+  readonly pendingDeleteAlquiler = signal<Alquiler | null>(null);
 
   // Caches for the form
   readonly cachedClientes = signal<Cliente[]>([]);
@@ -533,7 +572,7 @@ export class AlquileresSectionComponent implements OnInit {
       let unidadesVacias: any[] = [];
       res.datos.forEach(inm => {
         // En un mundo real, hariamos pull de unidades. Aquí se mockea un array o se invoca service de unidades.
-        this.inmueblesService.listUnidades(inm.id).subscribe(uns => {
+        this.inmueblesService.listUnidades(inm.id, eid).subscribe(uns => {
           const disponibles = uns.filter(u => u.estado === 'disponible');
           unidadesVacias = [...unidadesVacias, ...disponibles];
           this.cachedUnidadesLibres.set(unidadesVacias);
@@ -594,19 +633,43 @@ export class AlquileresSectionComponent implements OnInit {
   }
 
   confirmFinalizar(item: Alquiler): void {
-    if (!confirm(`¿Estás seguro de finalizar el contrato de ${item.cliente}?`)) return;
-    this.alquileresService.finalizarAlquiler(item.id).subscribe(() => {
-      this.setFeedback('success', 'Contrato finalizado correctamente.');
-      this.loadAlquileres(1);
-    });
+    this.pendingFinalizarAlquiler.set(item);
+  }
+
+  onConfirmFinalizar(): void {
+    const item = this.pendingFinalizarAlquiler();
+    if (!item) return;
+    this.isSaving.set(true);
+    this.alquileresService.finalizarAlquiler(item.id)
+      .pipe(finalize(() => { this.isSaving.set(false); this.pendingFinalizarAlquiler.set(null); }))
+      .subscribe({
+        next: () => {
+          this.setFeedback('success', 'Contrato finalizado correctamente.');
+          this.loadAlquileres(1);
+          this.checkPagosPendientes();
+        },
+        error: e => this.setFeedback('error', extractHttpErrorMessage(e, 'No se pudo finalizar el contrato.'))
+      });
   }
 
   confirmDelete(item: Alquiler): void {
-    if (!confirm(`¿Estás seguro de eliminar el contrato de ${item.cliente}? Esta acción no se puede deshacer.`)) return;
-    this.alquileresService.delete(item.id).subscribe(() => {
-      this.setFeedback('success', 'Contrato eliminado correctamente.');
-      this.loadAlquileres(1);
-    });
+    this.pendingDeleteAlquiler.set(item);
+  }
+
+  onConfirmDelete(): void {
+    const item = this.pendingDeleteAlquiler();
+    if (!item) return;
+    this.isSaving.set(true);
+    this.alquileresService.delete(item.id)
+      .pipe(finalize(() => { this.isSaving.set(false); this.pendingDeleteAlquiler.set(null); }))
+      .subscribe({
+        next: () => {
+          this.setFeedback('success', 'Contrato eliminado correctamente.');
+          this.loadAlquileres(1);
+          this.checkPagosPendientes();
+        },
+        error: e => this.setFeedback('error', extractHttpErrorMessage(e, 'No se pudo borrar el registro.'))
+      });
   }
 
   // --- Helpers ---

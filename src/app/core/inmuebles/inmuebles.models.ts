@@ -64,20 +64,12 @@ export interface InmueblePayload {
 }
 
 export interface UnidadPayload {
+  empresa_id: number;
   codigo: string;
-  nombre: string;
-  tipo: string;
-  numero_piso: number;
-  dormitorios: number;
-  banos: number;
-  area_m2: number;
-  capacidad: number;
-  moneda: string;
-  precio_base: number;
-  deposito_requerido: number;
-  incluye_agua: boolean;
-  incluye_luz: boolean;
-  incluye_internet: boolean;
-  notas: string;
+  nombre?: string;
+  piso: number;
+  precio_base?: number;
+  moneda?: string;
+  area_m2?: number;
   estado: string;
 }

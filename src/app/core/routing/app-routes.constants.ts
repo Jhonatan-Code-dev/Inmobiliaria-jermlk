@@ -5,7 +5,8 @@ export const APP_ROUTE_SEGMENTS = {
   overview: 'overview',
   gastos: 'gastos',
   clientes: 'clientes',
-  inmuebles: 'inmuebles'
+  inmuebles: 'inmuebles',
+  alquileres: 'alquileres'
 } as const;
 
 export const APP_ROUTE_PATHS = {
@@ -15,5 +16,6 @@ export const APP_ROUTE_PATHS = {
   menuOverview: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.overview}`,
   menuGastos: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.gastos}`,
   menuClientes: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.clientes}`,
-  menuInmuebles: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.inmuebles}`
+  menuInmuebles: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.inmuebles}`,
+  menuAlquileres: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.alquileres}`
 } as const;

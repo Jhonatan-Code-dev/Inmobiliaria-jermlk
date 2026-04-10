@@ -1,6 +1,6 @@
 import { APP_ROUTE_SEGMENTS } from '../routing/app-routes.constants';
 
-export type DashboardSectionId = 'overview' | 'expenses' | 'clients' | 'inmuebles';
+export type DashboardSectionId = 'overview' | 'expenses' | 'clients' | 'inmuebles' | 'alquileres';
 
 export type DashboardNavItem = {
   readonly id: DashboardSectionId;
@@ -23,6 +23,12 @@ export const DASHBOARD_NAVIGATION_ITEMS: readonly DashboardNavItem[] = [
     icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'
   },
   {
+    id: 'alquileres',
+    path: APP_ROUTE_SEGMENTS.alquileres,
+    label: 'Alquileres / Pagos',
+    icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'
+  },
+  {
     id: 'expenses',
     path: APP_ROUTE_SEGMENTS.gastos,
     label: 'Gastos',
@@ -35,3 +41,4 @@ export const DASHBOARD_NAVIGATION_ITEMS: readonly DashboardNavItem[] = [
     icon: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M19 8a4 4 0 0 1 0 7.75'
   }
 ] as const;
+

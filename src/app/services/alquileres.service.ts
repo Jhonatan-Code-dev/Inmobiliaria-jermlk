@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ApiMessageResponse } from '../core/auth/auth.models';
 import { ApiUrlBuilder } from '../core/http/api-url.builder';
 import {
   Alquiler,
@@ -40,6 +41,18 @@ export class AlquileresService {
 
   create(payload: AlquilerPayload): Observable<Alquiler> {
     return this.http.post<Alquiler>(this.apiUrlBuilder.build('/user/alquileres'), payload);
+  }
+
+  update(id: number, payload: Partial<AlquilerPayload>): Observable<Alquiler> {
+    return this.http.put<Alquiler>(`${this.apiUrlBuilder.build('/user/alquileres')}/${id}`, payload);
+  }
+
+  delete(id: number): Observable<ApiMessageResponse> {
+    return this.http.delete<ApiMessageResponse>(`${this.apiUrlBuilder.build('/user/alquileres')}/${id}`);
+  }
+
+  finalizarAlquiler(id: number): Observable<ApiMessageResponse> {
+    return this.http.post<ApiMessageResponse>(`${this.apiUrlBuilder.build('/user/alquileres')}/${id}/terminar`, {});
   }
 
   // --- Pagos ---

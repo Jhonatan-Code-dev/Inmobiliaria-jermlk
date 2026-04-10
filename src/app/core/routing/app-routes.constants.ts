@@ -6,7 +6,12 @@ export const APP_ROUTE_SEGMENTS = {
   gastos: 'gastos',
   clientes: 'clientes',
   inmuebles: 'inmuebles',
-  alquileres: 'alquileres'
+  alquileres: 'alquileres',
+  staff: 'staff',
+  cargos: 'cargos',
+  pagos: 'pagos',
+  servicios: 'servicios',
+  tickets: 'tickets'
 } as const;
 
 export const APP_ROUTE_PATHS = {
@@ -17,5 +22,10 @@ export const APP_ROUTE_PATHS = {
   menuGastos: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.gastos}`,
   menuClientes: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.clientes}`,
   menuInmuebles: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.inmuebles}`,
-  menuAlquileres: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.alquileres}`
+  menuAlquileres: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.alquileres}`,
+  menuStaff: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.staff}`,
+  menuCargos: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.cargos}`,
+  menuPagos: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.pagos}`,
+  menuServicios: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.servicios}`,
+  menuTickets: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.tickets}`
 } as const;

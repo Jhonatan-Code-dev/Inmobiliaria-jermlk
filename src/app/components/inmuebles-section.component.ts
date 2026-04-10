@@ -18,7 +18,7 @@ import { InmueblesService } from '../services/inmuebles.service';
 type FeedbackTone = 'success' | 'error';
 type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
 
-const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina: 1, por_pagina: 10 };
+const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_actual: 1, por_pagina: 10 };
 
 @Component({
   selector: 'app-inmuebles-section',
@@ -135,6 +135,14 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina: 
               </tbody>
             </table>
           </div>
+          <!-- Pagination simple -->
+          <div class="p-6 border-t border-slate-100 flex items-center justify-between">
+            <p class="text-xs font-bold text-slate-400">Página {{ pagination().pagina_actual }} de {{ pagination().paginas }} </p>
+            <div class="flex gap-2">
+              <button [disabled]="pagination().pagina_actual === 1" (click)="loadInmuebles(pagination().pagina_actual - 1)" class="h-8 px-4 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold disabled:opacity-50">Atrás</button>
+              <button [disabled]="pagination().pagina_actual >= pagination().paginas" (click)="loadInmuebles(pagination().pagina_actual + 1)" class="h-8 px-4 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold disabled:opacity-50">Siguiente</button>
+            </div>
+          </div>
         } @else {
           <div class="p-20 text-center flex flex-col items-center">
             <div class="h-20 w-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
@@ -228,34 +236,73 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina: 
                 <h3 class="text-xl font-black text-slate-900 uppercase tracking-tighter">{{ editingId() ? 'Editar Propiedad' : 'Nueva Propiedad' }}</h3>
                 <p class="text-xs font-medium text-slate-500 mt-0.5">Define los datos estructurales del inmueble.</p>
               </div>
-              <form [formGroup]="inmuebleForm" (ngSubmit)="submitInmueble()" class="p-10 space-y-6">
-                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Nombre del Inmueble</label>
-                    <input type="text" formControlName="nombre" class="w-full h-12 px-4 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all outline-none font-bold text-slate-900"/>
-                 </div>
+              <form [formGroup]="inmuebleForm" (ngSubmit)="submitInmueble()" class="p-10 space-y-5">
                  <div class="grid grid-cols-2 gap-4">
-                   <div class="space-y-1.5">
-                      <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Tipo</label>
-                      <select formControlName="tipo" class="w-full h-12 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-slate-700">
-                         <option value="edificio">Edificio</option>
-                         <option value="casa">Casa</option>
-                         <option value="quinta">Quinta</option>
-                         <option value="otro">Otro</option>
-                      </select>
-                   </div>
-                   <div class="space-y-1.5">
-                      <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Pisos</label>
-                      <input type="number" formControlName="total_pisos" class="w-full h-12 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold"/>
-                   </div>
+                    <div class="space-y-1 col-span-2">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Nombre del Inmueble</label>
+                       <input type="text" formControlName="nombre" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all outline-none font-bold text-slate-900 text-sm"/>
+                    </div>
+                    
+                    <div class="space-y-1 col-span-2">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Descripción (Opcional)</label>
+                       <textarea formControlName="descripcion" rows="2" class="w-full p-4 rounded-xl bg-slate-50 border-transparent focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all outline-none font-medium text-slate-800 text-sm resize-none"></textarea>
+                    </div>
+
+                    <div class="space-y-1">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Tipo</label>
+                       <select formControlName="tipo" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-slate-700 text-sm">
+                          <option value="edificio">Edificio</option>
+                          <option value="casa">Casa</option>
+                          <option value="quinta">Quinta</option>
+                          <option value="condominio">Condominio</option>
+                          <option value="otro">Otro</option>
+                       </select>
+                    </div>
+                    <div class="space-y-1">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Estado</label>
+                       <select formControlName="estado" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-slate-700 text-sm">
+                          <option value="activo">Activo</option>
+                          <option value="inactivo">Inactivo</option>
+                          <option value="mantenimiento">Mantenimiento</option>
+                       </select>
+                    </div>
+
+                    <div class="space-y-1 col-span-2">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Dirección</label>
+                       <input type="text" formControlName="direccion" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-sm"/>
+                    </div>
+
+                    <div class="space-y-1">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Ciudad</label>
+                       <input type="text" formControlName="ciudad" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-sm"/>
+                    </div>
+                    <div class="space-y-1">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Región</label>
+                       <input type="text" formControlName="region" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-sm"/>
+                    </div>
+
+                    <div class="space-y-1">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">País</label>
+                       <input type="text" formControlName="pais" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-sm"/>
+                    </div>
+                    <div class="space-y-1">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Código Postal</label>
+                       <input type="text" formControlName="codigo_postal" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-sm"/>
+                    </div>
+
+                    <div class="space-y-1">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">N° Pisos</label>
+                       <input type="number" formControlName="total_pisos" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-sm"/>
+                    </div>
+                    <div class="space-y-1">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">N° Unidades</label>
+                       <input type="number" formControlName="total_unidades" class="w-full h-11 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold text-sm"/>
+                    </div>
                  </div>
-                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Dirección Exacta</label>
-                    <input type="text" formControlName="direccion" class="w-full h-12 px-4 rounded-xl bg-slate-50 border-transparent outline-none font-bold"/>
-                 </div>
-                 <div class="flex gap-3 pt-6">
-                    <button type="button" (click)="closeComposer()" class="flex-1 h-12 rounded-xl text-xs font-black uppercase tracking-widest border border-slate-200 hover:bg-slate-50 transition-colors">Cancelar</button>
-                    <button type="submit" [disabled]="isSaving()" class="flex-1 h-12 rounded-xl bg-slate-900 text-white text-xs font-black uppercase tracking-widest shadow-xl hover:bg-emerald-600 transition-all disabled:opacity-50">
-                       {{ isSaving() ? 'Guardando...' : 'Confirmar Registro' }}
+                 <div class="flex gap-3 pt-4">
+                    <button type="button" (click)="closeComposer()" class="flex-1 h-11 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 hover:bg-slate-50 transition-colors">Cancelar</button>
+                    <button type="submit" [disabled]="isSaving()" class="flex-1 h-11 rounded-xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-emerald-600 transition-all disabled:opacity-50">
+                       {{ isSaving() ? 'Procesando...' : 'Confirmar Datos' }}
                     </button>
                  </div>
               </form>
@@ -352,26 +399,25 @@ export class InmueblesSectionComponent implements OnInit {
   readonly inmuebleForm = this.formBuilder.nonNullable.group({
     nombre: ['', [Validators.required]],
     tipo: ['edificio', [Validators.required]],
+    descripcion: [''],
     direccion: ['', [Validators.required]],
+    ciudad: [''],
+    region: [''],
+    pais: [''],
+    codigo_postal: [''],
     total_pisos: [1, [Validators.required, Validators.min(1)]],
-    total_unidades: [0],
-    ciudad: ['Lima'],
-    pais: ['PE'],
-    estado: ['activa']
+    total_unidades: [1, [Validators.required, Validators.min(1)]],
+    estado: ['activo']
   });
 
   readonly unidadForm = this.formBuilder.nonNullable.group({
     codigo: ['', [Validators.required]],
-    nombre: ['', [Validators.required]],
-    precio_base: [0, [Validators.required]],
-    numero_piso: [1],
+    nombre: [''],
+    piso: [1],
+    precio_base: [0],
     tipo: ['departamento'],
     moneda: ['PEN'],
-    area_m2: [50],
-    dormitorios: [1],
-    banos: [1],
-    capacidad: [2],
-    deposito_requerido: [0],
+    area_m2: [0],
     estado: ['disponible']
   });
 
@@ -381,7 +427,11 @@ export class InmueblesSectionComponent implements OnInit {
     const eid = this.empresa()?.id;
     if (!eid) return;
     this.isLoadingList.set(true);
-    this.inmueblesService.list({ empresa_id: eid, pag: page, ...this.searchForm.getRawValue() })
+    this.inmueblesService.list({ 
+      empresa_id: eid, 
+      pag: page, 
+      ...this.searchForm.getRawValue() 
+    })
       .pipe(finalize(() => this.isLoadingList.set(false)))
       .subscribe(res => { this.inmuebles.set(res.datos); this.pagination.set(res.paginacion); });
   }
@@ -392,7 +442,14 @@ export class InmueblesSectionComponent implements OnInit {
   // --- Inmueble Logic ---
   openComposer(): void {
     this.editingId.set(null);
-    this.inmuebleForm.reset({ tipo: 'edificio', total_pisos: 1, ciudad: 'Lima', pais: 'PE', estado: 'activa' });
+    this.inmuebleForm.reset({ 
+      tipo: 'edificio', 
+      total_pisos: 1, 
+      total_unidades: 1, 
+      estado: 'activo',
+      pais: 'Perú',
+      ciudad: 'Lima'
+    });
     this.isComposerOpen.set(true);
   }
 
@@ -401,8 +458,14 @@ export class InmueblesSectionComponent implements OnInit {
     this.inmuebleForm.patchValue({
       nombre: item.nombre,
       tipo: item.tipo,
+      descripcion: item.descripcion || '',
       direccion: item.direccion,
+      ciudad: item.ciudad || '',
+      region: item.region || '',
+      pais: item.pais || '',
+      codigo_postal: item.codigo_postal || '',
       total_pisos: item.total_pisos,
+      total_unidades: item.total_unidades,
       estado: item.estado
     });
     this.isComposerOpen.set(true);
@@ -415,9 +478,15 @@ export class InmueblesSectionComponent implements OnInit {
     if (this.inmuebleForm.invalid || !eid) return;
     this.isSaving.set(true);
     const payload = { ...this.inmuebleForm.getRawValue(), empresa_id: eid } as InmueblePayload;
-    const req = this.editingId() ? this.inmueblesService.update(this.editingId()!, payload) : this.inmueblesService.create(payload);
+    const req = this.editingId() 
+      ? this.inmueblesService.update(this.editingId()!, payload) 
+      : this.inmueblesService.create(payload);
+    
     req.pipe(finalize(() => { this.isSaving.set(false); this.closeComposer(); }))
-       .subscribe(() => { this.setFeedback('success', 'Propiedad sincronizada.'); this.loadInmuebles(1); });
+       .subscribe({
+         next: () => { this.setFeedback('success', 'Propiedad actualizada.'); this.loadInmuebles(1); },
+         error: err => this.setFeedback('error', extractHttpErrorMessage(err, 'Error al guardar propiedad.'))
+       });
   }
 
   openDeleteInmueble(item: Inmueble): void { this.pendingDeleteInmueble.set(item); }
@@ -426,8 +495,12 @@ export class InmueblesSectionComponent implements OnInit {
     const eid = this.empresa()?.id;
     if (!target || !eid) return;
     this.isSaving.set(true);
-    this.inmueblesService.delete(target.id, eid).pipe(finalize(() => { this.isSaving.set(false); this.pendingDeleteInmueble.set(null); }))
-        .subscribe(() => { this.setFeedback('success', 'Humo inmobiliario eliminado.'); this.loadInmuebles(1); });
+    this.inmueblesService.delete(target.id, eid)
+      .pipe(finalize(() => { this.isSaving.set(false); this.pendingDeleteInmueble.set(null); }))
+      .subscribe({
+        next: () => { this.setFeedback('success', 'Inmueble eliminado.'); this.loadInmuebles(1); },
+        error: err => this.setFeedback('error', extractHttpErrorMessage(err, 'No se pudo eliminar el inmueble.'))
+      });
   }
 
   // --- Detail Logic ---
@@ -443,10 +516,19 @@ export class InmueblesSectionComponent implements OnInit {
   openUnidadComposer(u?: Unidad): void {
     if (u) {
       this.editingUnidadId.set(u.id);
-      this.unidadForm.patchValue({ ...u });
+      this.unidadForm.patchValue({
+        codigo: u.codigo,
+        nombre: u.nombre || '',
+        piso: u.piso,
+        precio_base: u.precio_base || 0,
+        tipo: u.tipo || 'departamento',
+        moneda: u.moneda || 'PEN',
+        area_m2: u.area_m2 || 0,
+        estado: u.estado
+      });
     } else {
       this.editingUnidadId.set(null);
-      this.unidadForm.reset({ tipo: 'departamento', moneda: 'PEN', numero_piso: 1, area_m2: 50, estado: 'disponible' });
+      this.unidadForm.reset({ tipo: 'departamento', moneda: 'PEN', piso: 1, area_m2: 0, estado: 'disponible' });
     }
     this.isUnidadComposerOpen.set(true);
   }
@@ -457,8 +539,11 @@ export class InmueblesSectionComponent implements OnInit {
     const item = this.selectedInmueble();
     if (!item || this.unidadForm.invalid) return;
     this.isSaving.set(true);
-    const payload = this.unidadForm.getRawValue() as UnidadPayload;
-    const req = this.editingUnidadId() ? this.inmueblesService.updateUnidad(item.id, this.editingUnidadId()!, payload) : this.inmueblesService.createUnidad(item.id, payload);
+    const payload = this.unidadForm.getRawValue() as any;
+    const req = this.editingUnidadId() 
+      ? this.inmueblesService.updateUnidad(item.id, this.editingUnidadId()!, payload) 
+      : this.inmueblesService.createUnidad(item.id, payload);
+    
     req.pipe(finalize(() => { this.isSaving.set(false); this.closeUnidadComposer(); }))
        .subscribe(() => { this.setFeedback('success', 'Unidad actualizada.'); this.viewDetail(item); });
   }
@@ -467,9 +552,12 @@ export class InmueblesSectionComponent implements OnInit {
   confirmDeleteUnidad(): void {
     const u = this.pendingDeleteUnidad();
     const item = this.selectedInmueble();
-    const eid = this.empresa()?.id;
-    if (!u || !item || !eid) return;
-    this.inmueblesService.deleteUnidad(item.id, u.id, eid).subscribe(() => { this.setFeedback('success', 'Unidad removida.'); this.viewDetail(item); this.pendingDeleteUnidad.set(null); });
+    if (!u || !item) return;
+    this.inmueblesService.deleteUnidad(item.id, u.id).subscribe(() => { 
+      this.setFeedback('success', 'Unidad removida.'); 
+      this.viewDetail(item); 
+      this.pendingDeleteUnidad.set(null); 
+    });
   }
 
   // --- Helpers ---

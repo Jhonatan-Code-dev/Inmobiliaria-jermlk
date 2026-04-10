@@ -20,14 +20,11 @@ export class InmueblesService {
   private readonly apiUrlBuilder = inject(ApiUrlBuilder);
 
   list(filters: InmueblesFilters): Observable<InmueblesListResponse> {
-    let params = new HttpParams();
-
-    for (const [key, value] of Object.entries(filters)) {
-      if (value === null || value === undefined || value === '') {
-        continue;
-      }
-      params = params.set(key, String(value));
-    }
+    let params = new HttpParams().set('empresa_id', String(filters.empresa_id));
+    if (filters.pag) params = params.set('pag', String(filters.pag));
+    if (filters.buscar) params = params.set('buscar', filters.buscar);
+    if (filters.estado) params = params.set('estado', filters.estado);
+    if (filters.tipo) params = params.set('tipo', filters.tipo);
 
     return this.http.get<InmueblesListResponse>(this.apiUrlBuilder.build('/user/inmuebles'), { params });
   }
@@ -41,42 +38,34 @@ export class InmueblesService {
     return this.http.post<Inmueble>(this.apiUrlBuilder.build('/user/inmuebles'), payload);
   }
 
-  update(id: number, payload: InmueblePayload): Observable<Inmueble> {
-    return this.http.put<Inmueble>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${id}`, payload);
+  update(id: number, payload: InmueblePayload): Observable<any> {
+    return this.http.put<any>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${id}`, payload);
   }
 
   delete(id: number, empresaId: number): Observable<ApiMessageResponse> {
     const params = new HttpParams().set('empresa_id', String(empresaId));
-    return this.http.delete<ApiMessageResponse>(
-      `${this.apiUrlBuilder.build('/user/inmuebles')}/${id}`,
-      { params }
-    );
+    return this.http.delete<ApiMessageResponse>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${id}`, { params });
   }
 
   // Unidades CRUD
-  listUnidades(inmuebleId: number, empresaId: number): Observable<Unidad[]> {
-    const params = new HttpParams().set('empresa_id', String(empresaId));
-    return this.http.get<Unidad[]>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades`, { params });
+
+  listUnidades(inmuebleId: number): Observable<Unidad[]> {
+    return this.http.get<Unidad[]>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades`);
   }
 
-  createUnidad(inmuebleId: number, payload: UnidadPayload): Observable<Unidad> {
+  createUnidad(inmuebleId: number, payload: any): Observable<Unidad> {
     return this.http.post<Unidad>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades`, payload);
   }
 
-  getUnidadById(inmuebleId: number, unidadId: number, empresaId: number): Observable<Unidad> {
-    const params = new HttpParams().set('empresa_id', String(empresaId));
-    return this.http.get<Unidad>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`, { params });
+  getUnidadById(inmuebleId: number, unidadId: number): Observable<Unidad> {
+    return this.http.get<Unidad>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`);
   }
 
-  updateUnidad(inmuebleId: number, unidadId: number, payload: UnidadPayload): Observable<Unidad> {
+  updateUnidad(inmuebleId: number, unidadId: number, payload: any): Observable<Unidad> {
     return this.http.put<Unidad>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`, payload);
   }
 
-  deleteUnidad(inmuebleId: number, unidadId: number, empresaId: number): Observable<ApiMessageResponse> {
-    const params = new HttpParams().set('empresa_id', String(empresaId));
-    return this.http.delete<ApiMessageResponse>(
-      `${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`,
-      { params }
-    );
+  deleteUnidad(inmuebleId: number, unidadId: number): Observable<ApiMessageResponse> {
+    return this.http.delete<ApiMessageResponse>(`${this.apiUrlBuilder.build('/user/inmuebles')}/${inmuebleId}/unidades/${unidadId}`);
   }
 }

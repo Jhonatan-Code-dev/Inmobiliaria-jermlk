@@ -126,8 +126,20 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                       <span class="badge" [ngClass]="item.estado === 'activo' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'">{{ item.estado }}</span>
                     </td>
                     <td class="px-8 py-6 text-right whitespace-nowrap">
-                      <button (click)="openPago(item)" class="h-9 px-4 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-100 transition-colors mr-2">Cobrar Rentas</button>
-                      <button (click)="viewDetail(item)" class="h-9 px-4 rounded-lg bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-colors">Detalles</button>
+                      <div class="flex items-center justify-end gap-2">
+                        <button (click)="openPago(item)" class="h-9 px-4 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-100 transition-colors">Cobrar</button>
+                        <button (click)="viewDetail(item)" class="h-9 w-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all">
+                          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        </button>
+                        @if (item.estado === 'activo') {
+                          <button (click)="confirmFinalizar(item)" class="h-9 w-9 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 hover:bg-amber-600 hover:text-white transition-all" title="Finalizar Contrato">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                          </button>
+                        }
+                        <button (click)="confirmDelete(item)" class="h-9 w-9 rounded-lg bg-rose-50 flex items-center justify-center text-rose-500 hover:bg-rose-600 hover:text-white transition-all" title="Eliminar Contrato">
+                          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 }
@@ -521,7 +533,7 @@ export class AlquileresSectionComponent implements OnInit {
       let unidadesVacias: any[] = [];
       res.datos.forEach(inm => {
         // En un mundo real, hariamos pull de unidades. Aquí se mockea un array o se invoca service de unidades.
-        this.inmueblesService.listUnidades(inm.id, eid).subscribe(uns => {
+        this.inmueblesService.listUnidades(inm.id).subscribe(uns => {
           const disponibles = uns.filter(u => u.estado === 'disponible');
           unidadesVacias = [...unidadesVacias, ...disponibles];
           this.cachedUnidadesLibres.set(unidadesVacias);
@@ -579,6 +591,22 @@ export class AlquileresSectionComponent implements OnInit {
      const eid = this.empresa()?.id;
      if(!eid) return;
      this.alquileresService.getById(id, eid).subscribe(a => this.openPago(a));
+  }
+
+  confirmFinalizar(item: Alquiler): void {
+    if (!confirm(`¿Estás seguro de finalizar el contrato de ${item.cliente}?`)) return;
+    this.alquileresService.finalizarAlquiler(item.id).subscribe(() => {
+      this.setFeedback('success', 'Contrato finalizado correctamente.');
+      this.loadAlquileres(1);
+    });
+  }
+
+  confirmDelete(item: Alquiler): void {
+    if (!confirm(`¿Estás seguro de eliminar el contrato de ${item.cliente}? Esta acción no se puede deshacer.`)) return;
+    this.alquileresService.delete(item.id).subscribe(() => {
+      this.setFeedback('success', 'Contrato eliminado correctamente.');
+      this.loadAlquileres(1);
+    });
   }
 
   // --- Helpers ---

@@ -83,6 +83,10 @@ export class AuthService {
     );
   }
 
+  changePassword(password: string): Observable<ApiMessageResponse> {
+    return this.http.patch<ApiMessageResponse>(this.apiUrlBuilder.build('/me/password'), { password });
+  }
+
   clearSession(): void {
     this.sessionStore.clearSession();
   }

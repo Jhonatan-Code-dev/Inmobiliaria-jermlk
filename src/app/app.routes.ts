@@ -50,7 +50,32 @@ export const routes: Routes = [
       {
         path: APP_ROUTE_SEGMENTS.alquileres,
         loadComponent: () => import('./pages/alquileres-page.component').then(m => m.AlquileresPageComponent),
-        title: 'Inmobiliaria | Alquileres y Pagos'
+        title: 'Inmobiliaria | Alquileres'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.staff,
+        loadComponent: () => import('./pages/staff-page.component').then(m => m.StaffPageComponent),
+        title: 'Inmobiliaria | Staff'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.cargos,
+        loadComponent: () => import('./pages/cargos-page.component').then(m => m.CargosPageComponent),
+        title: 'Inmobiliaria | Cargos'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.pagos,
+        loadComponent: () => import('./pages/pagos-page.component').then(m => m.PagosPageComponent),
+        title: 'Inmobiliaria | Pagos'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.servicios,
+        loadComponent: () => import('./pages/servicios-page.component').then(m => m.ServiciosPageComponent),
+        title: 'Inmobiliaria | Servicios'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.tickets,
+        loadComponent: () => import('./pages/tickets-page.component').then(m => m.TicketsPageComponent),
+        title: 'Inmobiliaria | Mantenimiento'
       }
     ]
   },

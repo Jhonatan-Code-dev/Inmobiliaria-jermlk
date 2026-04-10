@@ -2,46 +2,36 @@ export interface Inmueble {
   id: number;
   empresa_id: number;
   nombre: string;
-  tipo: 'casa' | 'edificio' | 'quinta' | 'condominio' | 'otro';
-  descripcion: string;
+  tipo: string;
+  descripcion?: string;
   direccion: string;
-  ciudad: string;
-  region: string;
-  pais: string;
-  codigo_postal: string;
+  ciudad?: string;
+  region?: string;
+  pais?: string;
+  codigo_postal?: string;
   total_pisos: number;
   total_unidades: number;
-  estado: 'activa' | 'mantenimiento' | 'inactiva';
+  estado: string;
   creado_en: string;
   unidades?: Unidad[];
 }
 
 export interface Unidad {
   id: number;
-  propiedad_id: number;
   codigo: string;
-  nombre: string;
-  tipo: string;
-  numero_piso: number;
-  dormitorios: number;
-  banos: number;
-  area_m2: number;
-  capacidad: number;
-  moneda: string;
-  precio_base: number;
-  deposito_requerido: number;
-  incluye_agua: boolean;
-  incluye_luz: boolean;
-  incluye_internet: boolean;
-  notas: string;
-  estado: 'disponible' | 'reservado' | 'ocupado' | 'mantenimiento';
-  creado_en: string;
+  piso: number;
+  estado: string;
+  nombre?: string;
+  tipo?: string;
+  precio_base?: number;
+  moneda?: string;
+  area_m2?: number;
 }
 
 export interface InmueblesPaginacion {
   total: number;
   paginas: number;
-  pagina: number;
+  pagina_actual: number;
   por_pagina: number;
 }
 
@@ -62,12 +52,12 @@ export interface InmueblePayload {
   empresa_id: number;
   nombre: string;
   tipo: string;
-  descripcion: string;
+  descripcion?: string;
   direccion: string;
-  ciudad: string;
-  region: string;
-  pais: string;
-  codigo_postal: string;
+  ciudad?: string;
+  region?: string;
+  pais?: string;
+  codigo_postal?: string;
   total_pisos: number;
   total_unidades: number;
   estado: string;

@@ -245,8 +245,8 @@ export class ClientesSectionComponent implements OnInit {
 
     const payload: ClientePayload = {
       ...rawValue,
-      tipo_identificacion_id: tipoId,
-      empresa_id: empresaId
+      tipo_identificacion_id: Number(tipoId),
+      empresa_id: Number(empresaId)
     };
 
     const editingId = this.editingId();

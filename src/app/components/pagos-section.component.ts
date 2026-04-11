@@ -49,7 +49,7 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
                 <div class="bg-white p-4 rounded-xl border border-amber-200">
                    <p class="text-xs font-black text-slate-900">{{ p.cliente }}</p>
                    <p class="text-[10px] font-bold text-slate-400 uppercase">Vence: {{ p.fecha_vencimiento }}</p>
-                   <p class="text-lg font-black text-emerald-600 mt-1">$ {{ p.monto }}</p>
+                   <p class="text-lg font-black text-emerald-600 mt-1">S/. {{ p.monto }}</p>
                 </div>
               }
            </div>
@@ -85,7 +85,7 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
                       <span class="text-xs font-bold text-slate-600">{{ item.cliente || 'Desconocido' }}</span>
                     </td>
                     <td class="px-8 py-6">
-                      <span class="text-sm font-black text-emerald-600">$ {{ item.monto_pagado }}</span>
+                      <span class="text-sm font-black text-emerald-600">S/. {{ item.monto_pagado }}</span>
                     </td>
                     <td class="px-8 py-6 text-xs text-slate-500">
                       {{ item.fecha_pago }}

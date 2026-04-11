@@ -70,7 +70,7 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
                       <span class="text-sm font-black text-slate-800 uppercase tracking-tight">{{ item.concepto }}</span>
                     </td>
                     <td class="px-8 py-6">
-                      <span class="text-sm font-black text-slate-900">$ {{ item.monto }}</span>
+                      <span class="text-sm font-black text-slate-900">S/. {{ item.monto }}</span>
                     </td>
                     <td class="px-8 py-6">
                       <span class="badge" [ngClass]="getStatusClass(item.estado)">

@@ -106,12 +106,12 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                   <tr class="group hover:bg-slate-50/80 transition-all">
                     <td class="px-8 py-6">
                       <div class="flex items-center gap-4">
-                        <div class="h-10 w-10 border border-slate-200 rounded-xl bg-white flex items-center justify-center text-slate-400 font-black text-xs group-hover:border-emerald-200 group-hover:text-emerald-500 transition-all">
-                           {{ item.moneda }}
+                        <div class="h-10 w-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-[10px] font-black shadow-lg">
+                           S/.
                         </div>
                         <div>
                           <p class="text-sm font-black text-slate-800 uppercase tracking-tight">{{ item.unidad }}</p>
-                          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ item.monto }}</p>
+                          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">S/. {{ item.monto }}</p>
                         </div>
                       </div>
                     </td>
@@ -196,7 +196,7 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                 </div>
                 <div>
                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Renta Mensual</p>
-                   <p class="text-2xl font-black text-emerald-600">{{ selectedAlquiler()?.moneda }} {{ selectedAlquiler()?.monto }}</p>
+                   <p class="text-2xl font-black text-emerald-600">S/. {{ selectedAlquiler()?.monto }}</p>
                 </div>
                 <div>
                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado</p>
@@ -364,7 +364,7 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                     <div class="mt-4 flex items-center justify-between">
                        <div>
                          <p class="text-[9px] font-black text-rose-500 uppercase tracking-widest">Deuda Vencida</p>
-                         <p class="text-lg font-black text-slate-900">{{ p.monto }}</p>
+                         <p class="text-lg font-black text-slate-900">S/. {{ p.monto }}</p>
                        </div>
                        <button (click)="loadAlquilerForCobro(p.alquiler_id); closePendientes()" class="h-8 px-4 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase hover:bg-slate-800">Ir a Cobrar</button>
                     </div>

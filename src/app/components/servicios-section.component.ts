@@ -77,7 +77,7 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
                       <span class="text-xs font-black text-slate-900">{{ item.consumo }} unidad(es)</span>
                     </td>
                     <td class="px-8 py-6 font-black text-slate-900">
-                       $ {{ item.monto }}
+                       S/. {{ item.monto }}
                     </td>
                     <td class="px-8 py-6 text-right">
                       <div class="flex items-center justify-end gap-2">

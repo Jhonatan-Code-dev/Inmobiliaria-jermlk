@@ -384,6 +384,10 @@ export class GastosSectionComponent implements OnInit {
   }
 
   formatCurrency(value: number, currency: string): string {
+    if (currency === 'PEN') {
+      return `S/. ${value.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    
     try {
       return new Intl.NumberFormat('es-PE', {
         style: 'currency',

@@ -202,7 +202,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                                   </div>
                                   <div>
                                     <p class="text-sm font-black text-slate-900">{{ u.nombre }}</p>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{{ u.codigo }} • {{ u.moneda }} {{ u.precio_base }}</p>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{{ u.codigo }} • S/. {{ u.precio_base }}</p>
                                   </div>
                                </div>
                                <div class="flex items-center gap-2">

@@ -8,6 +8,8 @@ export interface Pago {
   mes_correspondiente: number;
   nota?: string;
   cliente?: string;
+  unidad?: string;
+  moneda?: string;
 }
 
 export interface PagosListResponse {
@@ -30,6 +32,7 @@ export interface PagoPayload {
 }
 
 export interface PagosFilters {
+  empresa_id?: number;
   pag?: number;
   por_pagina?: number;
   buscar?: string;

@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { finalize } from 'rxjs';
+import { finalize, debounceTime } from 'rxjs';
 import { PagosService } from '../services/pagos.service';
+import { AuthService } from '../services/auth.service';
 import { Pago, PagoPayload, PagoPendiente } from '../core/pagos/pagos.models';
 
 type FeedbackTone = 'success' | 'error';
@@ -25,15 +26,17 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
       <!-- Header -->
       <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
         <div>
-          <h2 class="text-3xl font-black tracking-tighter text-slate-900 border-l-8 border-emerald-500 pl-4">Historial de Pagos</h2>
+          <h2 class="text-3xl font-black tracking-tighter text-slate-900 border-l-8 border-emerald-500 pl-4">Cobros</h2>
           <p class="text-slate-500 font-medium mt-1 ml-4">Registro y control de cobros realizados a inquilinos.</p>
         </div>
         <div class="flex gap-2">
-          <button (click)="loadPendientes()" class="h-12 px-6 rounded-xl border border-slate-200 text-slate-600 font-black uppercase text-xs tracking-widest hover:bg-slate-50 transition-all">Ver Pendientes</button>
-          <button (click)="openComposer()" class="btn-primary flex items-center gap-2 group">
-            <svg class="h-4 w-4 transition-transform group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M12 5v14M5 12h14"/></svg>
-            Registrar Pago
-          </button>
+          <div class="relative">
+             <input type="text" [formControl]="searchControl" placeholder="Buscar recibo, cliente..." class="w-full sm:w-64 h-12 pl-11 pr-4 rounded-xl border border-slate-200 bg-slate-50 outline-none text-xs font-bold text-slate-700 transition-all focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-transparent"/>
+             <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+             </div>
+          </div>
+          <button (click)="loadPendientes()" class="h-12 px-6 rounded-xl border border-slate-200 text-slate-600 font-black uppercase text-xs tracking-widest hover:bg-slate-50 transition-all whitespace-nowrap">Ver Pendientes</button>
         </div>
       </div>
 
@@ -46,9 +49,16 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
            </div>
            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               @for (p of pendientes(); track p.alquiler_id) {
-                <div class="bg-white p-4 rounded-xl border border-amber-200">
-                   <p class="text-xs font-black text-slate-900">{{ p.cliente }}</p>
-                   <p class="text-[10px] font-bold text-slate-400 uppercase">Vence: {{ p.fecha_vencimiento }}</p>
+                <div class="bg-white p-4 rounded-xl border border-amber-200 cursor-pointer hover:border-emerald-400 hover:shadow-md transition-all group" (click)="openComposer(p)">
+                   <div class="flex items-start justify-between">
+                     <div>
+                       <p class="text-xs font-black text-slate-900">{{ p.cliente }}</p>
+                       <p class="text-[10px] font-bold text-slate-400 uppercase leading-relaxed">Vence: {{ p.fecha_vencimiento }}</p>
+                     </div>
+                     <div class="h-6 w-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M12 5v14M5 12h14"/></svg>
+                     </div>
+                   </div>
                    <p class="text-lg font-black text-emerald-600 mt-1">S/. {{ p.monto }}</p>
                 </div>
               }
@@ -82,7 +92,10 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
                       <span class="text-xs font-black text-slate-900 uppercase tracking-widest">{{ item.numero_recibo }}</span>
                     </td>
                     <td class="px-8 py-6">
-                      <span class="text-xs font-bold text-slate-600">{{ item.cliente || 'Desconocido' }}</span>
+                      <p class="text-xs font-bold text-slate-700">{{ item.cliente || 'Desconocido' }}</p>
+                      @if (item.unidad) {
+                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Unidad: {{ item.unidad }}</p>
+                      }
                     </td>
                     <td class="px-8 py-6">
                       <span class="text-sm font-black text-emerald-600">S/. {{ item.monto_pagado }}</span>
@@ -92,9 +105,6 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
                     </td>
                     <td class="px-8 py-6 text-right">
                       <div class="flex items-center justify-end gap-2">
-                        <button (click)="startEdit(item)" class="h-9 w-9 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-400 hover:text-emerald-600 transition-all">
-                          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                        </button>
                         <button (click)="openDelete(item)" class="h-9 w-9 rounded-lg bg-rose-50 flex items-center justify-center text-rose-500 hover:bg-rose-600 hover:text-white transition-all">
                           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
@@ -104,6 +114,13 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
                 }
               </tbody>
             </table>
+          </div>
+          <div class="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Página {{ pagination().pagina_actual }} de {{ pagination().paginas }}</p>
+            <div class="flex gap-2">
+               <button (click)="loadPagos(pagination().pagina_actual - 1)" [disabled]="pagination().pagina_actual <= 1" class="h-8 px-4 rounded-lg bg-white border border-slate-200 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 disabled:opacity-50 transition-all">Anterior</button>
+               <button (click)="loadPagos(pagination().pagina_actual + 1)" [disabled]="pagination().pagina_actual >= pagination().paginas" class="h-8 px-4 rounded-lg bg-white border border-slate-200 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 disabled:opacity-50 transition-all">Siguiente</button>
+            </div>
           </div>
         } @else {
           <div class="p-20 text-center">
@@ -193,10 +210,14 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
 })
 export class PagosSectionComponent implements OnInit {
   private readonly pagosService = inject(PagosService);
+  private readonly authService = inject(AuthService);
   private readonly fb = inject(FormBuilder);
+
+  readonly empresa = this.authService.empresa;
 
   readonly pagos = signal<Pago[]>([]);
   readonly pendientes = signal<PagoPendiente[]>([]);
+  readonly pagination = signal({ total: 0, paginas: 1, pagina_actual: 1, por_pagina: 10 });
   readonly isLoading = signal(false);
   readonly isSaving = signal(false);
   readonly isComposerOpen = signal(false);
@@ -213,38 +234,51 @@ export class PagosSectionComponent implements OnInit {
     nota: ['']
   });
 
-  ngOnInit(): void { this.loadPagos(); }
+  readonly searchControl = this.fb.control('');
 
-  loadPagos(): void {
+  ngOnInit(): void { 
+    this.loadPagos(1); 
+    
+    this.searchControl.valueChanges
+      .pipe(debounceTime(400))
+      .subscribe(() => this.loadPagos(1));
+  }
+
+  loadPagos(page: number = 1): void {
+    const empresaId = this.empresa()?.id;
+    if (!empresaId) return;
     this.isLoading.set(true);
-    this.pagosService.list({})
+    
+    const buscar = this.searchControl.value || '';
+    
+    this.pagosService.list({ empresa_id: empresaId, pag: page, buscar })
       .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe(res => this.pagos.set(res.datos));
+      .subscribe(res => {
+        this.pagos.set(res.datos);
+        this.pagination.set(res.paginacion);
+      });
   }
 
   loadPendientes(): void {
-    this.pagosService.getPendientesMes().subscribe(res => this.pendientes.set(res));
+    const empresaId = this.empresa()?.id;
+    if (!empresaId) return;
+    this.pagosService.getPendientesMes(empresaId).subscribe(res => {
+      this.pendientes.set(res);
+      if (res.length === 0) {
+        this.setFeedback('success', 'Excelente, no hay pagos pendientes ni atrasados registrados.');
+      }
+    });
   }
 
-  openComposer(): void {
+  openComposer(p?: PagoPendiente): void {
     this.editingId.set(null);
     this.pagoForm.reset({
+      alquiler_id: p ? p.alquiler_id : 0,
+      monto_pagado: p ? p.monto : 0,
       fecha_pago: new Date().toISOString().split('T')[0],
       metodo_pago: 'efectivo',
-      mes_correspondiente: new Date().getMonth() + 1
-    });
-    this.isComposerOpen.set(true);
-  }
-
-  startEdit(item: Pago): void {
-    this.editingId.set(item.id);
-    this.pagoForm.patchValue({
-      alquiler_id: item.alquiler_id,
-      monto_pagado: item.monto_pagado,
-      fecha_pago: item.fecha_pago,
-      metodo_pago: item.metodo_pago,
-      mes_correspondiente: item.mes_correspondiente,
-      nota: item.nota || ''
+      mes_correspondiente: new Date().getMonth() + 1,
+      nota: ''
     });
     this.isComposerOpen.set(true);
   }
@@ -258,7 +292,13 @@ export class PagosSectionComponent implements OnInit {
     const req = this.editingId() ? this.pagosService.update(this.editingId()!, payload) : this.pagosService.create(payload);
     
     req.pipe(finalize(() => { this.isSaving.set(false); this.closeComposer(); }))
-       .subscribe(() => { this.setFeedback('success', 'Pago sincronizado.'); this.loadPagos(); });
+       .subscribe(() => { 
+         this.setFeedback('success', 'Pago sincronizado.'); 
+         this.loadPagos(); 
+         if (this.pendientes().length > 0) {
+           this.loadPendientes();
+         }
+       });
   }
 
   openDelete(item: Pago): void { this.pendingDelete.set(item); }

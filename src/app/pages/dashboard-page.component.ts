@@ -32,7 +32,7 @@ export class DashboardPageComponent {
 
   readonly sidebarClasses = computed(() =>
     [
-      'fixed inset-y-0 left-0 z-40 flex w-full max-w-[18rem] flex-col overflow-hidden border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4 transition-all duration-300 ease-in-out',
+      'fixed inset-y-0 left-0 z-40 flex w-full max-w-[18rem] flex-col overflow-hidden border-r border-slate-200 dark:border-dark-border bg-white dark:bg-dark-bg p-4 transition-all duration-300 ease-in-out',
       this.isMobileMenuOpen() ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
       this.isSidebarCollapsed() ? 'lg:w-[80px]' : 'lg:w-[18rem]'
     ].join(' ')
@@ -40,8 +40,8 @@ export class DashboardPageComponent {
 
   readonly mainShellClasses = computed(() =>
     this.isSidebarCollapsed()
-      ? 'relative min-h-screen bg-slate-50/40 dark:bg-slate-900/40 transition-[padding] duration-300 ease-in-out lg:pl-[80px]'
-      : 'relative min-h-screen bg-slate-50/40 dark:bg-slate-900/40 transition-[padding] duration-300 ease-in-out lg:pl-[18rem]'
+      ? 'relative min-h-screen bg-slate-50 dark:bg-dark-bg transition-[padding] duration-300 ease-in-out lg:pl-[80px]'
+      : 'relative min-h-screen bg-slate-50 dark:bg-dark-bg transition-[padding] duration-300 ease-in-out lg:pl-[18rem]'
   );
 
   isLoggingOut = false;

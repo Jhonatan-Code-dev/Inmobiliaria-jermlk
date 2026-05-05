@@ -1,24 +1,25 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-display: "Outfit", "Segoe UI", sans-serif;
+  --font-display: "Plus Jakarta Sans", "Segoe UI", sans-serif;
   --font-body: "Inter", "Segoe UI", sans-serif;
 
-  /* Premium "Inmobiliaria" Color Palette */
-  --color-primary-50: #f0f7ff;
-  --color-primary-100: #e0effe;
-  --color-primary-200: #bae0fd;
-  --color-primary-300: #7cc8fb;
-  --color-primary-400: #38a9f8;
-  --color-primary-500: #0e8ce9;
-  --color-primary-600: #026dc7;
-  --color-primary-700: #0352a1;
-  --color-primary-800: #074585;
-  --color-primary-900: #0c3b6e;
-  --color-primary-950: #082449;
+  /* Premium Blue Palette (Royal Blue) */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6; /* Main Blue */
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
 
-  --color-dark-900: #0a0f1d;
-  --color-dark-950: #050811;
+  --color-dark-bg: #000000; /* Pure Black for dark mode background */
+  --color-dark-surface: #0a0a0a; /* Very deep black for cards */
+  --color-dark-border: #1a1a1a; /* Dark gray for borders */
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -32,7 +33,12 @@ html {
 body {
   margin: 0;
   font-family: var(--font-body);
-  @apply bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-slate-50 transition-colors duration-300;
+  @apply bg-slate-50 dark:bg-dark-bg text-slate-900 dark:text-slate-100 transition-colors duration-300;
+}
+
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-display);
+  @apply tracking-tight;
 }
 
 .font-display {

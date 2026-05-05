@@ -1,24 +1,24 @@
 @if (user(); as currentUser) {
-<div class="min-h-screen bg-slate-50/50 dark:bg-slate-900 selection:bg-slate-200 dark:selection:bg-slate-700 text-slate-900 dark:text-slate-100">
+<div class="min-h-screen bg-slate-50/50 dark:bg-dark-bg selection:bg-primary-100 dark:selection:bg-primary-900/30 text-slate-900 dark:text-slate-100">
   @if (isMobileMenuOpen()) {
     <button
       type="button"
-      class="fixed inset-0 z-30 bg-slate-950/45 backdrop-blur-sm lg:hidden"
+      class="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden"
       aria-label="Cerrar menu lateral"
       (click)="closeMobileMenu()"
     ></button>
   }
 
   <aside [class]="sidebarClasses()">
-    <div class="flex h-14 items-center border-b border-slate-100 dark:border-slate-800 flex-shrink-0 px-2 space-x-3">
-      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-950 shadow-sm ring-1 ring-slate-900/10 dark:ring-white/10">
-        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <div class="flex h-16 items-center border-b border-slate-100 dark:border-dark-border flex-shrink-0 px-4 space-x-3">
+      <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-600 dark:bg-primary-500 text-white shadow-lg shadow-primary-500/20 ring-1 ring-primary-600/10 transition-colors">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
           <polyline points="9 22 9 12 15 12 15 22"></polyline>
         </svg>
       </div>
       @if (showSidebarLabels()) {
-        <span class="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Inmobiliaria</span>
+        <span class="text-base font-black tracking-tighter text-slate-900 dark:text-white uppercase transition-colors">AlquilaMax</span>
       }
     </div>
 
@@ -28,27 +28,27 @@
           [routerLink]="[routePaths.menu, item.path]"
           routerLinkActive
           #rla="routerLinkActive"
-          class="group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all"
-          [ngClass]="rla.isActive ? 'bg-slate-100/80 dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white'"
+          class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all"
+          [ngClass]="rla.isActive ? 'bg-primary-50 dark:bg-primary-950/30 text-primary-600 dark:text-primary-400 shadow-sm ring-1 ring-primary-200/50 dark:ring-primary-800/50' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-dark-surface hover:text-slate-900 dark:hover:text-white'"
           (click)="closeMobileMenu()"
         >
-          <div class="flex h-5 w-5 items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" class="h-4 w-4 transition-colors" [ngClass]="rla.isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white'" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="flex h-6 w-6 items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" class="h-4.5 w-4.5 transition-colors" [ngClass]="rla.isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white'" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path [attr.d]="item.icon"></path>
             </svg>
           </div>
 
           @if (showSidebarLabels()) {
-            <span class="truncate leading-none mb-[1px]">{{ item.label }}</span>
+            <span class="truncate leading-none mb-[1px] tracking-tight">{{ item.label }}</span>
           }
         </a>
       }
     </nav>
 
-    <div class="mt-auto border-t border-slate-100 dark:border-slate-800 py-4 px-1">
+    <div class="mt-auto border-t border-slate-100 dark:border-dark-border py-4 px-1">
       @if (showSidebarLabels()) {
         <div class="mb-4 flex items-center gap-3 px-3">
-          <div class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-[0.65rem] font-bold text-slate-700 dark:text-slate-300">
+          <div class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-dark-surface text-[0.65rem] font-bold text-slate-700 dark:text-slate-300">
             {{ currentUser.usuario.slice(0, 2).toUpperCase() }}
           </div>
           <div class="min-w-0">
@@ -60,7 +60,7 @@
 
       <button
         type="button"
-        class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-500 dark:text-slate-400 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white disabled:opacity-50"
+        class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-slate-500 dark:text-slate-400 transition-colors hover:bg-slate-50 dark:hover:bg-dark-surface hover:text-slate-900 dark:hover:text-white disabled:opacity-50"
         [disabled]="isLoggingOut"
         (click)="logout()"
       >
@@ -75,11 +75,11 @@
   </aside>
 
   <div [class]="mainShellClasses()">
-    <header class="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 sm:px-6">
+    <header class="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-slate-200 dark:border-dark-border bg-white dark:bg-dark-bg px-4 sm:px-6">
       <div class="flex items-center gap-4">
         <button
           type="button"
-          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 transition hover:bg-slate-50 dark:hover:bg-slate-800 lg:hidden"
+          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 dark:border-dark-border text-slate-500 dark:text-slate-400 transition hover:bg-slate-50 dark:hover:bg-dark-surface lg:hidden"
           (click)="openMobileMenu()"
         >
           <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -89,7 +89,7 @@
 
         <button
           type="button"
-          class="hidden h-9 w-9 items-center justify-center rounded-md border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 transition hover:bg-slate-50 dark:hover:bg-slate-800 lg:inline-flex"
+          class="hidden h-9 w-9 items-center justify-center rounded-md border border-slate-200 dark:border-dark-border text-slate-500 dark:text-slate-400 transition hover:bg-slate-50 dark:hover:bg-dark-surface lg:inline-flex"
           (click)="toggleSidebar()"
         >
           <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -112,7 +112,7 @@
       <div class="flex items-center gap-3">
         <button
           type="button"
-          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 transition hover:bg-slate-50 dark:hover:bg-slate-800"
+          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-slate-200 dark:border-dark-border text-slate-500 dark:text-slate-400 transition hover:bg-slate-50 dark:hover:bg-dark-surface"
           (click)="themeService.toggleDarkLight()"
           aria-label="Toggle theme"
         >
@@ -127,7 +127,7 @@
           }
         </button>
 
-        <span class="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[0.65rem] font-bold text-slate-700 dark:text-slate-300 ring-1 ring-inset ring-slate-600/10 dark:ring-slate-400/20">
+        <span class="inline-flex items-center rounded-full bg-slate-100 dark:bg-dark-surface px-2 py-0.5 text-[0.65rem] font-bold text-slate-700 dark:text-slate-300 ring-1 ring-inset ring-slate-600/10 dark:ring-primary-500/20">
           EN LINEA
         </span>
       </div>
@@ -139,8 +139,8 @@
   </div>
 </div>
 } @else {
-  <main class="grid min-h-screen place-items-center bg-slate-50 dark:bg-slate-950 px-6">
-    <section class="w-full max-w-md rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 text-center shadow-sm">
+  <main class="grid min-h-screen place-items-center bg-slate-50 dark:bg-dark-bg px-6">
+    <section class="w-full max-w-md rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface p-8 text-center shadow-sm">
       <h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">No hay una sesion activa</h2>
       <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
         Vuelve al login para autenticarte y acceder al panel.

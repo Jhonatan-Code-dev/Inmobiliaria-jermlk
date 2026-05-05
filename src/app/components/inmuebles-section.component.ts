@@ -28,7 +28,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
     :host { display: block; }
     .custom-scrollbar::-webkit-scrollbar { width: 5px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-    :host-context(.dark) .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+    :host-context(.dark) .custom-scrollbar::-webkit-scrollbar-thumb { background: #1a1a1a; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .animate-slide { animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -37,12 +37,12 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
   template: `
     <section id="inmuebles" class="max-w-7xl mx-auto space-y-8 p-4">
       <!-- Header -->
-      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 transition-colors">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between bg-white dark:bg-dark-surface p-8 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-dark-border transition-colors">
         <div>
-          <h2 class="text-3xl font-black tracking-tighter text-slate-950 dark:text-white border-l-8 border-slate-900 dark:border-white pl-4 transition-colors">Gestión de Inmuebles</h2>
+          <h2 class="text-3xl font-black tracking-tighter text-slate-950 dark:text-white border-l-8 border-primary-600 dark:border-primary-500 pl-4 transition-colors">Gestión de Inmuebles</h2>
           <p class="text-slate-500 dark:text-slate-400 font-medium mt-1 ml-4 transition-colors">Control total sobre tus activos inmobiliarios y arriendos.</p>
         </div>
-        <button (click)="openComposer()" class="bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-xl px-5 py-3 font-bold text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-all flex items-center gap-2 group shadow-lg active:scale-95">
+        <button (click)="openComposer()" class="bg-primary-600 dark:bg-primary-500 text-white rounded-xl px-5 py-3.5 font-bold text-xs uppercase tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-all flex items-center gap-2 group shadow-xl shadow-primary-500/20 active:scale-95">
           <svg class="h-4 w-4 transition-transform group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M12 5v14M5 12h14"/></svg>
           Registrar Propiedad
         </button>
@@ -50,37 +50,40 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
 
       <!-- Filters & Stats -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div class="lg:col-span-3 bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+        <div class="lg:col-span-3 bg-white dark:bg-dark-surface p-6 rounded-[2rem] border border-slate-200 dark:border-dark-border shadow-sm transition-colors flex flex-col justify-center">
           <form [formGroup]="searchForm" (ngSubmit)="applySearch()" class="flex flex-wrap gap-4">
             <div class="flex-1 min-w-[200px] relative">
-              <input type="text" formControlName="buscar" placeholder="Buscar por nombre o dirección..." class="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-slate-900 dark:focus:ring-white transition-all outline-none text-sm font-medium"/>
+              <input type="text" formControlName="buscar" placeholder="Buscar por nombre o dirección..." class="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border text-slate-900 dark:text-white focus:bg-white dark:focus:bg-dark-bg focus:ring-2 focus:ring-primary-500 transition-all outline-none text-sm font-medium"/>
               <svg class="absolute left-4 top-3.5 h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
-            <select formControlName="tipo" (change)="applySearch()" class="h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 outline-none cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <select formControlName="tipo" (change)="applySearch()" class="h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border text-sm font-bold text-slate-700 dark:text-slate-300 outline-none cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-bg transition-colors">
               <option value="">Cualquier Tipo</option>
               <option value="edificio">Edificios</option>
               <option value="casa">Casas / Quintas</option>
             </select>
-            <button type="submit" class="h-12 px-8 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black uppercase text-xs tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-lg active:scale-95">Filtrar</button>
+            <button type="submit" class="h-12 px-8 rounded-xl bg-primary-600 dark:bg-primary-500 text-white font-black uppercase text-xs tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-all shadow-lg active:scale-95">Filtrar</button>
           </form>
         </div>
-        <div class="bg-slate-950 dark:bg-slate-800 rounded-[1.5rem] p-6 text-white flex flex-col justify-center shadow-xl border border-transparent dark:border-slate-700 transition-colors">
-           <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">Total Propiedades</p>
-           <p class="text-4xl font-black">{{ totalRecords() }}</p>
+        <div class="bg-primary-600 dark:bg-primary-700 rounded-[2rem] p-6 text-white flex flex-col justify-center shadow-xl shadow-primary-500/20 relative overflow-hidden transition-colors">
+           <div class="relative z-10">
+             <p class="text-[10px] font-bold uppercase tracking-widest text-primary-100 mb-1">Total Propiedades</p>
+             <p class="text-4xl font-black">{{ totalRecords() }}</p>
+           </div>
+           <svg class="absolute -right-2 -bottom-2 h-24 w-24 opacity-10 text-white transform rotate-12" fill="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
         </div>
       </div>
 
       <!-- Main List -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm overflow-hidden transition-colors">
+      <div class="bg-white dark:bg-dark-surface border border-slate-200 dark:border-dark-border rounded-[2rem] shadow-sm overflow-hidden transition-colors">
         @if (isLoadingList()) {
           <div class="p-20 flex flex-col items-center justify-center space-y-4">
-            <div class="h-12 w-12 border-4 border-slate-900 dark:border-white border-t-transparent rounded-full animate-spin"></div>
+            <div class="h-12 w-12 border-4 border-primary-600 dark:border-primary-400 border-t-transparent rounded-full animate-spin"></div>
             <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Sincronizando Inventario...</p>
           </div>
         } @else if (inmuebles().length) {
           <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full text-left">
-              <thead class="bg-slate-50/50 dark:bg-slate-950/50 border-b border-slate-200 dark:border-slate-800 transition-colors">
+              <thead class="bg-slate-50/50 dark:bg-dark-bg/50 border-b border-slate-200 dark:border-dark-border transition-colors">
                 <tr class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em]">
                   <th class="px-8 py-5">Propiedad</th>
                   <th class="px-8 py-5">Ubicación</th>
@@ -89,12 +92,12 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                   <th class="px-8 py-5 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 transition-colors">
+              <tbody class="divide-y divide-slate-100 dark:divide-dark-border transition-colors">
                 @for (item of inmuebles(); track item.id) {
                   <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all">
                     <td class="px-8 py-6">
                       <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-colors shadow-sm">
+                        <div class="h-12 w-12 rounded-2xl bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white dark:group-hover:bg-primary-500 dark:group-hover:text-white transition-all shadow-sm border border-primary-100 dark:border-primary-800">
                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                         </div>
                         <div>
@@ -108,7 +111,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                       <p class="text-[10px] text-slate-500 dark:text-slate-500">{{ item.ciudad }}</p>
                     </td>
                     <td class="px-8 py-6">
-                      <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-black shadow-md transition-colors">
+                      <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[11px] font-black shadow-md transition-colors">
                         {{ item.total_unidades }}
                       </span>
                     </td>
@@ -117,11 +120,11 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                     </td>
                     <td class="px-8 py-6 text-right">
                       <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
-                        <button (click)="viewDetail(item)" class="h-9 px-4 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors active:scale-95">Gestionar</button>
-                        <button (click)="startEdit(item)" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-900 dark:hover:border-white transition-all">
+                        <button (click)="viewDetail(item)" class="h-9 px-4 rounded-lg bg-primary-600 dark:bg-primary-500 text-white text-[10px] font-black uppercase tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-colors active:scale-95 shadow-sm">Gestionar</button>
+                        <button (click)="startEdit(item)" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-600 dark:hover:border-primary-400 transition-all shadow-sm">
                           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                         </button>
-                        <button (click)="openDeleteInmueble(item)" class="h-9 w-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-900 dark:hover:bg-white hover:text-white dark:hover:text-slate-900 transition-all">
+                        <button (click)="openDeleteInmueble(item)" class="h-9 w-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-rose-600 dark:hover:bg-rose-500 hover:text-white transition-all shadow-sm">
                           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
                       </div>
@@ -135,13 +138,13 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
           <div class="p-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between transition-colors">
             <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Página {{ pagination().pagina_actual }} de {{ pagination().paginas }} </p>
             <div class="flex gap-2">
-              <button [disabled]="pagination().pagina_actual === 1" (click)="loadInmuebles(pagination().pagina_actual - 1)" class="h-8 px-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold disabled:opacity-50 transition-colors">Atrás</button>
-              <button [disabled]="pagination().pagina_actual >= pagination().paginas" (click)="loadInmuebles(pagination().pagina_actual + 1)" class="h-8 px-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold disabled:opacity-50 transition-colors">Siguiente</button>
+              <button [disabled]="pagination().pagina_actual === 1" (click)="loadInmuebles(pagination().pagina_actual - 1)" class="h-8 px-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold disabled:opacity-50 transition-colors">Atrás</button>
+              <button [disabled]="pagination().pagina_actual >= pagination().paginas" (click)="loadInmuebles(pagination().pagina_actual + 1)" class="h-8 px-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold disabled:opacity-50 transition-colors">Siguiente</button>
             </div>
           </div>
         } @else {
           <div class="p-20 text-center flex flex-col items-center">
-            <div class="h-20 w-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 transition-colors">
+            <div class="h-20 w-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 transition-colors shadow-inner">
                <svg class="h-10 w-10 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
             </div>
             <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Sin Propiedades</h3>
@@ -154,14 +157,14 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
       @if (isDetailOpen()) {
         <div class="fixed inset-0 z-[100] flex justify-end overflow-hidden">
           <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" (click)="closeDetail()"></div>
-          <div class="relative w-full max-w-3xl bg-slate-50 dark:bg-slate-950 shadow-2xl animate-slide flex flex-col transition-colors">
+          <div class="relative w-full max-w-3xl bg-slate-50 dark:bg-slate-950 shadow-2xl animate-slide flex flex-col transition-colors border-l border-slate-200 dark:border-slate-800">
             <!-- Header Detail -->
-            <div class="bg-white dark:bg-slate-900 px-8 py-8 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 transition-colors">
+            <div class="bg-primary-600 dark:bg-primary-700 px-8 py-8 flex items-center justify-between border-b border-primary-500 transition-colors text-white">
                <div>
-                 <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tighter uppercase">{{ selectedInmueble()?.nombre }}</h3>
-                 <p class="text-slate-500 dark:text-slate-400 text-xs font-black tracking-widest uppercase mt-1">Gestión de Unidades</p>
+                 <h3 class="text-2xl font-black text-white tracking-tighter uppercase">{{ selectedInmueble()?.nombre }}</h3>
+                 <p class="text-primary-100 text-[10px] font-black tracking-widest uppercase mt-1">Gestión de Unidades Operativas</p>
                </div>
-               <button (click)="closeDetail()" class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-500 transition-colors">
+               <button (click)="closeDetail()" class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-primary-700 text-white transition-colors">
                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                </button>
             </div>
@@ -176,34 +179,36 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                   </div>
                   <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
                     <p class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Estado Propiedad</p>
-                    <span class="inline-block mt-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest" [ngClass]="getStatusBadgeClass(selectedInmueble()?.estado || '')">{{ selectedInmueble()?.estado }}</span>
+                    <div class="mt-2">
+                       <span class="inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors" [ngClass]="getStatusBadgeClass(selectedInmueble()?.estado || '')">{{ selectedInmueble()?.estado }}</span>
+                    </div>
                   </div>
                </div>
 
                <!-- Units List -->
                <div class="space-y-4">
                   <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-xs font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Unidades de Alquiler</h4>
-                    <button (click)="openUnidadComposer()" class="text-[10px] font-black text-slate-900 dark:text-white border-2 border-slate-900 dark:border-white rounded-lg px-3 py-1 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-all uppercase">+ Nueva Unidad</button>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Unidades de Alquiler</h4>
+                    <button (click)="openUnidadComposer()" class="text-[10px] font-black text-primary-600 dark:text-primary-400 border-2 border-primary-600/20 dark:border-primary-400/20 rounded-xl px-4 py-1.5 hover:bg-primary-600 hover:text-white dark:hover:bg-primary-500 dark:hover:text-white transition-all uppercase tracking-widest shadow-sm">+ Nueva Unidad</button>
                   </div>
 
                   @if (selectedInmueble()?.unidades?.length) {
                     <div class="grid gap-3">
                        @for (u of selectedInmueble()?.unidades; track u.id) {
-                         <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-slate-900 dark:hover:border-white transition-all group">
+                         <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary-500 dark:hover:border-primary-400 transition-all group shadow-sm">
                             <div class="flex items-center justify-between">
                                <div class="flex items-center gap-4">
-                                  <div class="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-colors">
+                                  <div class="h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-primary-600 group-hover:text-white dark:group-hover:bg-primary-500 dark:group-hover:text-white transition-all shadow-sm border border-slate-100 dark:border-slate-800">
                                      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                                   </div>
                                   <div>
-                                    <p class="text-sm font-black text-slate-900 dark:text-white transition-colors">{{ u.nombre }}</p>
-                                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter transition-colors">{{ u.codigo }} • S/. {{ u.precio_base }}</p>
+                                    <p class="text-sm font-black text-slate-900 dark:text-white transition-colors uppercase tracking-tight">{{ u.nombre }}</p>
+                                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest transition-colors">{{ u.codigo }} • S/. {{ u.precio_base }}</p>
                                   </div>
                                </div>
-                               <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <button (click)="openUnidadComposer(u)" class="h-8 px-3 rounded-lg text-[9px] font-bold uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-all">Editar</button>
-                                  <button (click)="openDeleteUnidad(u)" class="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-900 dark:hover:bg-white hover:text-white dark:hover:text-slate-900 transition-all flex items-center justify-center">
+                               <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                                  <button (click)="openUnidadComposer(u)" class="h-8 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary-600 hover:text-white dark:hover:bg-primary-500 transition-all">Editar</button>
+                                  <button (click)="openDeleteUnidad(u)" class="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-rose-600 hover:text-white transition-all flex items-center justify-center">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                   </button>
                                </div>
@@ -212,9 +217,9 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                        }
                     </div>
                   } @else {
-                    <div class="p-12 text-center bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800 transition-colors">
+                    <div class="p-12 text-center bg-white dark:bg-dark-surface rounded-3xl border-2 border-dashed border-slate-200 dark:border-dark-border transition-colors">
                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-4">Aún no hay unidades en este edificio.</p>
-                       <button (click)="openUnidadComposer()" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-all">Añadir Primer Unidad</button>
+                       <button (click)="openUnidadComposer()" class="bg-primary-600 dark:bg-primary-500 text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-all shadow-lg shadow-primary-500/20">Añadir Primer Unidad</button>
                     </div>
                   }
                </div>
@@ -226,8 +231,8 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
       <!-- Modals -->
       @if (isComposerOpen()) {
         <div class="fixed inset-0 z-[120] flex items-center justify-center p-4">
-           <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" (click)="closeComposer()"></div>
-           <div class="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl animate-zoom overflow-hidden transition-colors">
+           <div class="absolute inset-0 bg-black/80 backdrop-blur-md" (click)="closeComposer()"></div>
+           <div class="relative w-full max-w-xl bg-white dark:bg-dark-surface rounded-[2.5rem] shadow-2xl animate-zoom overflow-hidden transition-colors border border-slate-100 dark:border-dark-border">
               <div class="px-10 py-8 bg-slate-50/50 dark:bg-slate-950/50 border-b border-slate-100 dark:border-slate-800 transition-colors">
                 <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ editingId() ? 'Editar Propiedad' : 'Nueva Propiedad' }}</h3>
                 <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Define los datos estructurales del inmueble.</p>
@@ -236,17 +241,17 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                  <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1 col-span-2">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Nombre del Inmueble</label>
-                       <input type="text" formControlName="nombre" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-slate-900 dark:focus:ring-white transition-all outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                       <input type="text" formControlName="nombre" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-500 transition-all outline-none font-bold text-slate-900 dark:text-white text-sm"/>
                     </div>
                     
                     <div class="space-y-1 col-span-2">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Descripción (Opcional)</label>
-                       <textarea formControlName="descripcion" rows="2" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-slate-900 dark:focus:ring-white transition-all outline-none font-medium text-slate-800 dark:text-slate-200 text-sm resize-none"></textarea>
+                       <textarea formControlName="descripcion" rows="2" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-500 transition-all outline-none font-medium text-slate-800 dark:text-slate-200 text-sm resize-none"></textarea>
                     </div>
 
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Tipo</label>
-                       <select formControlName="tipo" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-700 dark:text-slate-300 text-sm">
+                       <select formControlName="tipo" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-700 dark:text-slate-300 text-sm focus:ring-2 focus:ring-primary-500">
                           <option value="edificio">Edificio</option>
                           <option value="casa">Casa</option>
                           <option value="quinta">Quinta</option>
@@ -256,7 +261,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                     </div>
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Estado</label>
-                       <select formControlName="estado" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-700 dark:text-slate-300 text-sm">
+                       <select formControlName="estado" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-700 dark:text-slate-300 text-sm focus:ring-2 focus:ring-primary-500">
                           <option value="activo">Activo</option>
                           <option value="inactivo">Inactivo</option>
                           <option value="mantenimiento">Mantenimiento</option>
@@ -265,39 +270,39 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
 
                     <div class="space-y-1 col-span-2">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Dirección</label>
-                       <input type="text" formControlName="direccion" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                       <input type="text" formControlName="direccion" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
                     </div>
 
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Ciudad</label>
-                       <input type="text" formControlName="ciudad" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                       <input type="text" formControlName="ciudad" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
                     </div>
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Región</label>
-                       <input type="text" formControlName="region" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                       <input type="text" formControlName="region" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
                     </div>
 
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">País</label>
-                       <input type="text" formControlName="pais" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                       <input type="text" formControlName="pais" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
                     </div>
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Código Postal</label>
-                       <input type="text" formControlName="codigo_postal" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                       <input type="text" formControlName="codigo_postal" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
                     </div>
 
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">N° Pisos</label>
-                       <input type="number" formControlName="total_pisos" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                       <input type="number" formControlName="total_pisos" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 text-center"/>
                     </div>
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">N° Unidades</label>
-                       <input type="number" formControlName="total_unidades" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                       <input type="number" formControlName="total_unidades" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 text-center"/>
                     </div>
                  </div>
-                 <div class="flex gap-3 pt-4">
-                    <button type="button" (click)="closeComposer()" class="flex-1 h-11 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancelar</button>
-                    <button type="submit" [disabled]="isSaving()" class="flex-1 h-11 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-slate-800 dark:hover:bg-slate-200 transition-all disabled:opacity-50">
+                 <div class="flex gap-3 pt-6 border-t border-slate-100 dark:border-dark-border mt-4">
+                    <button type="button" (click)="closeComposer()" class="flex-1 h-12 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancelar</button>
+                    <button type="submit" [disabled]="isSaving()" class="flex-1 h-12 rounded-xl bg-primary-600 dark:bg-primary-500 text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary-500/20 hover:bg-primary-700 dark:hover:bg-primary-400 transition-all disabled:opacity-50">
                        {{ isSaving() ? 'Procesando...' : 'Confirmar Datos' }}
                     </button>
                  </div>
@@ -310,7 +315,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
       @if (feedback(); as f) {
         <div class="fixed bottom-8 right-8 z-[200] animate-zoom">
            <div class="px-6 py-4 rounded-2xl shadow-2xl border flex items-center gap-3 backdrop-blur-xl" [ngClass]="feedbackClasses(f.tone)">
-              <div class="h-2 w-2 rounded-full animate-pulse" [ngClass]="f.tone === 'success' ? 'bg-slate-900 dark:bg-white' : 'bg-rose-500'"></div>
+              <div class="h-2 w-2 rounded-full animate-pulse" [ngClass]="f.tone === 'success' ? 'bg-primary-600 dark:bg-primary-400' : 'bg-rose-500'"></div>
               <p class="text-xs font-black uppercase tracking-widest">{{ f.message }}</p>
            </div>
         </div>
@@ -320,15 +325,15 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
       @if (pendingDeleteInmueble()) {
         <div class="fixed inset-0 z-[150] flex items-center justify-center p-4">
            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" (click)="pendingDeleteInmueble.set(null)"></div>
-           <div class="relative w-full max-w-sm bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-2xl animate-zoom text-center">
-              <div class="h-16 w-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-900 dark:text-white">
-                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+           <div class="relative w-full max-w-sm bg-white dark:bg-dark-surface p-8 rounded-[2rem] shadow-2xl animate-zoom text-center transition-colors border border-slate-100 dark:border-dark-border">
+              <div class="h-16 w-16 bg-rose-50 dark:bg-rose-950/30 rounded-full flex items-center justify-center mx-auto mb-4 text-rose-600 dark:text-rose-400 transition-colors">
+                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
               </div>
               <h3 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tighter">¿Eliminar Propiedad?</h3>
               <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 mb-8">Esta acción borrará "{{ pendingDeleteInmueble()?.nombre }}" y todas sus unidades de forma permanente.</p>
               <div class="flex gap-2">
                  <button (click)="pendingDeleteInmueble.set(null)" class="flex-1 h-11 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Cancelar</button>
-                 <button (click)="confirmDeleteInmueble()" [disabled]="isSaving()" class="flex-1 h-11 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-slate-800 dark:hover:bg-slate-200 active:scale-95 transition-all disabled:opacity-50">Borrar Todo</button>
+                 <button (click)="confirmDeleteInmueble()" [disabled]="isSaving()" class="flex-1 h-11 rounded-xl bg-rose-600 dark:bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-rose-700 active:scale-95 transition-all disabled:opacity-50">Borrar Todo</button>
               </div>
            </div>
         </div>
@@ -337,27 +342,33 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
       <!-- Unidad Composer Modal -->
       @if (isUnidadComposerOpen()) {
         <div class="fixed inset-0 z-[120] flex items-center justify-center p-4">
-           <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" (click)="closeUnidadComposer()"></div>
-           <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl animate-zoom p-10 space-y-6 transition-colors">
+           <div class="absolute inset-0 bg-black/80 backdrop-blur-md" (click)="closeUnidadComposer()"></div>
+           <div class="relative w-full max-w-lg bg-white dark:bg-dark-surface rounded-[2.5rem] shadow-2xl animate-zoom p-10 space-y-6 transition-colors border border-slate-100 dark:border-dark-border">
               <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ editingUnidadId() ? 'Editar Unidad' : 'Nueva Unidad' }}</h3>
               <form [formGroup]="unidadForm" (ngSubmit)="submitUnidad()" class="space-y-4">
                  <div class="grid grid-cols-2 gap-4">
-                    <input type="text" formControlName="codigo" placeholder="Código (Eje: A-101)" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm"/>
-                    <input type="text" formControlName="nombre" placeholder="Nombre descriptivo" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                    <div class="space-y-1.5">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Código</label>
+                       <input type="text" formControlName="codigo" placeholder="Eje: A-101" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                    </div>
+                    <div class="space-y-1.5">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Nombre</label>
+                       <input type="text" formControlName="nombre" placeholder="Nombre descriptivo" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                    </div>
                  </div>
                  <div class="grid grid-cols-2 gap-4 text-xs font-bold">
-                    <div class="space-y-1">
-                      <label class="text-slate-500 dark:text-slate-400 ml-1">Precio Base</label>
-                      <input type="number" formControlName="precio_base" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white outline-none"/>
+                    <div class="space-y-1.5">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Precio Base (S/.)</label>
+                       <input type="number" formControlName="precio_base" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500 text-center text-lg font-black text-primary-600 dark:text-primary-400"/>
                     </div>
-                    <div class="space-y-1">
-                      <label class="text-slate-500 dark:text-slate-400 ml-1">Piso</label>
-                      <input type="number" formControlName="piso" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white outline-none"/>
+                    <div class="space-y-1.5">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Piso</label>
+                       <input type="number" formControlName="piso" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500 text-center"/>
                     </div>
                  </div>
-                 <div class="flex gap-3 pt-6">
-                    <button type="button" (click)="closeUnidadComposer()" class="flex-1 h-12 rounded-xl text-xs font-black uppercase tracking-widest border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancelar</button>
-                    <button type="submit" [disabled]="isSaving()" class="flex-1 h-12 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black uppercase tracking-widest shadow-xl hover:bg-slate-800 dark:hover:bg-slate-200 transition-all">Sincronizar</button>
+                 <div class="flex gap-3 pt-6 border-t border-slate-100 dark:border-slate-800 mt-4">
+                    <button type="button" (click)="closeUnidadComposer()" class="flex-1 h-12 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancelar</button>
+                    <button type="submit" [disabled]="isSaving()" class="flex-1 h-12 rounded-xl bg-primary-600 dark:bg-primary-500 text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary-500/20 hover:bg-primary-700 dark:hover:bg-primary-400 transition-all">Sincronizar</button>
                  </div>
               </form>
            </div>

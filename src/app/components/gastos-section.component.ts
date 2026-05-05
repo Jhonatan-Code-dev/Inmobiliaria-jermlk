@@ -67,9 +67,9 @@ const MONTH_OPTIONS = [
   template: `
     <section id="expenses" class="max-w-7xl mx-auto space-y-8 p-4">
       <!-- Header -->
-      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 transition-colors">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between bg-white dark:bg-dark-surface p-8 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-dark-border transition-colors">
         <div>
-          <h2 class="text-3xl font-black tracking-tighter text-slate-950 dark:text-white border-l-8 border-slate-900 dark:border-white pl-4 transition-colors">Gestión de Gastos</h2>
+          <h2 class="text-3xl font-black tracking-tighter text-slate-950 dark:text-white border-l-8 border-primary-600 dark:border-primary-500 pl-4 transition-colors">Gestión de Gastos</h2>
           <p class="text-slate-500 dark:text-slate-400 font-medium mt-1 ml-4 transition-colors">
             Administra y registra los egresos de la empresa.
           </p>
@@ -77,7 +77,7 @@ const MONTH_OPTIONS = [
 
         <button
           type="button"
-          class="bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-xl px-5 py-3 font-bold text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-all flex items-center gap-2 shadow-lg active:scale-95 group"
+          class="bg-primary-600 dark:bg-primary-500 text-white rounded-xl px-6 py-3.5 font-bold text-xs uppercase tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-all flex items-center gap-2 shadow-xl shadow-primary-500/20 active:scale-95 group"
           (click)="openComposerForNewExpense()"
         >
           <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -88,38 +88,41 @@ const MONTH_OPTIONS = [
       </div>
 
       <!-- Stats -->
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-          <p class="text-[0.7rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400 transition-colors">Total página</p>
-          <p class="mt-1 text-2xl font-black tracking-tighter text-slate-950 dark:text-white transition-colors">{{ pageTotalLabel() }}</p>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="bg-primary-600 dark:bg-primary-700 p-6 rounded-[2rem] text-white shadow-xl shadow-primary-500/20 relative overflow-hidden transition-colors group">
+          <div class="relative z-10">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-primary-100 transition-colors">Total página</p>
+            <p class="mt-1 text-3xl font-black tracking-tighter transition-colors">{{ pageTotalLabel() }}</p>
+          </div>
+          <svg class="absolute -right-2 -bottom-2 h-20 w-20 opacity-10 text-white transform rotate-12 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm0 10c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm0-14c-3.314 0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/></svg>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-          <p class="text-[0.7rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400 transition-colors">Registros página</p>
-          <p class="mt-1 text-2xl font-black tracking-tighter text-slate-950 dark:text-white transition-colors">{{ pageRecordCount() }}</p>
+        <div class="bg-white dark:bg-dark-surface p-6 rounded-[2rem] border border-slate-200 dark:border-dark-border shadow-sm transition-colors">
+          <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Registros página</p>
+          <p class="mt-1 text-3xl font-black tracking-tighter text-slate-950 dark:text-white transition-colors">{{ pageRecordCount() }}</p>
         </div>
 
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-          <p class="text-[0.7rem] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400 transition-colors">Total registros</p>
-          <p class="mt-1 text-2xl font-black tracking-tighter text-slate-950 dark:text-white transition-colors">{{ totalRecords() }}</p>
+        <div class="bg-white dark:bg-dark-surface p-6 rounded-[2rem] border border-slate-200 dark:border-dark-border shadow-sm transition-colors">
+          <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Total registros</p>
+          <p class="mt-1 text-3xl font-black tracking-tighter text-slate-950 dark:text-white transition-colors">{{ totalRecords() }}</p>
         </div>
       </div>
 
       <!-- Filters -->
-      <div class="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+      <div class="bg-white dark:bg-dark-surface p-8 rounded-[2rem] border border-slate-200 dark:border-dark-border shadow-sm transition-colors">
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-black tracking-tighter text-slate-900 dark:text-white uppercase transition-colors">Filtros</h3>
+          <h3 class="text-xs font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 transition-colors">Filtros Avanzados</h3>
           <div class="flex items-center gap-2">
             <button
               type="button"
-              class="h-9 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              class="h-10 px-6 rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-dark-bg transition-colors active:scale-95"
               (click)="clearFilters()"
             >
               Limpiar
             </button>
             <button
               type="button"
-              class="h-9 px-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black uppercase tracking-widest shadow-sm hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              class="h-10 px-6 rounded-xl bg-primary-600 dark:bg-primary-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary-500/20 hover:bg-primary-700 dark:hover:bg-primary-400 transition-all disabled:opacity-50 active:scale-95"
               [disabled]="filterMode() === 'none'"
               (click)="applyFilters()"
             >
@@ -132,10 +135,10 @@ const MONTH_OPTIONS = [
           @for (option of filterModeOptions; track option.value) {
             <button
               type="button"
-              class="rounded-xl border px-4 py-2 text-xs font-bold transition-all"
+              class="rounded-xl border px-5 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all"
               [ngClass]="filterMode() === option.value
-                ? 'border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md'
-                : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900'"
+                ? 'border-primary-600 dark:border-primary-400 bg-primary-600 dark:bg-primary-400 text-white dark:text-slate-900 shadow-lg shadow-primary-500/20'
+                : 'border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-slate-600 dark:text-slate-400 hover:border-primary-500 dark:hover:border-primary-500 hover:bg-white dark:hover:bg-dark-surface'"
               (click)="setFilterMode(option.value)"
             >
               {{ option.label }}
@@ -145,7 +148,7 @@ const MONTH_OPTIONS = [
 
         @if (filterMode() !== 'none') {
           <form
-            class="filter-fields mt-6 grid gap-4"
+            class="filter-fields mt-8 grid gap-6"
             [ngClass]="{
               'md:grid-cols-2': filterMode() === 'anio' || filterMode() === 'rango',
               'md:grid-cols-1 max-w-xs': filterMode() === 'fecha'
@@ -155,20 +158,20 @@ const MONTH_OPTIONS = [
           >
             @if (filterMode() === 'anio') {
               <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Año</label>
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Año fiscal</label>
                 <input
                   type="number"
                   formControlName="anio"
                   placeholder="Ej: 2026"
-                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 text-sm font-medium text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white"
+                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
               <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Mes</label>
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Mes contable</label>
                 <select
                   formControlName="mes"
-                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 text-sm font-medium text-slate-900 dark:text-slate-300 transition-colors outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white"
+                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-slate-300 transition-colors outline-none focus:ring-2 focus:ring-primary-500"
                 >
                   @for (month of monthOptions; track month.value) {
                     <option [value]="month.value">{{ month.label }}</option>
@@ -179,71 +182,70 @@ const MONTH_OPTIONS = [
 
             @if (filterMode() === 'rango') {
               <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Desde</label>
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Fecha de inicio</label>
                 <input
                   type="date"
                   formControlName="desde"
-                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 text-sm font-medium text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white"
+                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
               <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Hasta</label>
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Fecha de término</label>
                 <input
                   type="date"
                   formControlName="hasta"
-                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 text-sm font-medium text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white"
+                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             }
 
             @if (filterMode() === 'fecha') {
               <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Fecha exacta</label>
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Fecha exacta del gasto</label>
                 <input
                   type="date"
                   formControlName="fecha"
-                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 text-sm font-medium text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white"
+                  class="flex h-12 w-full rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             }
           </form>
         } @else {
-          <p class="mt-6 text-xs font-medium text-slate-400 transition-colors">Selecciona un tipo de filtro para refinar los resultados.</p>
+          <p class="mt-6 text-[10px] font-bold uppercase tracking-widest text-slate-400 transition-colors">Selecciona un tipo de filtro para refinar los resultados.</p>
         }
       </div>
 
       <!-- Main List -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] shadow-sm overflow-hidden transition-colors">
-        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 p-8 transition-colors">
+      <div class="bg-white dark:bg-dark-surface border border-slate-200 dark:border-dark-border rounded-[2.5rem] shadow-sm overflow-hidden transition-colors">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-border p-8 transition-colors">
           <div>
-            <h3 class="text-xl font-black tracking-tighter text-slate-900 dark:text-white uppercase transition-colors">Registros</h3>
-            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 transition-colors">Listado paginado de gastos</p>
+            <h3 class="text-xl font-black tracking-tighter text-slate-900 dark:text-white uppercase transition-colors">Historial de Egresos</h3>
+            <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1 transition-colors">Listado detallado de movimientos</p>
           </div>
           <div class="flex items-center gap-2 overflow-hidden text-[10px] font-black uppercase tracking-widest transition-colors">
-            <span class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-1.5 text-slate-600 dark:text-slate-400 transition-colors">
+            <span class="rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 py-2 text-slate-600 dark:text-slate-400 transition-colors">
               {{ pagination().total }} registros
             </span>
             <span
-              class="rounded-xl border px-3 py-1.5 transition-colors"
-              [ngClass]="hasFiltersActive() ? 'border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md' : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400'"
+              class="rounded-xl border px-4 py-2 transition-colors"
+              [ngClass]="hasFiltersActive() ? 'border-primary-600 dark:border-primary-400 bg-primary-600 dark:bg-primary-400 text-white dark:text-slate-900 shadow-lg shadow-primary-500/20' : 'border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-slate-600 dark:text-slate-400'"
             >
-              {{ hasFiltersActive() ? 'Filtrado' : 'Sin filtros' }}
+              {{ hasFiltersActive() ? 'Filtrado activo' : 'Vista total' }}
             </span>
           </div>
         </div>
 
         @if (isLoadingList()) {
-          <div class="space-y-4 p-8">
-            @for (_ of [1, 2, 3]; track $index) {
-              <div class="h-12 w-full animate-pulse rounded-xl bg-slate-50 dark:bg-slate-800 transition-colors"></div>
-            }
+          <div class="p-20 flex flex-col items-center justify-center space-y-4">
+            <div class="h-12 w-12 border-4 border-primary-600 dark:border-primary-400 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Sincronizando Registros...</p>
           </div>
         } @else if (gastos().length) {
-          <div class="w-full overflow-x-auto">
+          <div class="w-full overflow-x-auto custom-scrollbar">
             <table class="w-full text-left">
-              <thead class="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 transition-colors">
-                <tr class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">
+              <thead class="border-b border-slate-200 dark:border-dark-border bg-slate-50/50 dark:bg-dark-bg/50 transition-colors">
+                <tr class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 transition-colors">
                   <th scope="col" class="px-8 py-5">Descripción</th>
                   <th scope="col" class="px-8 py-5">Fecha</th>
                   <th scope="col" class="px-8 py-5">Método de pago</th>
@@ -251,26 +253,26 @@ const MONTH_OPTIONS = [
                   <th scope="col" class="px-8 py-5 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 transition-colors">
+              <tbody class="divide-y divide-slate-100 dark:divide-dark-border transition-colors">
                 @for (gasto of gastos(); track gasto.id) {
                   <tr class="group transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                    <td class="whitespace-nowrap px-8 py-6 font-bold text-sm text-slate-900 dark:text-white transition-colors">
-                      {{ gasto.descripcion }}
+                    <td class="whitespace-nowrap px-8 py-6">
+                       <p class="font-black text-sm text-slate-900 dark:text-white transition-colors uppercase tracking-tight">{{ gasto.descripcion }}</p>
                     </td>
-                    <td class="whitespace-nowrap px-8 py-6 text-xs font-bold text-slate-500 dark:text-slate-400 transition-colors">
-                      {{ formatShortDate(gasto.fecha) }}
+                    <td class="whitespace-nowrap px-8 py-6">
+                       <span class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400 transition-colors">{{ formatShortDate(gasto.fecha) }}</span>
                     </td>
-                    <td class="whitespace-nowrap px-8 py-6 capitalize text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors">
-                      {{ resolvePaymentMethodName(gasto) }}
+                    <td class="whitespace-nowrap px-8 py-6">
+                       <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">{{ resolvePaymentMethodName(gasto) }}</span>
                     </td>
-                    <td class="whitespace-nowrap bg-slate-50/50 dark:bg-slate-950/50 px-8 py-6 text-right font-black text-sm text-slate-900 dark:text-white transition-colors">
-                      {{ formatCurrency(gasto.monto, empresa()?.moneda ?? 'PEN') }}
+                    <td class="whitespace-nowrap bg-primary-50/20 dark:bg-primary-900/10 px-8 py-6 text-right">
+                       <span class="text-sm font-black text-primary-600 dark:text-primary-400 transition-colors">{{ formatCurrency(gasto.monto, empresa()?.moneda ?? 'PEN') }}</span>
                     </td>
                     <td class="whitespace-nowrap px-8 py-6 text-right">
                       <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
                         <button
                           type="button"
-                          class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                          class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-600 dark:hover:border-primary-400 transition-all shadow-sm active:scale-95"
                           (click)="startEdit(gasto)"
                         >
                           <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -280,7 +282,7 @@ const MONTH_OPTIONS = [
                         </button>
                         <button
                           type="button"
-                          class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-900 dark:hover:bg-white hover:text-white dark:hover:text-slate-900 transition-colors disabled:opacity-50"
+                          class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-rose-600 dark:hover:bg-rose-500 hover:text-white transition-all disabled:opacity-50 active:scale-95 shadow-sm"
                           [disabled]="deletingId() !== null"
                           (click)="openDeleteDialog(gasto)"
                         >
@@ -297,14 +299,14 @@ const MONTH_OPTIONS = [
             </table>
           </div>
 
-          <div class="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 p-6 transition-colors">
+          <div class="flex items-center justify-between border-t border-slate-200 dark:border-dark-border p-8 transition-colors bg-slate-50/30 dark:bg-dark-bg/30">
             <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">
               Página {{ pagination().pagina }} de {{ pagination().paginas }}
             </p>
             <div class="flex items-center gap-2">
               <button
                 type="button"
-                class="h-8 px-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
+                class="h-9 px-5 rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-dark-bg transition-colors disabled:opacity-50 shadow-sm active:scale-95"
                 [disabled]="pagination().pagina <= 1"
                 (click)="goToPage(pagination().pagina - 1)"
               >
@@ -312,7 +314,7 @@ const MONTH_OPTIONS = [
               </button>
               <button
                 type="button"
-                class="h-8 px-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
+                class="h-9 px-5 rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-dark-bg transition-colors disabled:opacity-50 shadow-sm active:scale-95"
                 [disabled]="pagination().pagina >= pagination().paginas"
                 (click)="goToPage(pagination().pagina + 1)"
               >
@@ -321,12 +323,12 @@ const MONTH_OPTIONS = [
             </div>
           </div>
         } @else {
-          <div class="p-20 text-center">
-            <div class="h-20 w-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-400 dark:text-slate-500 transition-colors">
+          <div class="p-24 text-center">
+            <div class="h-24 w-24 bg-slate-50 dark:bg-dark-surface rounded-full flex items-center justify-center mx-auto mb-6 text-slate-400 dark:text-slate-500 transition-colors shadow-inner">
                <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             </div>
-            <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter transition-colors">Sin Egresos</h3>
-            <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium transition-colors">No hay gastos registrados con estos filtros.</p>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter transition-colors">Sin Egresos</h3>
+            <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium transition-colors max-w-xs mx-auto">No hay gastos registrados que coincidan con los criterios de búsqueda.</p>
           </div>
         }
       </div>
@@ -335,64 +337,70 @@ const MONTH_OPTIONS = [
       @if (isComposerOpen()) {
         <div class="fixed inset-0 z-[120] flex items-center justify-center p-4">
           <div
-            class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity"
+            class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity"
             (click)="closeComposer()"
           ></div>
 
           <div
-            class="relative w-full max-w-xl overflow-hidden rounded-[2.5rem] bg-white dark:bg-slate-900 shadow-2xl animate-zoom transition-colors"
+            class="relative w-full max-w-xl overflow-hidden rounded-[3rem] bg-white dark:bg-dark-surface shadow-2xl animate-zoom transition-colors border border-slate-100 dark:border-dark-border"
           >
-            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-10 py-8 bg-slate-50/50 dark:bg-slate-950/50 transition-colors">
-              <h3 class="text-xl font-black tracking-tighter uppercase text-slate-900 dark:text-white transition-colors">{{ formTitle() }}</h3>
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-border px-10 py-8 bg-slate-50/50 dark:bg-dark-bg/50 transition-colors">
+              <div>
+                <h3 class="text-xl font-black tracking-tighter uppercase text-slate-900 dark:text-white transition-colors">{{ formTitle() }}</h3>
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-0.5">Ingresa los datos del comprobante</p>
+              </div>
               <button
                 type="button"
-                class="rounded-full bg-white dark:bg-slate-800 p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white shadow-sm transition-colors"
+                class="h-10 w-10 rounded-full bg-white dark:bg-dark-bg flex items-center justify-center text-slate-400 hover:text-slate-900 dark:hover:text-white shadow-sm transition-colors active:scale-90"
                 (click)="closeComposer()"
               >
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
             <form class="space-y-6 p-10" [formGroup]="gastoForm" (ngSubmit)="submitGasto()">
-              <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Descripción <span class="text-slate-900 dark:text-white">*</span></label>
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Concepto del gasto</label>
                 <input
                   type="text"
                   formControlName="descripcion"
-                  placeholder="Detalla brevemente el gasto..."
-                  class="w-full h-12 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white"
+                  placeholder="Ej: Pago de servicios eléctricos..."
+                  class="w-full h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
-              <div class="grid gap-4 sm:grid-cols-2">
-                <div class="space-y-1.5">
-                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Fecha del gasto <span class="text-slate-900 dark:text-white">*</span></label>
+              <div class="grid gap-6 sm:grid-cols-2">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Fecha de emisión</label>
                   <input
                     type="date"
                     formControlName="fecha"
-                    class="w-full h-12 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white"
+                    class="w-full h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
 
-                <div class="space-y-1.5">
-                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Monto <span class="text-slate-900 dark:text-white">*</span></label>
-                  <input
-                    type="number"
-                    formControlName="monto_display"
-                    step="0.01"
-                    placeholder="0.00"
-                    class="w-full h-12 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 text-center text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white"
-                  />
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Importe total</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">S/.</span>
+                    <input
+                      type="number"
+                      formControlName="monto_display"
+                      step="0.01"
+                      placeholder="0.00"
+                      class="w-full h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg pl-10 pr-4 text-left text-sm font-black text-primary-600 dark:text-primary-400 transition-colors outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Tipo de pago <span class="text-slate-900 dark:text-white">*</span></label>
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Forma de pago</label>
                 <select
                   formControlName="tipo_pago_id"
-                  class="w-full h-12 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 text-sm font-bold text-slate-900 dark:text-slate-300 transition-colors outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white"
+                  class="w-full h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-slate-300 transition-colors outline-none focus:ring-2 focus:ring-primary-500"
                 >
                   <option value="" disabled>Selecciona un método</option>
                   @for (metodo of metodosPago(); track metodo.id) {
@@ -400,21 +408,21 @@ const MONTH_OPTIONS = [
                   }
                 </select>
                 @if (metodosPago().length === 0) {
-                  <p class="text-[10px] font-black uppercase text-slate-400">Cargando tipos de pago...</p>
+                  <p class="text-[10px] font-black uppercase text-slate-400 ml-1">Cargando catálogo de pagos...</p>
                 }
               </div>
 
-              <div class="mt-6 flex gap-3 border-t border-slate-100 dark:border-slate-800 pt-6 transition-colors">
+              <div class="mt-8 flex gap-3 border-t border-slate-100 dark:border-dark-border pt-8 transition-colors">
                 <button
                   type="button"
-                  class="flex-1 h-12 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 shadow-sm transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 focus:outline-none"
+                  class="flex-1 h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface px-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 shadow-sm transition-colors hover:bg-slate-50 dark:hover:bg-dark-bg active:scale-95"
                   (click)="cancelEdit()"
                 >
-                  Cerrar
+                  Cancelar
                 </button>
                 <button
                   type="submit"
-                  class="flex-1 h-12 rounded-xl bg-slate-900 dark:bg-white px-4 text-xs font-black uppercase tracking-widest text-white dark:text-slate-900 shadow-xl transition-colors hover:bg-slate-800 dark:hover:bg-slate-200 focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+                  class="flex-1 h-12 rounded-xl bg-primary-600 dark:bg-white px-4 text-[10px] font-black uppercase tracking-widest text-white dark:text-slate-900 shadow-xl shadow-primary-500/20 transition-all hover:bg-primary-700 dark:hover:bg-slate-200 active:scale-95 disabled:pointer-events-none disabled:opacity-50"
                   [disabled]="isSaving()"
                 >
                   {{ formSubmitLabel() }}
@@ -436,19 +444,19 @@ const MONTH_OPTIONS = [
             (click)="closeDeleteDialog()"
           ></button>
 
-          <section class="relative w-full max-w-sm overflow-hidden rounded-[2rem] bg-white dark:bg-slate-900 p-8 shadow-2xl animate-zoom text-center transition-colors">
-            <div class="h-16 w-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-900 dark:text-white transition-colors">
-                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          <section class="relative w-full max-w-sm overflow-hidden rounded-[2.5rem] bg-white dark:bg-dark-surface p-10 shadow-2xl animate-zoom text-center transition-colors border border-slate-100 dark:border-dark-border">
+            <div class="h-20 w-20 bg-rose-50 dark:bg-rose-950/30 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-600 dark:text-rose-400 transition-colors shadow-sm">
+                 <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             </div>
-            <h3 class="text-lg font-black uppercase tracking-tighter text-slate-900 dark:text-white transition-colors">Confirmar eliminación</h3>
-            <p class="mt-2 text-xs font-medium leading-relaxed text-slate-500 dark:text-slate-400 transition-colors">
-              Se eliminará <span class="font-bold">{{ deleteDialogDescription() }}</span>. Esta acción no se puede deshacer.
+            <h3 class="text-xl font-black uppercase tracking-tighter text-slate-900 dark:text-white transition-colors">¿Eliminar registro?</h3>
+            <p class="mt-3 text-xs font-medium leading-relaxed text-slate-500 dark:text-slate-400 transition-colors">
+              Se eliminará <span class="font-black text-slate-900 dark:text-white">{{ deleteDialogDescription() }}</span> de forma permanente.
             </p>
 
-            <div class="mt-8 flex items-center justify-center gap-2">
+            <div class="mt-10 flex items-center justify-center gap-3">
               <button
                 type="button"
-                class="flex-1 h-11 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                class="flex-1 h-12 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
                 [disabled]="deletingId() !== null"
                 (click)="closeDeleteDialog()"
               >
@@ -456,7 +464,7 @@ const MONTH_OPTIONS = [
               </button>
               <button
                 type="button"
-                class="flex-1 h-11 items-center justify-center rounded-xl bg-slate-900 dark:bg-white px-4 text-[10px] font-black uppercase tracking-widest text-white dark:text-slate-900 shadow-lg transition-colors hover:bg-slate-800 dark:hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+                class="flex-1 h-12 items-center justify-center rounded-xl bg-rose-600 dark:bg-rose-500 px-4 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-rose-500/20 transition-all hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60 active:scale-95"
                 [disabled]="deletingId() !== null"
                 (click)="confirmDeleteGasto()"
               >
@@ -471,7 +479,7 @@ const MONTH_OPTIONS = [
       @if (feedback(); as currentFeedback) {
         <div class="fixed bottom-8 right-8 z-[200] animate-zoom">
           <div class="px-6 py-4 rounded-2xl shadow-2xl border flex items-center gap-3 backdrop-blur-xl" [ngClass]="currentFeedback.tone === 'success' ? 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white' : 'bg-rose-50 border-rose-200 text-rose-800'">
-            <div class="h-2 w-2 rounded-full animate-pulse" [ngClass]="currentFeedback.tone === 'success' ? 'bg-slate-900 dark:bg-white' : 'bg-rose-500'"></div>
+            <div class="h-2 w-2 rounded-full animate-pulse" [ngClass]="currentFeedback.tone === 'success' ? 'bg-primary-600 dark:bg-primary-400' : 'bg-rose-500'"></div>
             <p class="text-xs font-black uppercase tracking-widest">{{ currentFeedback.message }}</p>
           </div>
         </div>

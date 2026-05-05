@@ -122,7 +122,7 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                       <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors" [ngClass]="item.estado === 'activo' ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-200/50 dark:ring-emerald-800/50' : 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 ring-1 ring-rose-200/50 dark:ring-rose-800/50'">{{ item.estado }}</span>
                     </td>
                     <td class="px-8 py-6 text-right whitespace-nowrap">
-                      <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
+                      <div class="flex items-center justify-end gap-2 transition-all">
                         <button (click)="openPago(item)" class="h-9 px-4 rounded-lg bg-primary-600 dark:bg-primary-500 text-white text-[10px] font-black uppercase tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-colors active:scale-95 shadow-sm">Cobrar</button>
                         <button (click)="viewDetail(item)" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-600 dark:hover:border-primary-400 transition-all">
                           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -362,7 +362,7 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                          <p class="text-[9px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest transition-colors">Deuda Vencida</p>
                          <p class="text-lg font-black text-primary-600 dark:text-primary-400 transition-colors">S/. {{ p.monto }}</p>
                        </div>
-                       <button (click)="loadAlquilerForCobro(p.alquiler_id); closePendientes()" class="h-8 px-4 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-lg text-xs font-bold uppercase hover:bg-primary-600 hover:text-white dark:hover:bg-primary-500 transition-all opacity-0 group-hover:opacity-100">Cobrar</button>
+                       <button (click)="loadAlquilerForCobro(p.alquiler_id); closePendientes()" class="h-8 px-4 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-lg text-xs font-bold uppercase hover:bg-primary-600 hover:text-white dark:hover:bg-primary-500 transition-all">Cobrar</button>
                     </div>
                   </div>
                 }

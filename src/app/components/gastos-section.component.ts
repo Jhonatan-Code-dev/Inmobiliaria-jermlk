@@ -269,7 +269,7 @@ const MONTH_OPTIONS = [
                        <span class="text-sm font-black text-primary-600 dark:text-primary-400 transition-colors">{{ formatCurrency(gasto.monto, empresa()?.moneda ?? 'PEN') }}</span>
                     </td>
                     <td class="whitespace-nowrap px-8 py-6 text-right">
-                      <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
+                      <div class="flex items-center justify-end gap-2 transition-all">
                         <button
                           type="button"
                           class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-600 dark:hover:border-primary-400 transition-all shadow-sm active:scale-95"

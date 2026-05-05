@@ -119,7 +119,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                       <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-colors" [ngClass]="getStatusBadgeClass(item.estado)">{{ item.estado }}</span>
                     </td>
                     <td class="px-8 py-6 text-right">
-                      <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
+                      <div class="flex items-center justify-end gap-2 transition-all">
                         <button (click)="viewDetail(item)" class="h-9 px-4 rounded-lg bg-primary-600 dark:bg-primary-500 text-white text-[10px] font-black uppercase tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-colors active:scale-95 shadow-sm">Gestionar</button>
                         <button (click)="startEdit(item)" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-600 dark:hover:border-primary-400 transition-all shadow-sm">
                           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
@@ -206,7 +206,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                                     <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest transition-colors">{{ u.codigo }} • S/. {{ u.precio_base }}</p>
                                   </div>
                                </div>
-                               <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                               <div class="flex items-center gap-2 transition-all">
                                   <button (click)="openUnidadComposer(u)" class="h-8 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary-600 hover:text-white dark:hover:bg-primary-500 transition-all">Editar</button>
                                   <button (click)="openDeleteUnidad(u)" class="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-rose-600 hover:text-white transition-all flex items-center justify-center">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -246,7 +246,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                     
                     <div class="space-y-1 col-span-2">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Descripción (Opcional)</label>
-                       <textarea formControlName="descripcion" rows="2" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-500 transition-all outline-none font-medium text-slate-800 dark:text-slate-200 text-sm resize-none"></textarea>
+                       <textarea formControlName="descripcion" rows="2" maxlength="20" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-dark-border focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-500 transition-all outline-none font-medium text-slate-800 dark:text-slate-200 text-sm resize-none"></textarea>
                     </div>
 
                     <div class="space-y-1">
@@ -275,16 +275,16 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
 
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Ciudad</label>
-                       <input type="text" formControlName="ciudad" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                       <input type="text" formControlName="ciudad" maxlength="20" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
                     </div>
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Región</label>
-                       <input type="text" formControlName="region" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                       <input type="text" formControlName="region" maxlength="20" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
                     </div>
 
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">País</label>
-                       <input type="text" formControlName="pais" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                       <input type="text" formControlName="pais" maxlength="20" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
                     </div>
                     <div class="space-y-1">
                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Código Postal</label>
@@ -406,12 +406,12 @@ export class InmueblesSectionComponent implements OnInit {
   readonly inmuebleForm = this.formBuilder.nonNullable.group({
     nombre: ['', [Validators.required]],
     tipo: ['edificio', [Validators.required]],
-    descripcion: [''],
+    descripcion: ['', [Validators.maxLength(20)]],
     direccion: ['', [Validators.required]],
-    ciudad: [''],
-    region: [''],
-    pais: [''],
-    codigo_postal: [''],
+    ciudad: ['Chiclayo', [Validators.maxLength(20)]],
+    region: ['Lambayeque', [Validators.maxLength(20)]],
+    pais: ['Perú', [Validators.maxLength(20)]],
+    codigo_postal: ['14001'],
     total_pisos: [1, [Validators.required, Validators.min(1)]],
     total_unidades: [1, [Validators.required, Validators.min(1)]],
     estado: ['activo']
@@ -481,8 +481,15 @@ export class InmueblesSectionComponent implements OnInit {
   closeComposer(): void { this.isComposerOpen.set(false); }
 
   submitInmueble(): void {
+    if (this.inmuebleForm.invalid) {
+      this.feedback.set({ tone: 'error', message: 'Por favor, corrige los errores en el formulario.' });
+      setTimeout(() => this.feedback.set(null), 3000);
+      return;
+    }
+    
     const eid = this.empresa()?.id;
-    if (this.inmuebleForm.invalid || !eid) return;
+    if (!eid) return;
+
     this.isSaving.set(true);
     const payload = { ...this.inmuebleForm.getRawValue(), empresa_id: eid } as InmueblePayload;
     const req = this.editingId() 

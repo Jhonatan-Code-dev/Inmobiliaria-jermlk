@@ -333,25 +333,30 @@ const MONTH_OPTIONS = [
         }
       </div>
 
-      <!-- Composer Modal -->
+      <!-- Composer Modal Profesional -->
       @if (isComposerOpen()) {
         <div class="fixed inset-0 z-[120] flex items-center justify-center p-4">
           <div
-            class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity"
+            class="fixed inset-0 bg-black/90 backdrop-blur-md transition-opacity"
             (click)="closeComposer()"
           ></div>
 
           <div
-            class="relative w-full max-w-xl overflow-hidden rounded-[3rem] bg-white dark:bg-dark-surface shadow-2xl animate-zoom transition-colors border border-slate-100 dark:border-dark-border"
+            class="relative w-full max-w-xl overflow-hidden rounded-[2.5rem] bg-white dark:bg-dark-surface shadow-2xl animate-zoom transition-colors border border-white/10 dark:border-dark-border"
           >
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-dark-border px-10 py-8 bg-slate-50/50 dark:bg-dark-bg/50 transition-colors">
-              <div>
-                <h3 class="text-xl font-black tracking-tighter uppercase text-slate-900 dark:text-white transition-colors">{{ formTitle() }}</h3>
-                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-0.5">Ingresa los datos del comprobante</p>
+              <div class="flex items-center gap-4">
+                <div class="h-12 w-12 rounded-2xl bg-primary-600 dark:bg-primary-500 text-white flex items-center justify-center shadow-lg shadow-primary-500/20">
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                  <h3 class="text-xl font-black tracking-tighter uppercase text-slate-900 dark:text-white transition-colors leading-none">{{ formTitle() }}</h3>
+                  <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1.5 transition-colors">Ingresa los datos del comprobante contable</p>
+                </div>
               </div>
               <button
                 type="button"
-                class="h-10 w-10 rounded-full bg-white dark:bg-dark-bg flex items-center justify-center text-slate-400 hover:text-slate-900 dark:hover:text-white shadow-sm transition-colors active:scale-90"
+                class="h-10 w-10 rounded-full bg-white dark:bg-dark-bg flex items-center justify-center text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 shadow-sm border border-slate-100 dark:border-dark-border transition-all active:scale-90"
                 (click)="closeComposer()"
               >
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -361,68 +366,110 @@ const MONTH_OPTIONS = [
             </div>
 
             <form class="space-y-6 p-10" [formGroup]="gastoForm" (ngSubmit)="submitGasto()">
+              <!-- Concepto -->
               <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Concepto del gasto</label>
-                <input
-                  type="text"
-                  formControlName="descripcion"
-                  placeholder="Ej: Pago de servicios eléctricos..."
-                  class="w-full h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-primary-500"
-                />
+                <div class="flex items-center justify-between ml-1">
+                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Concepto del gasto (Máx. 20)</label>
+                  @if (isInvalid('descripcion')) {
+                    <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('descripcion') }}</span>
+                  }
+                </div>
+                <div class="relative group">
+                  <input
+                    type="text"
+                    formControlName="descripcion"
+                    maxlength="20"
+                    placeholder="Ej: Pago de luz..."
+                    [ngClass]="isInvalid('descripcion') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500/20'"
+                    class="w-full h-14 pl-12 pr-4 rounded-2xl border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white transition-all outline-none focus:ring-4 focus:bg-white dark:focus:bg-dark-bg"
+                  />
+                  <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 00 2 2h11a2 2 0 00 2-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </div>
               </div>
 
               <div class="grid gap-6 sm:grid-cols-2">
+                <!-- Fecha -->
                 <div class="space-y-2">
-                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Fecha de emisión</label>
-                  <input
-                    type="date"
-                    formControlName="fecha"
-                    class="w-full h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-white transition-colors outline-none focus:ring-2 focus:ring-primary-500"
-                  />
+                  <div class="flex items-center justify-between ml-1">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Fecha de emisión</label>
+                    @if (isInvalid('fecha')) {
+                      <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('fecha') }}</span>
+                    }
+                  </div>
+                  <div class="relative group">
+                    <input
+                      type="date"
+                      formControlName="fecha"
+                      [ngClass]="isInvalid('fecha') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500/20'"
+                      class="w-full h-14 pl-12 pr-4 rounded-2xl border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white transition-all outline-none focus:ring-4 focus:bg-white dark:focus:bg-dark-bg"
+                    />
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </div>
                 </div>
 
+                <!-- Monto -->
                 <div class="space-y-2">
-                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Importe total</label>
-                  <div class="relative">
+                  <div class="flex items-center justify-between ml-1">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Importe total</label>
+                    @if (isInvalid('monto_display')) {
+                      <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('monto_display') }}</span>
+                    }
+                  </div>
+                  <div class="relative group">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">S/.</span>
                     <input
                       type="number"
                       formControlName="monto_display"
                       step="0.01"
                       placeholder="0.00"
-                      class="w-full h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg pl-10 pr-4 text-left text-sm font-black text-primary-600 dark:text-primary-400 transition-colors outline-none focus:ring-2 focus:ring-primary-500"
+                      [ngClass]="isInvalid('monto_display') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500/20'"
+                      class="w-full h-14 pl-12 pr-4 rounded-2xl border bg-slate-50 dark:bg-dark-bg text-sm font-black text-primary-600 dark:text-primary-400 transition-all outline-none focus:ring-4 focus:bg-white dark:focus:bg-dark-bg"
                     />
                   </div>
                 </div>
               </div>
 
+              <!-- Método de Pago -->
               <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Forma de pago</label>
-                <select
-                  formControlName="tipo_pago_id"
-                  class="w-full h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 text-sm font-bold text-slate-900 dark:text-slate-300 transition-colors outline-none focus:ring-2 focus:ring-primary-500"
-                >
-                  <option value="" disabled>Selecciona un método</option>
-                  @for (metodo of metodosPago(); track metodo.id) {
-                    <option [value]="metodo.id">{{ metodo.nombre | uppercase }}</option>
+                <div class="flex items-center justify-between ml-1">
+                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Forma de pago</label>
+                  @if (isInvalid('tipo_pago_id')) {
+                    <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('tipo_pago_id') }}</span>
                   }
-                </select>
+                </div>
+                <div class="relative group">
+                  <select
+                    formControlName="tipo_pago_id"
+                    [ngClass]="isInvalid('tipo_pago_id') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500/20'"
+                    class="w-full h-14 pl-12 pr-10 rounded-2xl border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-slate-300 transition-all outline-none focus:ring-4 focus:bg-white dark:focus:bg-dark-bg appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled>Selecciona un método</option>
+                    @for (metodo of metodosPago(); track metodo.id) {
+                      <option [value]="metodo.id">{{ metodo.nombre | uppercase }}</option>
+                    }
+                  </select>
+                  <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                  <svg class="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M19 9l-7 7-7-7"/></svg>
+                </div>
                 @if (metodosPago().length === 0) {
-                  <p class="text-[10px] font-black uppercase text-slate-400 ml-1">Cargando catálogo de pagos...</p>
+                  <p class="text-[10px] font-black uppercase text-slate-400 ml-1 flex items-center gap-2">
+                    <svg class="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22a10 10 0 100-20 10 10 0 000 20z" stroke-width="4" class="opacity-25"/><path d="M12 2a10 10 0 0110 10" stroke-width="4" class="opacity-75"/></svg>
+                    Cargando catálogo de pagos...
+                  </p>
                 }
               </div>
 
-              <div class="mt-8 flex gap-3 border-t border-slate-100 dark:border-dark-border pt-8 transition-colors">
+              <div class="mt-8 flex gap-4 border-t border-slate-100 dark:border-dark-border pt-8 transition-colors">
                 <button
                   type="button"
-                  class="flex-1 h-12 rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface px-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 shadow-sm transition-colors hover:bg-slate-50 dark:hover:bg-dark-bg active:scale-95"
+                  class="flex-1 h-14 rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface px-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 shadow-sm transition-all hover:bg-slate-50 dark:hover:bg-dark-bg active:scale-95"
                   (click)="cancelEdit()"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  class="flex-1 h-12 rounded-xl bg-primary-600 dark:bg-white px-4 text-[10px] font-black uppercase tracking-widest text-white dark:text-slate-900 shadow-xl shadow-primary-500/20 transition-all hover:bg-primary-700 dark:hover:bg-slate-200 active:scale-95 disabled:pointer-events-none disabled:opacity-50"
+                  class="flex-1 h-14 rounded-2xl bg-primary-600 dark:bg-primary-500 px-4 text-[10px] font-black uppercase tracking-widest text-white shadow-xl shadow-primary-500/30 transition-all hover:bg-primary-700 dark:hover:bg-primary-400 active:scale-95 disabled:pointer-events-none disabled:opacity-50"
                   [disabled]="isSaving()"
                 >
                   {{ formSubmitLabel() }}
@@ -475,15 +522,28 @@ const MONTH_OPTIONS = [
         </div>
       }
 
-      <!-- Feedback Toast -->
-      @if (feedback(); as currentFeedback) {
-        <div class="fixed bottom-8 right-8 z-[200] animate-zoom">
-          <div class="px-6 py-4 rounded-2xl shadow-2xl border flex items-center gap-3 backdrop-blur-xl" [ngClass]="currentFeedback.tone === 'success' ? 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white' : 'bg-rose-50 border-rose-200 text-rose-800'">
-            <div class="h-2 w-2 rounded-full animate-pulse" [ngClass]="currentFeedback.tone === 'success' ? 'bg-primary-600 dark:bg-primary-400' : 'bg-rose-500'"></div>
-            <p class="text-xs font-black uppercase tracking-widest">{{ currentFeedback.message }}</p>
+      <!-- Notificaciones (Toast) - Posicionamiento directo para evitar interferencias -->
+      <div class="fixed top-8 right-8 z-[500] pointer-events-none flex flex-col items-end gap-3">
+        @if (feedback(); as currentFeedback) {
+          <div class="pointer-events-auto animate-zoom flex items-center gap-3 px-6 py-3.5 rounded-[1.5rem] bg-slate-900 dark:bg-white shadow-2xl border border-white/10 dark:border-slate-200 transition-all min-w-[320px]">
+            <div class="shrink-0 h-10 w-10 rounded-xl flex items-center justify-center"
+                 [ngClass]="currentFeedback.tone === 'success' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'">
+              @if (currentFeedback.tone === 'success') {
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              } @else {
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              }
+            </div>
+            <div class="flex flex-col pr-2">
+              <span class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 leading-none mb-1">Notificación</span>
+              <p class="text-xs font-bold text-white dark:text-slate-900 leading-tight">{{ currentFeedback.message }}</p>
+            </div>
+            <button (click)="feedback.set(null)" class="ml-auto text-slate-500 hover:text-white dark:hover:text-slate-900 transition-colors p-1">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
           </div>
-        </div>
-      }
+        }
+      </div>
     </section>
   `
 })
@@ -508,7 +568,7 @@ export class GastosSectionComponent implements OnInit {
   });
 
   readonly gastoForm = this.formBuilder.nonNullable.group({
-    descripcion: ['', [Validators.required, Validators.maxLength(255)]],
+    descripcion: ['', [Validators.required, Validators.maxLength(20)]],
     fecha: [this.todayDate(), [Validators.required]],
     monto_display: ['', [Validators.required, Validators.min(0.01)]],
     tipo_pago_id: ['', [Validators.required]]
@@ -523,6 +583,20 @@ export class GastosSectionComponent implements OnInit {
   readonly isComposerOpen = signal(false);
   readonly editingId = signal<number | null>(null);
   readonly pendingDeleteExpense = signal<Gasto | null>(null);
+
+  isInvalid(controlName: string): boolean {
+    const control = this.gastoForm.get(controlName);
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+
+  getErrorMessage(controlName: string): string {
+    const control = this.gastoForm.get(controlName);
+    if (!control || !control.errors) return '';
+    if (control.errors['required']) return 'Obligatorio';
+    if (control.errors['min']) return 'Monto inválido';
+    if (control.errors['maxlength']) return 'Muy largo';
+    return 'Dato inválido';
+  }
 
   readonly hasFiltersActive = computed(() => {
     return this.filterMode() !== 'none';

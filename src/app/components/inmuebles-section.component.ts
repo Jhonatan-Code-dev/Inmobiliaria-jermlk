@@ -53,8 +53,13 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
         <div class="lg:col-span-3 bg-white dark:bg-dark-surface p-6 rounded-[2rem] border border-slate-200 dark:border-dark-border shadow-sm transition-colors flex flex-col justify-center">
           <form [formGroup]="searchForm" (ngSubmit)="applySearch()" class="flex flex-wrap gap-4">
             <div class="flex-1 min-w-[200px] relative">
-              <input type="text" formControlName="buscar" placeholder="Buscar por nombre o dirección..." class="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border text-slate-900 dark:text-white focus:bg-white dark:focus:bg-dark-bg focus:ring-2 focus:ring-primary-500 transition-all outline-none text-sm font-medium"/>
+              <input type="text" formControlName="buscar" placeholder="Buscar por nombre o dirección..." class="w-full h-12 pl-12 pr-12 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border text-slate-900 dark:text-white focus:bg-white dark:focus:bg-dark-bg focus:ring-2 focus:ring-primary-500 transition-all outline-none text-sm font-medium"/>
               <svg class="absolute left-4 top-3.5 h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              @if (searchForm.get('buscar')?.value) {
+                <button (click)="clearSearch()" type="button" class="absolute right-4 top-3 h-6 w-6 flex items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 transition-all active:scale-90">
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+              }
             </div>
             <select formControlName="tipo" (change)="applySearch()" class="h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border text-sm font-bold text-slate-700 dark:text-slate-300 outline-none cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-bg transition-colors">
               <option value="">Cualquier Tipo</option>
@@ -102,7 +107,7 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                         </div>
                         <div>
                           <p class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight transition-colors">{{ item.nombre }}</p>
-                          <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{{ item.tipo }}</p>
+                          <p class="text-[10px] font-black uppercase tracking-[0.1em] px-2 py-0.5 rounded-md inline-block mt-1 transition-all" [ngClass]="getTypeBadgeClass(item.tipo)">{{ item.tipo }}</p>
                         </div>
                       </div>
                     </td>
@@ -231,27 +236,57 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
       <!-- Modals -->
       @if (isComposerOpen()) {
         <div class="fixed inset-0 z-[120] flex items-center justify-center p-4">
-           <div class="absolute inset-0 bg-black/80 backdrop-blur-md" (click)="closeComposer()"></div>
-           <div class="relative w-full max-w-xl bg-white dark:bg-dark-surface rounded-[2.5rem] shadow-2xl animate-zoom overflow-hidden transition-colors border border-slate-100 dark:border-dark-border">
+           <!-- Backdrop fixed total para evitar que se "alce" -->
+           <div class="fixed inset-0 bg-black/90 backdrop-blur-md" (click)="closeComposer()"></div>
+           
+           <div class="relative w-full max-w-xl bg-white dark:bg-dark-surface rounded-[2.5rem] shadow-2xl animate-zoom overflow-hidden transition-colors border border-slate-100 dark:border-dark-border shadow-black/50">
               <div class="px-10 py-8 bg-slate-50/50 dark:bg-slate-950/50 border-b border-slate-100 dark:border-slate-800 transition-colors">
                 <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ editingId() ? 'Editar Propiedad' : 'Nueva Propiedad' }}</h3>
-                <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Define los datos estructurales del inmueble.</p>
+                <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">Todos los campos son obligatorios.</p>
               </div>
               <form [formGroup]="inmuebleForm" (ngSubmit)="submitInmueble()" class="p-10 space-y-5">
                  <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1 col-span-2">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Nombre del Inmueble</label>
-                       <input type="text" formControlName="nombre" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-500 transition-all outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         Nombre del Inmueble (Máx. 20) <span class="text-rose-500">*</span>
+                       </label>
+                       <div class="relative group">
+                         <input type="text" formControlName="nombre" placeholder="Ej: Edificio Los Jazmines" maxlength="20"
+                           [ngClass]="isInvalid('nombre') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                           class="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-950 border focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-500 transition-all outline-none font-bold text-slate-900 dark:text-white text-sm shadow-sm"/>
+                         <svg class="absolute left-4 top-3.5 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" [ngClass]="{'text-rose-500': isInvalid('nombre')}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                       </div>
+                       @if (isInvalid('nombre')) {
+                         <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-1">
+                           {{ inmuebleForm.get('nombre')?.value ? 'Máximo 20 caracteres' : 'El nombre es obligatorio' }}
+                         </p>
+                       }
                     </div>
                     
                     <div class="space-y-1 col-span-2">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Descripción (Opcional)</label>
-                       <textarea formControlName="descripcion" rows="2" maxlength="20" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-dark-border focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-500 transition-all outline-none font-medium text-slate-800 dark:text-slate-200 text-sm resize-none"></textarea>
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         Descripción (Máx. 20) <span class="text-rose-500">*</span>
+                       </label>
+                       <div class="relative group">
+                         <textarea formControlName="descripcion" rows="2" maxlength="20" placeholder="Breve descripción del inmueble..." 
+                           [ngClass]="isInvalid('descripcion') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                           class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-500 transition-all outline-none font-medium text-slate-800 dark:text-slate-200 text-sm resize-none shadow-sm"></textarea>
+                         <svg class="absolute left-4 top-4 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" [ngClass]="{'text-rose-500': isInvalid('descripcion')}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                       </div>
+                       @if (isInvalid('descripcion')) {
+                         <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-1">
+                           {{ inmuebleForm.get('descripcion')?.errors?.['required'] ? 'La descripción es obligatoria' : 'Máximo 20 caracteres' }}
+                         </p>
+                       }
                     </div>
 
                     <div class="space-y-1">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Tipo</label>
-                       <select formControlName="tipo" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-700 dark:text-slate-300 text-sm focus:ring-2 focus:ring-primary-500">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         Tipo <span class="text-rose-500">*</span>
+                       </label>
+                       <select formControlName="tipo" 
+                         [ngClass]="isInvalid('tipo') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                         class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border outline-none font-bold text-slate-700 dark:text-slate-300 text-sm focus:ring-2 focus:ring-primary-500 shadow-sm transition-all">
                           <option value="edificio">Edificio</option>
                           <option value="casa">Casa</option>
                           <option value="quinta">Quinta</option>
@@ -260,8 +295,12 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                        </select>
                     </div>
                     <div class="space-y-1">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Estado</label>
-                       <select formControlName="estado" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-700 dark:text-slate-300 text-sm focus:ring-2 focus:ring-primary-500">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         Estado <span class="text-rose-500">*</span>
+                       </label>
+                       <select formControlName="estado" 
+                         [ngClass]="isInvalid('estado') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                         class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border outline-none font-bold text-slate-700 dark:text-slate-300 text-sm focus:ring-2 focus:ring-primary-500 shadow-sm transition-all">
                           <option value="activo">Activo</option>
                           <option value="inactivo">Inactivo</option>
                           <option value="mantenimiento">Mantenimiento</option>
@@ -269,35 +308,99 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
                     </div>
 
                     <div class="space-y-1 col-span-2">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Dirección</label>
-                       <input type="text" formControlName="direccion" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         Dirección <span class="text-rose-500">*</span>
+                       </label>
+                       <div class="relative group">
+                         <input type="text" formControlName="direccion" placeholder="Ej: Av. Las Américas 123" 
+                           [ngClass]="isInvalid('direccion') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                           class="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-950 border focus:ring-2 focus:ring-primary-500 shadow-sm transition-all outline-none font-bold text-slate-900 dark:text-white text-sm"/>
+                         <svg class="absolute left-4 top-3.5 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" [ngClass]="{'text-rose-500': isInvalid('direccion')}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                       </div>
+                       @if (isInvalid('direccion')) {
+                         <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-1">La dirección es necesaria</p>
+                       }
                     </div>
 
                     <div class="space-y-1">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Ciudad</label>
-                       <input type="text" formControlName="ciudad" maxlength="20" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         Ciudad <span class="text-rose-500">*</span>
+                       </label>
+                       <input type="text" formControlName="ciudad" maxlength="20" placeholder="Ej: Chiclayo" 
+                         [ngClass]="isInvalid('ciudad') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                         class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 transition-all shadow-sm"/>
+                        @if (isInvalid('ciudad')) { 
+                          <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-1">
+                            {{ inmuebleForm.get('ciudad')?.value ? 'Dato inválido' : 'Obligatorio' }}
+                          </p> 
+                        }
                     </div>
                     <div class="space-y-1">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Región</label>
-                       <input type="text" formControlName="region" maxlength="20" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         Región <span class="text-rose-500">*</span>
+                       </label>
+                       <input type="text" formControlName="region" maxlength="20" placeholder="Ej: Lambayeque" 
+                         [ngClass]="isInvalid('region') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                         class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 transition-all shadow-sm"/>
+                        @if (isInvalid('region')) { 
+                          <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-1">
+                            {{ inmuebleForm.get('region')?.value ? 'Dato inválido' : 'Obligatorio' }}
+                          </p> 
+                        }
                     </div>
 
                     <div class="space-y-1">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">País</label>
-                       <input type="text" formControlName="pais" maxlength="20" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         País <span class="text-rose-500">*</span>
+                       </label>
+                       <input type="text" formControlName="pais" maxlength="20" placeholder="Ej: Perú" 
+                         [ngClass]="isInvalid('pais') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                         class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 transition-all shadow-sm"/>
+                        @if (isInvalid('pais')) { 
+                          <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-1">
+                            {{ inmuebleForm.get('pais')?.value ? 'Dato inválido' : 'Obligatorio' }}
+                          </p> 
+                        }
                     </div>
                     <div class="space-y-1">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Código Postal</label>
-                       <input type="text" formControlName="codigo_postal" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500"/>
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         Cód. Postal <span class="text-rose-500">*</span>
+                       </label>
+                       <input type="text" formControlName="codigo_postal" placeholder="Ej: 14001" 
+                         [ngClass]="isInvalid('codigo_postal') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                         class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 transition-all shadow-sm"/>
+                        @if (isInvalid('codigo_postal')) { 
+                          <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-1">
+                            {{ inmuebleForm.get('codigo_postal')?.value ? 'Dato inválido' : 'Obligatorio' }}
+                          </p> 
+                        }
                     </div>
 
                     <div class="space-y-1">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">N° Pisos</label>
-                       <input type="number" formControlName="total_pisos" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 text-center"/>
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         N° Pisos <span class="text-rose-500">*</span>
+                       </label>
+                       <input type="number" formControlName="total_pisos" 
+                         [ngClass]="isInvalid('total_pisos') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                         class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 text-center transition-all shadow-sm"/>
+                        @if (isInvalid('total_pisos')) { 
+                          <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-1">
+                            {{ inmuebleForm.get('total_pisos')?.value ? 'Dato inválido' : 'Obligatorio' }}
+                          </p> 
+                        }
                     </div>
                     <div class="space-y-1">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">N° Unidades</label>
-                       <input type="number" formControlName="total_unidades" class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 text-center"/>
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                         N° Unidades <span class="text-rose-500">*</span>
+                       </label>
+                       <input type="number" formControlName="total_unidades" 
+                         [ngClass]="isInvalid('total_unidades') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20' : 'border-slate-200 dark:border-slate-800'"
+                         class="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border outline-none font-bold text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 text-center transition-all shadow-sm"/>
+                        @if (isInvalid('total_unidades')) { 
+                          <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest ml-1">
+                            {{ inmuebleForm.get('total_unidades')?.value ? 'Dato inválido' : 'Obligatorio' }}
+                          </p> 
+                        }
                     </div>
                  </div>
                  <div class="flex gap-3 pt-6 border-t border-slate-100 dark:border-dark-border mt-4">
@@ -311,12 +414,22 @@ const DEFAULT_PAGINATION: InmueblesPaginacion = { total: 0, paginas: 0, pagina_a
         </div>
       }
 
-      <!-- Feedback Toast -->
+      <!-- Feedback Toast Profesional -->
       @if (feedback(); as f) {
-        <div class="fixed bottom-8 right-8 z-[200] animate-zoom">
-           <div class="px-6 py-4 rounded-2xl shadow-2xl border flex items-center gap-3 backdrop-blur-xl" [ngClass]="feedbackClasses(f.tone)">
-              <div class="h-2 w-2 rounded-full animate-pulse" [ngClass]="f.tone === 'success' ? 'bg-primary-600 dark:bg-primary-400' : 'bg-rose-500'"></div>
-              <p class="text-xs font-black uppercase tracking-widest">{{ f.message }}</p>
+        <div class="fixed top-8 right-8 z-[400] animate-zoom">
+           <div class="flex items-center gap-3 px-6 py-3.5 rounded-[1.5rem] bg-slate-900 dark:bg-white shadow-2xl border border-white/10 dark:border-slate-200 transition-all min-w-[320px]">
+              <div class="shrink-0 h-10 w-10 rounded-xl flex items-center justify-center"
+                   [ngClass]="f.tone === 'success' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'">
+                @if (f.tone === 'success') {
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                } @else {
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                }
+              </div>
+              <div class="flex flex-col pr-2">
+                <span class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 leading-none mb-1">Notificación</span>
+                <p class="text-[11px] font-black text-white dark:text-slate-900 uppercase tracking-tight leading-tight">{{ f.message }}</p>
+              </div>
            </div>
         </div>
       }
@@ -404,17 +517,17 @@ export class InmueblesSectionComponent implements OnInit {
   readonly searchForm = this.formBuilder.nonNullable.group({ buscar: '', estado: '', tipo: '' });
   
   readonly inmuebleForm = this.formBuilder.nonNullable.group({
-    nombre: ['', [Validators.required]],
+    nombre: ['', [Validators.required, Validators.maxLength(20)]],
     tipo: ['edificio', [Validators.required]],
-    descripcion: ['', [Validators.maxLength(20)]],
+    descripcion: ['', [Validators.required, Validators.maxLength(20)]],
     direccion: ['', [Validators.required]],
-    ciudad: ['Chiclayo', [Validators.maxLength(20)]],
-    region: ['Lambayeque', [Validators.maxLength(20)]],
-    pais: ['Perú', [Validators.maxLength(20)]],
-    codigo_postal: ['14001'],
+    ciudad: ['Chiclayo', [Validators.required, Validators.maxLength(20), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
+    region: ['Lambayeque', [Validators.required, Validators.maxLength(20), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
+    pais: ['Perú', [Validators.required, Validators.maxLength(20), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
+    codigo_postal: ['14001', [Validators.required, Validators.pattern('^[0-9]+$')]],
     total_pisos: [1, [Validators.required, Validators.min(1)]],
     total_unidades: [1, [Validators.required, Validators.min(1)]],
-    estado: ['activo']
+    estado: ['activo', [Validators.required]]
   });
 
   readonly unidadForm = this.formBuilder.nonNullable.group({
@@ -444,7 +557,16 @@ export class InmueblesSectionComponent implements OnInit {
   }
 
   applySearch(): void { this.loadInmuebles(1); }
+  clearSearch(): void {
+    this.searchForm.patchValue({ buscar: '' });
+    this.applySearch();
+  }
   totalRecords = computed(() => this.pagination().total);
+
+  isInvalid(controlName: string): boolean {
+    const control = this.inmuebleForm.get(controlName);
+    return !!(control && control.invalid && (control.touched || control.dirty));
+  }
 
   // --- Inmueble Logic ---
   openComposer(): void {
@@ -455,7 +577,9 @@ export class InmueblesSectionComponent implements OnInit {
       total_unidades: 1, 
       estado: 'activo',
       pais: 'Perú',
-      ciudad: 'Lima'
+      ciudad: 'Chiclayo',
+      region: 'Lambayeque',
+      codigo_postal: '14001'
     });
     this.isComposerOpen.set(true);
   }
@@ -482,7 +606,38 @@ export class InmueblesSectionComponent implements OnInit {
 
   submitInmueble(): void {
     if (this.inmuebleForm.invalid) {
-      this.feedback.set({ tone: 'error', message: 'Por favor, corrige los errores en el formulario.' });
+      const controls = this.inmuebleForm.controls;
+      const fieldNames: Record<string, string> = {
+        nombre: 'Nombre',
+        descripcion: 'Descripción',
+        direccion: 'Dirección',
+        ciudad: 'Ciudad',
+        region: 'Región',
+        pais: 'País',
+        codigo_postal: 'Código Postal',
+        total_pisos: 'N° Pisos',
+        total_unidades: 'N° Unidades'
+      };
+
+      let errorMsg = 'Corrige los errores en el formulario.';
+      
+      for (const name in controls) {
+        const control = (controls as any)[name];
+        if (control.invalid) {
+          const label = fieldNames[name] || name;
+          const errors = control.errors;
+          if (errors?.['required']) errorMsg = `El campo "${label}" es obligatorio.`;
+          else if (errors?.['maxlength']) errorMsg = `"${label}" no puede superar los 20 caracteres.`;
+          else if (errors?.['min']) errorMsg = `"${label}" debe ser un valor positivo.`;
+          else if (errors?.['pattern']) {
+            if (name === 'codigo_postal') errorMsg = `"${label}" solo debe contener números.`;
+            else errorMsg = `"${label}" solo debe contener letras.`;
+          }
+          break;
+        }
+      }
+
+      this.feedback.set({ tone: 'error', message: errorMsg });
       setTimeout(() => this.feedback.set(null), 3000);
       return;
     }
@@ -598,9 +753,22 @@ export class InmueblesSectionComponent implements OnInit {
   }
 
   getStatusBadgeClass(s: string): string {
-    if (['activa', 'disponible'].includes(s)) return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
-    if (['mantenimiento'].includes(s)) return 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200';
-    if (['inactiva', 'ocupado'].includes(s)) return 'bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white';
-    return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+    const status = s?.toLowerCase() || '';
+    if (['activo', 'activa', 'disponible', 'confirmado', 'pagado'].includes(status)) 
+      return 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20';
+    if (['mantenimiento', 'pendiente', 'proceso'].includes(status)) 
+      return 'bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20';
+    if (['inactivo', 'inactiva', 'ocupado', 'cancelado', 'deuda', 'vencido'].includes(status)) 
+      return 'bg-rose-100 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20';
+    return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700';
+  }
+
+  getTypeBadgeClass(t: string): string {
+    const type = t?.toLowerCase() || '';
+    if (type === 'edificio') return 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-500/20';
+    if (type === 'casa') return 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-500/20';
+    if (type === 'quinta') return 'bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-100 dark:border-teal-500/20';
+    if (type === 'condominio') return 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20';
+    return 'bg-slate-50 dark:bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-500/20';
   }
 }

@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { finalize } from 'rxjs';
 import { DASHBOARD_NAVIGATION_ITEMS } from '../core/layout/dashboard-navigation';
 import { APP_ROUTE_PATHS } from '../core/routing/app-routes.constants';
+import { ThemeService } from '../core/theme/theme.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -16,6 +17,7 @@ import { AuthService } from '../services/auth.service';
 export class DashboardPageComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  readonly themeService = inject(ThemeService);
 
   readonly routePaths = APP_ROUTE_PATHS;
   readonly user = this.authService.user;
@@ -30,7 +32,7 @@ export class DashboardPageComponent {
 
   readonly sidebarClasses = computed(() =>
     [
-      'fixed inset-y-0 left-0 z-40 flex w-full max-w-[18rem] flex-col overflow-hidden border-r border-slate-200 bg-white p-4 transition-all duration-300 ease-in-out',
+      'fixed inset-y-0 left-0 z-40 flex w-full max-w-[18rem] flex-col overflow-hidden border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4 transition-all duration-300 ease-in-out',
       this.isMobileMenuOpen() ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
       this.isSidebarCollapsed() ? 'lg:w-[80px]' : 'lg:w-[18rem]'
     ].join(' ')
@@ -38,8 +40,8 @@ export class DashboardPageComponent {
 
   readonly mainShellClasses = computed(() =>
     this.isSidebarCollapsed()
-      ? 'relative min-h-screen bg-slate-50/40 transition-[padding] duration-300 ease-in-out lg:pl-[80px]'
-      : 'relative min-h-screen bg-slate-50/40 transition-[padding] duration-300 ease-in-out lg:pl-[18rem]'
+      ? 'relative min-h-screen bg-slate-50/40 dark:bg-slate-900/40 transition-[padding] duration-300 ease-in-out lg:pl-[80px]'
+      : 'relative min-h-screen bg-slate-50/40 dark:bg-slate-900/40 transition-[padding] duration-300 ease-in-out lg:pl-[18rem]'
   );
 
   isLoggingOut = false;

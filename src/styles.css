@@ -21,6 +21,8 @@
   --color-dark-950: #050811;
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -30,7 +32,7 @@ html {
 body {
   margin: 0;
   font-family: var(--font-body);
-  background-color: #f8fafc;
+  @apply bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-slate-50 transition-colors duration-300;
 }
 
 .font-display {

@@ -11,8 +11,7 @@ import { AuthService } from '../services/auth.service';
   selector: 'app-login-page',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.css'
+  templateUrl: './login-page.component.html'
 })
 export class LoginPageComponent {
   private readonly formBuilder = inject(FormBuilder);

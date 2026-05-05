@@ -1,71 +1,187 @@
-<section id="overview" class="space-y-6">
+<section id="overview" class="space-y-8">
   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-1">
     <div>
-      <h2 class="text-2xl font-bold tracking-tight text-slate-950">Resumen del Sistema</h2>
-      <p class="text-sm text-slate-500">Métricas clave de tu suscripción y empresa.</p>
+      <h2 class="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">Panel de Control</h2>
+      <p class="text-sm text-slate-500 dark:text-slate-400">Métricas generales en tiempo real y rendimiento de la empresa.</p>
     </div>
   </div>
 
-  <div class="grid gap-6 lg:grid-cols-2">
-    <article [class]="shellPanelClass + ' p-6'">
-      <div class="flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-widest text-slate-500 mb-6">
-        <span class="h-2 w-2 rounded-full bg-slate-900"></span>
-        ESTADO DE CUENTA
-      </div>
-
-      @if (user(); as currentUser) {
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div [class]="secondaryPanelClass + ' p-5'">
-            <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Usuario Activo</p>
-            <p class="mt-2 text-xl font-bold text-slate-950">{{ currentUser.usuario }}</p>
-          </div>
-
-          <div [class]="secondaryPanelClass + ' p-5'">
-            <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Estado de Empresa</p>
-            <p class="mt-2 text-xl font-bold text-slate-950">{{ companyStatusLabel() }}</p>
-          </div>
-
-          <div [class]="secondaryPanelClass + ' p-5'">
-            <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Vigencia Restante</p>
-            <p class="mt-2 text-xl font-bold text-slate-950">{{ daysRemainingLabel() }}</p>
-          </div>
-
-          <div [class]="secondaryPanelClass + ' p-5'">
-            <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Expiración</p>
-            <p class="mt-2 text-xl font-bold text-slate-950">{{ expirationLabel() }}</p>
+  @if (resumen(); as data) {
+    <!-- Main KPIs Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <article [class]="shellPanelClass + ' p-5 transition-transform hover:-translate-y-1'">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Balance Neto (Mes)</p>
+          <div class="h-6 w-6 rounded flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+            <svg viewBox="0 0 24 24" class="h-3 w-3 text-slate-900 dark:text-slate-300" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
           </div>
         </div>
+        <p class="text-2xl font-bold text-slate-950 dark:text-white">{{ formatCurrency(data.balance_neto_mes) }}</p>
+        <div class="mt-4 flex items-center justify-between text-xs border-t border-slate-100 dark:border-slate-800 pt-3">
+           <span class="text-slate-500 dark:text-slate-400 font-medium">Ingresos: <span class="text-slate-700 dark:text-slate-300">{{ formatCurrency(data.ingresos_mes_actual) }}</span></span>
+        </div>
+      </article>
+
+      <article [class]="shellPanelClass + ' p-5 transition-transform hover:-translate-y-1'">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Ocupación</p>
+          <div class="h-6 w-6 rounded flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+            <svg viewBox="0 0 24 24" class="h-3 w-3 text-slate-900 dark:text-slate-300" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </div>
+        </div>
+        <p class="text-2xl font-bold text-slate-950 dark:text-white">{{ data.tasa_ocupacion_pct }}%</p>
+        <div class="mt-4 flex items-center justify-between text-xs border-t border-slate-100 dark:border-slate-800 pt-3">
+           <span class="text-slate-500 dark:text-slate-400 font-medium"><span class="text-slate-700 dark:text-slate-300">{{ data.unidades_ocupadas }} / {{ data.total_unidades }}</span> unidades llenas</span>
+        </div>
+      </article>
+
+      <article [class]="shellPanelClass + ' p-5 transition-transform hover:-translate-y-1'">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Contratos Activos</p>
+          <div class="h-6 w-6 rounded flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+            <svg viewBox="0 0 24 24" class="h-3 w-3 text-slate-900 dark:text-slate-300" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+        </div>
+        <p class="text-2xl font-bold text-slate-950 dark:text-white">{{ data.contratos_activos }}</p>
+        <div class="mt-4 flex items-center justify-between text-xs border-t border-slate-100 dark:border-slate-800 pt-3">
+           <span class="text-slate-500 dark:text-slate-400 font-medium">{{ data.contratos_vencidos }} vencidos, {{ data.contratos_borrador }} en borrador</span>
+        </div>
+      </article>
+
+      <article [class]="shellPanelClass + ' p-5 bg-slate-950 dark:bg-slate-800 text-white transition-transform hover:-translate-y-1 !border-transparent'">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-300">Deuda Pendiente</p>
+          <div class="h-6 w-6 rounded flex items-center justify-center bg-white/10 dark:bg-black/20">
+            <svg viewBox="0 0 24 24" class="h-3 w-3 text-white dark:text-slate-200" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
+        </div>
+        <p class="text-2xl font-bold text-white dark:text-white">{{ formatCurrency(data.monto_pendiente_cobro) }}</p>
+        <div class="mt-4 flex items-center justify-between text-xs border-t border-slate-800 dark:border-slate-700/50 pt-3">
+           <span class="text-slate-400 dark:text-slate-300 font-medium">{{ data.total_morosos }} inquilinos con mora</span>
+        </div>
+      </article>
+    </div>
+  }
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 space-y-6">
+      @if (financiero(); as finData) {
+        <article [class]="shellPanelClass + ' p-6'">
+          <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white mb-4">Reporte Financiero (Últimos Meses)</h3>
+          <div class="space-y-3">
+             @for (mes of finData.serie_mensual; track mes.periodo) {
+                <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-600 transition-colors bg-white dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-default">
+                  <div class="flex flex-col">
+                     <span class="text-sm font-bold text-slate-950 dark:text-slate-100 capitalize">{{ formatMonth(mes.periodo) }}</span>
+                     <span class="text-[0.7rem] font-semibold text-slate-500 dark:text-slate-400">Balance: <span class="text-slate-700 dark:text-slate-300">{{ formatCurrency(mes.balance) }}</span></span>
+                  </div>
+                  <div class="text-right flex items-center gap-5">
+                     <div class="flex flex-col items-end">
+                       <span class="text-[0.6rem] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ingresos</span>
+                       <span class="text-sm font-bold text-slate-900 dark:text-slate-200">{{ formatCurrency(mes.ingresos) }}</span>
+                     </div>
+                     <div class="h-8 w-[1px] bg-slate-200 dark:bg-slate-700"></div>
+                     <div class="flex flex-col items-start w-24">
+                       <span class="text-[0.6rem] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Egresos</span>
+                       <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">{{ formatCurrency(mes.gastos) }}</span>
+                     </div>
+                  </div>
+                </div>
+             }
+          </div>
+        </article>
       }
-    </article>
 
-    <article [class]="shellPanelClass + ' p-0 overflow-hidden flex flex-col'" [ngClass]="heroPanelToneClasses()">
-      <div class="p-6 flex-1">
-        <div class="flex items-start justify-between">
-          <div>
-            <p class="text-[0.7rem] font-bold uppercase tracking-widest text-slate-500">Suscripción</p>
-            <h3 class="mt-2 text-2xl font-bold tracking-tight text-slate-950">{{ companyStatusLabel() }}</h3>
+      @if (topUnidades(); as topData) {
+        <article [class]="shellPanelClass + ' p-6'">
+          <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white mb-4">Top Unidades Rentables</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+                <tr>
+                  <th class="pb-3 font-semibold uppercase text-[0.65rem] tracking-wider">Unidad</th>
+                  <th class="pb-3 font-semibold uppercase text-[0.65rem] tracking-wider">Propiedad</th>
+                  <th class="pb-3 font-semibold uppercase text-[0.65rem] tracking-wider text-right">Pagos</th>
+                  <th class="pb-3 font-semibold uppercase text-[0.65rem] tracking-wider text-right">Ingresos</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
+                @for (unidad of topData; track unidad.unidad_id) {
+                  <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                    <td class="py-3 font-bold text-slate-950 dark:text-white">{{ unidad.codigo }}</td>
+                    <td class="py-3 font-medium text-slate-500 dark:text-slate-400">{{ unidad.propiedad_nombre }}</td>
+                    <td class="py-3 text-right font-medium text-slate-600 dark:text-slate-400">{{ unidad.total_pagos }}</td>
+                    <td class="py-3 text-right font-bold text-slate-950 dark:text-white">{{ formatCurrency(unidad.total_ingresos) }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="4" class="py-6 text-center text-sm font-medium text-slate-500 dark:text-slate-400">No hay datos disponibles en el periodo.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
-          <div class="flex h-10 w-10 items-center justify-center rounded-md bg-white border border-slate-200 shadow-sm text-slate-900">
-             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-             </svg>
-          </div>
-        </div>
-        
-        <p class="mt-4 text-sm text-slate-600 leading-relaxed max-w-sm">
-          Faltan {{ daysRemainingLabel() }} para completar tu ciclo actual. El sistema está operando al 100%.
-        </p>
-      </div>
+        </article>
+      }
+    </div>
 
-      <div class="mt-auto border-t border-slate-100 bg-slate-50/50 p-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-             <span class="text-xs font-semibold text-slate-900">Plan Actual:</span>
-             <span class="text-xs text-slate-500">Enterprise Pro</span>
+    <div class="space-y-6">
+       @if (morosidad(); as morData) {
+        <article [class]="shellPanelClass + ' overflow-hidden border-slate-200 dark:border-slate-800 shadow-sm'">
+          <div class="p-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex justify-between items-center">
+             <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white">Inquilinos en Mora</h3>
+             <span class="px-2 py-0.5 bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-100 text-[0.65rem] font-bold rounded">{{ morData.total_morosos }}</span>
           </div>
-          <span class="text-[10px] font-bold border border-slate-200 bg-white px-2 py-0.5 rounded text-slate-900">ACTIVO</span>
-        </div>
-      </div>
-    </article>
+          <div class="p-5 space-y-3 bg-slate-50/30 dark:bg-slate-950/50">
+             @for (moroso of morData.morosos; track moroso.contrato_id) {
+                <div class="flex flex-col p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-[0_2px_4px_rgba(0,0,0,0.02)] hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+                   <div class="flex justify-between items-start mb-1.5">
+                     <span class="text-sm font-bold text-slate-950 dark:text-white">{{ moroso.nombre_completo }}</span>
+                     <span class="text-sm font-black tracking-tight text-slate-950 dark:text-white">{{ formatCurrency(moroso.monto_pendiente) }}</span>
+                   </div>
+                   <div class="flex justify-between items-center mt-2">
+                     <span class="text-[0.7rem] font-medium text-slate-500 dark:text-slate-400">{{ moroso.propiedad_nombre }} • {{ moroso.unidad_codigo }}</span>
+                     <span class="font-bold px-2 py-1 text-[0.65rem] uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 rounded border border-slate-200 dark:border-slate-700">{{ moroso.dias_vencido }} días vencido</span>
+                   </div>
+                </div>
+             } @empty {
+               <div class="text-center py-8">
+                 <div class="mx-auto h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-3">
+                   <svg viewBox="0 0 24 24" class="h-6 w-6 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                 </div>
+                 <p class="text-sm font-semibold text-slate-900 dark:text-white">Al día</p>
+                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">No hay morosidad registrada.</p>
+               </div>
+             }
+          </div>
+        </article>
+      }
+
+      @if (contratosVencer(); as contratosData) {
+        <article [class]="shellPanelClass + ' overflow-hidden'">
+          <div class="p-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+             <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white">Contratos por Vencer</h3>
+          </div>
+          <div class="p-5 space-y-4 bg-slate-50/30 dark:bg-slate-950/50">
+             @for (contrato of contratosData; track contrato.contrato_id) {
+                <div class="flex flex-col pb-4 border-b border-slate-200 dark:border-slate-800 last:border-0 last:pb-0">
+                   <div class="flex justify-between items-start mb-1">
+                     <span class="text-sm font-bold text-slate-950 dark:text-white">{{ contrato.cliente_nombre }}</span>
+                     <span class="text-[0.65rem] font-bold px-2 py-0.5 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 uppercase tracking-wider">En {{ contrato.dias_restantes }} días</span>
+                   </div>
+                   <div class="text-xs font-medium text-slate-500 dark:text-slate-400 flex justify-between mt-1">
+                     <span>{{ contrato.propiedad_nombre }} • {{ contrato.unidad_codigo }}</span>
+                     <span>Expira: <span class="text-slate-700 dark:text-slate-300">{{ formatDate(contrato.fecha_fin) }}</span></span>
+                   </div>
+                </div>
+             } @empty {
+                <div class="text-center py-6 text-sm text-slate-500 dark:text-slate-400">
+                 No hay contratos próximos a vencer.
+               </div>
+             }
+          </div>
+        </article>
+      }
+    </div>
   </div>
 </section>

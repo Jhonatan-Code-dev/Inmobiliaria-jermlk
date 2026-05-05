@@ -1,26 +1,33 @@
-<main class="shell">
-  <section class="auth-card">
-    <div class="brand">
-      <div class="logo" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<main class="min-h-screen grid place-items-center p-4 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+  <section class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 shadow-2xl border border-slate-200 dark:border-slate-800 transition-colors duration-300 relative overflow-hidden">
+    
+    <!-- Background Decorator -->
+    <div class="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-slate-100 dark:bg-slate-800/50 blur-3xl opacity-50 pointer-events-none"></div>
+
+    <div class="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left mb-8">
+      <div class="h-12 w-12 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl flex items-center justify-center mb-6 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="h-6 w-6">
           <path d="M32 14L14 28v20a2 2 0 0 0 2 2h12V38h8v12h12a2 2 0 0 0 2-2V28L32 14z" fill="currentColor" />
         </svg>
       </div>
-      <div>
-        <p class="brand__eyebrow">Acceso seguro</p>
-        <h2>Iniciar sesi&oacute;n</h2>
-      </div>
+      <p class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Acceso Seguro</p>
+      <h2 class="text-3xl font-black tracking-tighter">Iniciar sesión</h2>
     </div>
 
-    <p class="muted">Ingresa tus credenciales para continuar con la gesti&oacute;n del sistema.</p>
+    <p class="relative z-10 text-sm font-medium text-slate-500 dark:text-slate-400 mb-8 text-center sm:text-left leading-relaxed">
+      Ingresa tus credenciales para continuar con la gestión del sistema inmobiliario.
+    </p>
 
     @if (error) {
-      <div class="alert" role="alert">{{ error }}</div>
+      <div class="relative z-10 mb-6 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white flex items-center gap-3 animate-fade-in" role="alert">
+        <svg viewBox="0 0 24 24" class="h-5 w-5 text-slate-900 dark:text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>{{ error }}</span>
+      </div>
     }
 
-    <form class="form" [formGroup]="loginForm" (ngSubmit)="submit()">
-      <label class="field">
-        <span>Usuario</span>
+    <form class="relative z-10 space-y-6" [formGroup]="loginForm" (ngSubmit)="submit()">
+      <label class="block space-y-2">
+        <span class="block text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Usuario</span>
         <input
           type="text"
           formControlName="username"
@@ -28,13 +35,14 @@
           autocomplete="username"
           placeholder="tu.usuario"
           required
+          class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900 dark:focus:ring-white outline-none transition-all text-sm font-medium disabled:opacity-50"
         />
       </label>
 
-      <label class="field">
-        <div class="field__row">
-          <span>Contrase&ntilde;a</span>
-          <button type="button" class="link" (click)="togglePassword()">
+      <label class="block space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="block text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Contraseña</span>
+          <button type="button" class="text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors" (click)="togglePassword()">
             {{ showPassword ? 'Ocultar' : 'Mostrar' }}
           </button>
         </div>
@@ -45,17 +53,23 @@
           autocomplete="current-password"
           placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
           required
+          class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:border-slate-900 dark:focus:border-white focus:ring-1 focus:ring-slate-900 dark:focus:ring-white outline-none transition-all text-sm font-medium disabled:opacity-50"
         />
       </label>
 
-      <button class="cta" type="submit" [disabled]="isLoading">
-        {{ isLoading ? 'Verificando...' : 'Ingresar al sistema' }}
+      <button class="w-full h-12 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black uppercase tracking-widest text-xs hover:bg-slate-800 dark:hover:bg-slate-200 transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 flex items-center justify-center mt-2" type="submit" [disabled]="isLoading">
+        @if(isLoading) {
+           <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+           Verificando...
+        } @else {
+           Ingresar al sistema
+        }
       </button>
     </form>
 
-    <div class="auth-card__footer">
-      <span>Soporte interno para administraci&oacute;n y cobranza</span>
-      <small>&copy; 2026 Inmobiliaria</small>
+    <div class="relative z-10 mt-10 pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col items-center text-center space-y-2">
+      <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Soporte interno para administración</span>
+      <small class="text-xs font-medium text-slate-400 dark:text-slate-500">&copy; 2026 Inmobiliaria</small>
     </div>
   </section>
 </main>

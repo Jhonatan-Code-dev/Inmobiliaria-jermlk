@@ -43,8 +43,8 @@ export class ClientesSectionComponent implements OnInit {
 
   readonly empresa = this.authService.empresa;
 
-  readonly shellPanelClass = 'rounded-xl border border-slate-200 bg-white shadow-sm';
-  readonly secondaryPanelClass = 'rounded-lg border border-slate-200 bg-white shadow-sm';
+  readonly shellPanelClass = 'rounded-[1.5rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-colors';
+  readonly secondaryPanelClass = 'rounded-[1.5rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-colors';
 
   readonly searchForm = this.formBuilder.nonNullable.group({
     buscar: ''
@@ -337,7 +337,7 @@ export class ClientesSectionComponent implements OnInit {
 
   feedbackClasses(tone: FeedbackTone): string {
     return tone === 'success'
-      ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+      ? 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white'
       : 'border-rose-200 bg-rose-50 text-rose-800';
   }
 }

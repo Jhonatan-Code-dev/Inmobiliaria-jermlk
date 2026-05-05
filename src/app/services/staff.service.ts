@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiMessageResponse } from '../core/auth/auth.models';
 import { ApiUrlBuilder } from '../core/http/api-url.builder';
-import { StaffFilters, StaffListResponse, StaffMember, StaffPayload } from '../core/staff/staff.models';
+import { StaffFilters, StaffListResponse, StaffMember, StaffPayload, StaffRole } from '../core/staff/staff.models';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,10 @@ export class StaffService {
     if (filters.buscar) params = params.set('buscar', filters.buscar);
 
     return this.http.get<StaffListResponse>(this.apiUrlBuilder.build('/user/staff'), { params });
+  }
+
+  getRoles(): Observable<StaffRole[]> {
+    return this.http.get<StaffRole[]>(this.apiUrlBuilder.build('/user/staff/roles'));
   }
 
   getById(id: number): Observable<StaffMember> {

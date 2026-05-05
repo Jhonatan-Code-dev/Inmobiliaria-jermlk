@@ -1,8 +1,16 @@
+export interface StaffRole {
+  ID: number;
+  Nombre: string;
+  Descripcion: string;
+}
+
 export interface StaffMember {
   id: number;
+  usuario_id: number;
   usuario: string;
-  rol: string;
-  rol_id?: number;
+  rol_id: number;
+  rol_nombre: string;
+  principal: boolean;
   estado: 'activo' | 'inactivo';
 }
 
@@ -17,9 +25,9 @@ export interface StaffListResponse {
 }
 
 export interface StaffPayload {
-  usuario: string;
-  password?: string;
-  rol_id: number;
+  usuario?: string;
+  contrasena?: string;
+  rol_id?: number;
   estado?: 'activo' | 'inactivo';
 }
 

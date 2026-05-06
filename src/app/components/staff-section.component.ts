@@ -128,8 +128,8 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
       <!-- Composer Modal -->
       @if (isComposerOpen()) {
         <div class="fixed inset-0 z-[120] flex items-center justify-center p-4">
-          <div class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity" (click)="closeComposer()"></div>
-          <div class="relative w-full max-w-xl bg-white dark:bg-dark-surface rounded-[3rem] shadow-2xl animate-zoom overflow-hidden transition-colors border border-slate-100 dark:border-dark-border">
+          <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity" (click)="closeComposer()"></div>
+          <div class="relative w-full max-w-xl bg-white dark:bg-dark-surface rounded-[3rem] shadow-2xl animate-zoom overflow-hidden transition-colors border border-slate-100 dark:border-dark-border shadow-black/50">
             <div class="px-10 py-8 bg-slate-50/50 dark:bg-dark-bg/50 border-b border-slate-100 dark:border-dark-border transition-colors flex items-center justify-between">
               <div>
                 <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter transition-colors">{{ editingId() ? 'Editar Miembro' : 'Nuevo Miembro' }}</h3>
@@ -140,36 +140,105 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
               </button>
             </div>
             <form [formGroup]="staffForm" (ngSubmit)="submitStaff()" class="p-10 space-y-6">
+              <!-- Usuario -->
               <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Nombre de Usuario <span class="text-primary-600">*</span></label>
-                <input type="text" formControlName="usuario" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 transition-all text-sm" placeholder="Ej: juan.perez"/>
+                <div class="flex items-center justify-between ml-1">
+                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Nombre de Usuario <span class="text-primary-600 font-black">*</span></label>
+                  @if (isInvalid('usuario')) {
+                    <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('usuario') }}</span>
+                  }
+                </div>
+                <div class="relative group">
+                  <input
+                    type="text"
+                    formControlName="usuario"
+                    placeholder="Ej: juan.perez"
+                    [ngClass]="isInvalid('usuario') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-slate-800 focus:ring-primary-500/20'"
+                    class="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-dark-bg border text-sm font-bold text-slate-900 dark:text-white transition-all outline-none focus:bg-white dark:focus:bg-dark-bg"
+                  />
+                  <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </div>
               </div>
+
+              <!-- Contraseña -->
               @if (!editingId()) {
                 <div class="space-y-2">
-                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Contraseña de Acceso <span class="text-primary-600">*</span></label>
-                  <input type="password" formControlName="contrasena" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 transition-all text-sm" placeholder="Mínimo 6 caracteres"/>
+                  <div class="flex items-center justify-between ml-1">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Contraseña de Acceso <span class="text-primary-600 font-black">*</span></label>
+                    @if (isInvalid('contrasena')) {
+                      <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contrasena') }}</span>
+                    }
+                  </div>
+                  <div class="relative group">
+                    <input
+                      [type]="showPassword() ? 'text' : 'password'"
+                      formControlName="contrasena"
+                      placeholder="Mínimo 6 caracteres"
+                      [ngClass]="isInvalid('contrasena') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-slate-800 focus:ring-primary-500/20'"
+                      class="w-full h-12 pl-12 pr-12 rounded-xl bg-slate-50 dark:bg-dark-bg border text-sm font-bold text-slate-900 dark:text-white transition-all outline-none focus:bg-white dark:focus:bg-dark-bg"
+                    />
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <button type="button" (click)="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary-600 transition-colors outline-none">
+                      @if (showPassword()) {
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                      } @else {
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                      }
+                    </button>
+                  </div>
                 </div>
               }
+
               <div class="grid gap-6" [ngClass]="editingId() ? 'grid-cols-2' : 'grid-cols-1'">
+                <!-- Rol -->
                 <div class="space-y-2">
-                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Rol en el Sistema <span class="text-primary-600">*</span></label>
-                  <select formControlName="rol_id" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-slate-300 focus:ring-2 focus:ring-primary-500 transition-all text-sm">
-                    <option [value]="null" disabled>Seleccionar Rol</option>
-                    @for (rol of roles(); track rol.ID) {
-                      <option [value]="rol.ID">{{ rol.Nombre | uppercase }}</option>
+                  <div class="flex items-center justify-between ml-1">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Rol en el Sistema <span class="text-primary-600 font-black">*</span></label>
+                    @if (isInvalid('rol_id')) {
+                      <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('rol_id') }}</span>
                     }
-                  </select>
+                  </div>
+                  <div class="relative group">
+                    <select
+                      formControlName="rol_id"
+                      [ngClass]="isInvalid('rol_id') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-slate-800 focus:ring-primary-500/20'"
+                      class="w-full h-12 pl-12 pr-10 rounded-xl bg-slate-50 dark:bg-dark-bg border text-sm font-bold text-slate-700 dark:text-slate-300 transition-all outline-none focus:bg-white dark:focus:bg-dark-bg appearance-none cursor-pointer"
+                    >
+                      <option [value]="null" disabled>Seleccionar Rol</option>
+                      @for (rol of roles(); track rol.ID) {
+                        <option [value]="rol.ID">{{ rol.Nombre | uppercase }}</option>
+                      }
+                    </select>
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    <svg class="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M19 9l-7 7-7-7"/></svg>
+                  </div>
                 </div>
+
+                <!-- Estado -->
                 @if (editingId()) {
                   <div class="space-y-2">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors ml-1">Estado de la cuenta</label>
-                    <select formControlName="estado" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-slate-300 focus:ring-2 focus:ring-primary-500 transition-all text-sm">
-                      <option value="activo">Activo</option>
-                      <option value="inactivo">Inactivo</option>
-                    </select>
+                    <div class="flex items-center justify-between ml-1">
+                      <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 transition-colors">Estado de la cuenta <span class="text-primary-600 font-black">*</span></label>
+                      @if (isInvalid('estado')) {
+                        <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('estado') }}</span>
+                      }
+                    </div>
+                    <div class="relative group">
+                      <select
+                        formControlName="estado"
+                        [ngClass]="isInvalid('estado') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-slate-800 focus:ring-primary-500/20'"
+                        class="w-full h-12 pl-12 pr-10 rounded-xl bg-slate-50 dark:bg-dark-bg border text-sm font-bold text-slate-700 dark:text-slate-300 transition-all outline-none focus:bg-white dark:focus:bg-dark-bg appearance-none cursor-pointer"
+                      >
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                      </select>
+                      <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                      <svg class="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M19 9l-7 7-7-7"/></svg>
+                    </div>
                   </div>
                 }
               </div>
+
               <div class="flex gap-3 pt-8 border-t border-slate-100 dark:border-dark-border mt-8 transition-colors">
                 <button type="button" (click)="closeComposer()" class="flex-1 h-12 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:border-dark-border text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-dark-bg transition-all active:scale-95">Cancelar</button>
                 <button type="submit" [disabled]="isSaving() || staffForm.invalid" class="flex-1 h-12 rounded-xl bg-primary-600 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary-500/20 hover:bg-primary-700 dark:hover:bg-slate-200 transition-all active:scale-95 disabled:opacity-50">
@@ -223,14 +292,32 @@ export class StaffSectionComponent implements OnInit {
   readonly editingId = signal<number | null>(null);
   readonly pendingDelete = signal<StaffMember | null>(null);
   readonly feedback = signal<FeedbackState | null>(null);
+  readonly showPassword = signal(false);
+
+  isInvalid(controlName: string): boolean {
+    const control = this.staffForm.get(controlName);
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+
+  getErrorMessage(controlName: string): string {
+    const control = this.staffForm.get(controlName);
+    if (!control || !control.errors) return '';
+    if (control.errors['required']) return 'Obligatorio';
+    if (control.errors['minlength']) return 'Mínimo ' + control.errors['minlength'].requiredLength + ' caracteres';
+    return 'Dato inválido';
+  }
+
+  togglePassword(): void {
+    this.showPassword.update(v => !v);
+  }
 
   // Pagination
   readonly pagination = signal({ total: 0, paginas: 1, pagina_actual: 1, por_pagina: 10 });
 
   readonly searchForm = this.fb.nonNullable.group({ buscar: '' });
   readonly staffForm = this.fb.nonNullable.group({
-    usuario: ['', [Validators.required]],
-    contrasena: ['', [Validators.minLength(6)]],
+    usuario: ['', [Validators.required, Validators.minLength(3)]],
+    contrasena: ['', [Validators.required, Validators.minLength(6)]],
     rol_id: [null as number | null, [Validators.required]],
     estado: ['activo' as 'activo' | 'inactivo']
   });

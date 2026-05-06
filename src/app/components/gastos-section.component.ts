@@ -970,11 +970,18 @@ export class GastosSectionComponent implements OnInit {
   private resetComposerForm(keepOpen: boolean): void {
     this.editingId.set(null);
     this.isComposerOpen.set(keepOpen);
+
+    // Buscar el ID de "Efectivo" para pre-seleccionarlo
+    const efectivoMethod = this.metodosPago().find(m => 
+      m.nombre.toLowerCase().includes('efectivo')
+    );
+    const defaultTipoPago = efectivoMethod ? String(efectivoMethod.id) : '';
+
     this.gastoForm.reset({
       descripcion: '',
       fecha: this.todayDate(),
       monto_display: '',
-      tipo_pago_id: ''
+      tipo_pago_id: defaultTipoPago
     });
   }
 

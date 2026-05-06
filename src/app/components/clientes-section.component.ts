@@ -57,7 +57,7 @@ export class ClientesSectionComponent implements OnInit {
     documento_numero: ['', [Validators.required, Validators.maxLength(20)]],
     correo: ['', [Validators.email]],
     fecha_nacimiento: ['', [Validators.required]],
-    nacionalidad: ['Peruana', [Validators.required]],
+    nacionalidad: ['Peruana', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
     direccion: ['', [Validators.maxLength(255)]],
     contacto_emergencia: ['', [Validators.maxLength(100)]],
     telefono_emergencia: ['', [Validators.maxLength(20)]],
@@ -76,6 +76,25 @@ export class ClientesSectionComponent implements OnInit {
   readonly isComposerOpen = signal(false);
   readonly editingId = signal<number | null>(null);
   readonly pendingDeleteClient = signal<Cliente | null>(null);
+
+  isInvalid(controlName: string): boolean {
+    const control = this.clienteForm.get(controlName);
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+
+  getErrorMessage(controlName: string): string {
+    const control = this.clienteForm.get(controlName);
+    if (!control || !control.errors) return '';
+    if (control.errors['required']) return 'Obligatorio';
+    if (control.errors['email']) return 'Correo inválido';
+    if (control.errors['maxlength']) return 'Muy largo';
+    if (control.errors['minlength']) return 'Incompleto';
+    if (control.errors['pattern']) {
+      if (controlName === 'documento_numero') return 'Solo números';
+      return 'Solo letras';
+    }
+    return 'Dato inválido';
+  }
 
   readonly hasFiltersActive = computed(() => {
     return this.searchForm.getRawValue().buscar.trim().length > 0;
@@ -108,6 +127,11 @@ export class ClientesSectionComponent implements OnInit {
   ngOnInit(): void {
     this.loadClientes(1);
     this.loadTiposIdentificacion();
+
+    // Escuchar cambios en el tipo de documento para ajustar validaciones
+    this.clienteForm.get('tipo_identificacion_id')?.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.updateDocumentValidators());
   }
 
   loadTiposIdentificacion(): void {
@@ -321,6 +345,28 @@ export class ClientesSectionComponent implements OnInit {
       nacionalidad: 'Peruana',
       estado: 'activo'
     });
+    this.updateDocumentValidators();
+  }
+
+  private updateDocumentValidators(): void {
+    const tipoId = this.clienteForm.get('tipo_identificacion_id')?.value;
+    const documentControl = this.clienteForm.get('documento_numero');
+
+    if (!documentControl) return;
+
+    const selectedType = this.tiposIdentificacion().find(t => t.id === Number(tipoId));
+    const validators = [Validators.required];
+
+    if (selectedType?.codigo === 'DNI') {
+      validators.push(Validators.minLength(8), Validators.maxLength(8), Validators.pattern('^[0-9]+$'));
+    } else if (selectedType?.codigo === 'RUC') {
+      validators.push(Validators.minLength(11), Validators.maxLength(11), Validators.pattern('^[0-9]+$'));
+    } else {
+      validators.push(Validators.maxLength(20));
+    }
+
+    documentControl.setValidators(validators);
+    documentControl.updateValueAndValidity();
   }
 
   private setFeedback(tone: FeedbackTone, message: string): void {

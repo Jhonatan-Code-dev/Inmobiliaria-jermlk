@@ -52,4 +52,20 @@ export class GastosService {
       { params }
     );
   }
+
+  downloadReport(formato: 'excel' | 'pdf', filters: GastosFilters): Observable<Blob> {
+    let params = new HttpParams();
+
+    for (const [key, value] of Object.entries(filters)) {
+      if (value === null || value === undefined || value === '') {
+        continue;
+      }
+      params = params.set(key, String(value));
+    }
+
+    return this.http.get(this.apiUrlBuilder.build(`/user/gastos/reporte/${formato}`), {
+      params,
+      responseType: 'blob'
+    });
+  }
 }

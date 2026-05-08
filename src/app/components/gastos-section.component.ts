@@ -13,6 +13,7 @@ import {
 } from '../core/gastos/gastos.models';
 import { AuthService } from '../services/auth.service';
 import { GastosService } from '../services/gastos.service';
+import { ApiUrlBuilder } from '../core/http/api-url.builder';
 
 type FeedbackTone = 'success' | 'error';
 
@@ -223,16 +224,46 @@ const MONTH_OPTIONS = [
             <h3 class="text-xl font-black tracking-tighter text-slate-900 dark:text-white uppercase transition-colors">Historial de Egresos</h3>
             <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1 transition-colors">Listado detallado de movimientos</p>
           </div>
-          <div class="flex items-center gap-2 overflow-hidden text-[10px] font-black uppercase tracking-widest transition-colors">
-            <span class="rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 py-2 text-slate-600 dark:text-slate-400 transition-colors">
-              {{ pagination().total }} registros
-            </span>
-            <span
-              class="rounded-xl border px-4 py-2 transition-colors"
-              [ngClass]="hasFiltersActive() ? 'border-primary-600 dark:border-primary-400 bg-primary-600 dark:bg-primary-400 text-white dark:text-slate-900 shadow-lg shadow-primary-500/20' : 'border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-slate-600 dark:text-slate-400'"
-            >
-              {{ hasFiltersActive() ? 'Filtrado activo' : 'Vista total' }}
-            </span>
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                class="h-10 px-5 rounded-xl border border-emerald-200 dark:border-emerald-900/30 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest transition-all hover:bg-emerald-100 dark:hover:bg-emerald-900/20 active:scale-95 flex items-center gap-2 disabled:opacity-50"
+                [disabled]="isExportingExcel()"
+                (click)="exportReport('excel')"
+              >
+                @if (isExportingExcel()) {
+                  <div class="h-3 w-3 border-2 border-emerald-600 dark:border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+                } @else {
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                }
+                <span>Excel</span>
+              </button>
+              <button
+                type="button"
+                class="h-10 px-5 rounded-xl border border-rose-200 dark:border-rose-900/30 bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-widest transition-all hover:bg-rose-100 dark:hover:bg-rose-900/20 active:scale-95 flex items-center gap-2 disabled:opacity-50"
+                [disabled]="isExportingPdf()"
+                (click)="exportReport('pdf')"
+              >
+                @if (isExportingPdf()) {
+                  <div class="h-3 w-3 border-2 border-rose-600 dark:border-rose-400 border-t-transparent rounded-full animate-spin"></div>
+                } @else {
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                }
+                <span>PDF</span>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 overflow-hidden text-[10px] font-black uppercase tracking-widest transition-colors">
+              <span class="hidden sm:inline-block rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg px-4 py-2 text-slate-600 dark:text-slate-400 transition-colors">
+                {{ pagination().total }} registros
+              </span>
+              <span
+                class="rounded-xl border px-4 py-2 transition-colors"
+                [ngClass]="hasFiltersActive() ? 'border-primary-600 dark:border-primary-400 bg-primary-600 dark:bg-primary-400 text-white dark:text-slate-900 shadow-lg shadow-primary-500/20' : 'border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-slate-600 dark:text-slate-400'"
+              >
+                {{ hasFiltersActive() ? 'Filtrado' : 'Todo' }}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -552,6 +583,7 @@ export class GastosSectionComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly gastosService = inject(GastosService);
   private readonly authService = inject(AuthService);
+  private readonly apiUrlBuilder = inject(ApiUrlBuilder);
 
   readonly empresa = this.authService.empresa;
   readonly monthOptions = MONTH_OPTIONS;
@@ -583,6 +615,9 @@ export class GastosSectionComponent implements OnInit {
   readonly isComposerOpen = signal(false);
   readonly editingId = signal<number | null>(null);
   readonly pendingDeleteExpense = signal<Gasto | null>(null);
+
+  readonly isExportingExcel = signal(false);
+  readonly isExportingPdf = signal(false);
 
   isInvalid(controlName: string): boolean {
     const control = this.gastoForm.get(controlName);
@@ -894,6 +929,50 @@ export class GastosSectionComponent implements OnInit {
     return new Intl.DateTimeFormat('es-PE', {
       dateStyle: 'medium'
     }).format(date);
+  }
+
+  exportReport(formato: 'excel' | 'pdf'): void {
+    const filters = this.buildFilters(1);
+    if (!filters) {
+      this.setFeedback('error', 'No se pudieron determinar los filtros para el reporte.');
+      return;
+    }
+
+    const setLoader = (value: boolean) => {
+      if (formato === 'excel') this.isExportingExcel.set(value);
+      else this.isExportingPdf.set(value);
+    };
+
+    setLoader(true);
+
+    this.gastosService
+      .downloadReport(formato, filters)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => setLoader(false))
+      )
+      .subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          
+          const timestamp = new Date().toISOString().split('T')[0];
+          const extension = formato === 'excel' ? 'xlsx' : 'pdf';
+          link.setAttribute('download', `reporte_gastos_${timestamp}.${extension}`);
+          
+          document.body.appendChild(link);
+          link.click();
+          
+          link.remove();
+          window.URL.revokeObjectURL(url);
+          
+          this.setFeedback('success', `Reporte ${formato.toUpperCase()} generado y descargado correctamente.`);
+        },
+        error: (error: unknown) => {
+          this.setFeedback('error', extractHttpErrorMessage(error, 'No se pudo generar el reporte.'));
+        }
+      });
   }
 
   private buildFilters(page: number): GastosFilters | null {

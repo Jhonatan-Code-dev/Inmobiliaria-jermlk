@@ -64,6 +64,9 @@
       <div class="px-6 py-4 rounded-2xl shadow-2xl border flex items-center gap-3 backdrop-blur-xl" [ngClass]="feedbackClasses(currentFeedback.tone)">
         <div class="h-2 w-2 rounded-full animate-pulse" [ngClass]="currentFeedback.tone === 'success' ? 'bg-primary-600 dark:bg-primary-400' : 'bg-rose-500'"></div>
         <p class="text-xs font-black uppercase tracking-widest">{{ currentFeedback.message }}</p>
+        <button (click)="feedback.set(null)" class="ml-4 hover:opacity-50 transition-opacity">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
       </div>
     </div>
   }
@@ -421,6 +424,8 @@
                     type="text"
                     formControlName="telefono_emergencia"
                     placeholder="999000111"
+                    inputmode="numeric"
+                    (input)="onNumberInput($event, 'telefono_emergencia')"
                     [ngClass]="isInvalid('telefono_emergencia') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500/20'"
                     class="w-full h-12 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-dark-bg border text-sm font-bold text-slate-900 dark:text-white transition-all outline-none focus:bg-white dark:focus:bg-dark-bg"
                   />
@@ -431,8 +436,25 @@
 
             <!-- Notas -->
             <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-1">Notas Adicionales <span class="text-[9px] lowercase font-medium opacity-60">(opcional)</span></label>
-              <textarea formControlName="notas" rows="3" placeholder="Información relevante sobre el cliente..." class="w-full p-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border focus:bg-white dark:focus:bg-dark-bg focus:ring-2 focus:ring-primary-500 transition-all outline-none font-medium text-slate-800 dark:text-slate-200 text-sm resize-none custom-scrollbar"></textarea>
+              <div class="flex items-center justify-between ml-1">
+                <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Notas Adicionales <span class="text-[9px] lowercase font-medium opacity-60">(opcional)</span></label>
+                <div class="flex items-center gap-2">
+                  @if (isInvalid('notas')) {
+                    <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('notas') }}</span>
+                  }
+                  <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                    {{ clienteForm.get('notas')?.value?.length || 0 }}/20
+                  </span>
+                </div>
+              </div>
+              <textarea
+                formControlName="notas"
+                rows="3"
+                maxlength="20"
+                placeholder="Información relevante sobre el cliente..."
+                [ngClass]="isInvalid('notas') ? 'border-rose-500 focus:ring-rose-500/20' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500/20'"
+                class="w-full p-4 rounded-xl bg-slate-50 dark:bg-dark-bg border focus:bg-white dark:focus:bg-dark-bg transition-all outline-none font-medium text-slate-800 dark:text-slate-200 text-sm resize-none custom-scrollbar"
+              ></textarea>
             </div>
 
             <div class="mt-10 flex gap-4 pt-8 border-t border-slate-100 dark:border-dark-border transition-colors">

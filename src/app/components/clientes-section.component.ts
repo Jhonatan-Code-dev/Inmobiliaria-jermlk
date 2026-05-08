@@ -51,17 +51,17 @@ export class ClientesSectionComponent implements OnInit {
   });
 
   readonly clienteForm = this.formBuilder.nonNullable.group({
-    nombres: ['', [Validators.required, Validators.maxLength(100)]],
-    apellidos: ['', [Validators.maxLength(100)]],
+    nombres: ['', [Validators.required, Validators.maxLength(100), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$')]],
+    apellidos: ['', [Validators.maxLength(100), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$')]],
     tipo_identificacion_id: [null as number | null, [Validators.required]],
     documento_numero: ['', [Validators.required, Validators.maxLength(20)]],
     correo: ['', [Validators.email]],
     fecha_nacimiento: ['', [Validators.required]],
     nacionalidad: ['Peruana', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$')]],
     direccion: ['', [Validators.maxLength(255)]],
-    contacto_emergencia: ['', [Validators.maxLength(100)]],
-    telefono_emergencia: ['', [Validators.maxLength(20)]],
-    notas: [''],
+    contacto_emergencia: ['', [Validators.maxLength(100), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$')]],
+    telefono_emergencia: ['', [Validators.maxLength(20), Validators.pattern('^[0-9]+$')]],
+    notas: ['', [Validators.maxLength(20)]],
     estado: ['activo', [Validators.required]]
   });
 
@@ -76,6 +76,7 @@ export class ClientesSectionComponent implements OnInit {
   readonly isComposerOpen = signal(false);
   readonly editingId = signal<number | null>(null);
   readonly pendingDeleteClient = signal<Cliente | null>(null);
+  private feedbackTimeout?: any;
 
   isInvalid(controlName: string): boolean {
     const control = this.clienteForm.get(controlName);
@@ -87,11 +88,15 @@ export class ClientesSectionComponent implements OnInit {
     if (!control || !control.errors) return '';
     if (control.errors['required']) return 'Obligatorio';
     if (control.errors['email']) return 'Correo inválido';
-    if (control.errors['maxlength']) return 'Muy largo';
+    if (control.errors['maxlength']) {
+      if (controlName === 'notas') return 'Máximo 20 caracteres';
+      return 'Muy largo';
+    }
     if (control.errors['minlength']) return 'Incompleto';
     if (control.errors['pattern']) {
-      if (controlName === 'documento_numero') return 'Solo números';
-      return 'Solo letras';
+      if (['documento_numero', 'telefono_emergencia'].includes(controlName)) return 'Solo números';
+      if (['nombres', 'apellidos', 'contacto_emergencia'].includes(controlName)) return 'Solo letras y 1 espacio';
+      return 'Formato inválido';
     }
     return 'Dato inválido';
   }
@@ -123,6 +128,15 @@ export class ClientesSectionComponent implements OnInit {
     if (!client) return '';
     return `"${client.nombres} ${client.apellidos || ''}" (${client.documento_numero})`;
   });
+
+  onNumberInput(event: Event, controlName: string): void {
+    const input = event.target as HTMLInputElement;
+    const sanitized = input.value.replace(/[^0-9]/g, '');
+    if (sanitized !== input.value) {
+      input.value = sanitized;
+      this.clienteForm.get(controlName)?.setValue(sanitized, { emitEvent: false });
+    }
+  }
 
   ngOnInit(): void {
     this.loadClientes(1);
@@ -370,8 +384,14 @@ export class ClientesSectionComponent implements OnInit {
   }
 
   private setFeedback(tone: FeedbackTone, message: string): void {
+    if (this.feedbackTimeout) {
+      clearTimeout(this.feedbackTimeout);
+    }
     this.feedback.set({ tone, message });
-    setTimeout(() => this.feedback.set(null), 5000);
+    this.feedbackTimeout = setTimeout(() => {
+      this.feedback.set(null);
+      this.feedbackTimeout = undefined;
+    }, 8000);
   }
 
   private formatDateForInput(date: Date): string {

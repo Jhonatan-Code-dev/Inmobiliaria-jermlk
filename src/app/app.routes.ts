@@ -76,6 +76,16 @@ export const routes: Routes = [
         path: APP_ROUTE_SEGMENTS.tickets,
         loadComponent: () => import('./pages/tickets-page.component').then(m => m.TicketsPageComponent),
         title: 'Inmobiliaria | Mantenimiento'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.asistencia,
+        loadComponent: () => import('./pages/asistencia-main-page.component').then(m => m.AsistenciaPageComponent),
+        title: 'Inmobiliaria | Asistencia'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.supervision_asistencia,
+        loadComponent: () => import('./pages/asistencia-supervision-page.component').then(m => m.AsistenciaSupervisionPageComponent),
+        title: 'Inmobiliaria | Supervisión Asistencia'
       }
     ]
   },

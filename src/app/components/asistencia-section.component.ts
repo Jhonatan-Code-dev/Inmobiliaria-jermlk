@@ -43,12 +43,12 @@ export class AsistenciaSectionComponent implements OnInit, OnDestroy {
   private clockInterval?: any;
 
   // Estado: Mi Asistencia
-  readonly miHistorial = signal<AsistenciaRegistro[]>([]);
+  readonly miHistorial = signal<AsistenciaRegistro[] | null>([]);
   readonly isMarking = signal(false);
   readonly isLoadingHistorial = signal(false);
 
   readonly todayRecord = computed(() => {
-    const history = this.miHistorial();
+    const history = this.miHistorial() || [];
     if (history.length === 0) return null;
     const today = new Date().toISOString().split('T')[0];
     return history.find(r => r.fecha.startsWith(today)) || null;

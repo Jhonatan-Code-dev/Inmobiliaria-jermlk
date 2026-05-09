@@ -1,4 +1,4 @@
-import { ApplicationConfig, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, inject, provideAppInitializer, provideZoneChangeDetection, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { AuthService } from './services/auth.service';
@@ -14,6 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     { provide: API_BASE_URL, useValue: environment.apiUrl },
+    { provide: LOCALE_ID, useValue: 'es-PE' },
     provideAppInitializer(() => inject(AuthService).restoreSession())
   ]
 };

@@ -64,4 +64,22 @@ export class AsistenciaService {
       this.apiUrlBuilder.build(`/user/asistencia/registros/${registroId}?empresa_id=${empresaId}`)
     );
   }
+
+  exportarReporte(filters: AsistenciaFiltros, formato: 'excel' | 'pdf'): Observable<Blob> {
+    let params = new HttpParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        // Exclude pagination params for export
+        if (key !== 'pag' && key !== 'limite') {
+          params = params.set(key, String(value));
+        }
+      }
+    });
+
+    const endpoint = `/user/asistencia/reporte/${formato}`;
+    return this.http.get(this.apiUrlBuilder.build(endpoint), {
+      params,
+      responseType: 'blob'
+    });
+  }
 }

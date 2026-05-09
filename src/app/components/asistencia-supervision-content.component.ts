@@ -37,6 +37,8 @@ export class AsistenciaSupervisionContentComponent implements OnInit {
   // --- Reporte de Asistencia ---
   readonly registros = signal<AsistenciaRegistro[]>([]);
   readonly isLoading = signal(false);
+  readonly isExportingExcel = signal(false);
+  readonly isExportingPdf = signal(false);
   readonly pagination = signal({
     total: 0,
     pagina: 1,
@@ -133,6 +135,50 @@ export class AsistenciaSupervisionContentComponent implements OnInit {
         error: (err) => this.setFeedback('error', extractHttpErrorMessage(err, 'Error al cargar reporte'))
       });
   }
+
+  exportar(formato: 'excel' | 'pdf'): void {
+    const empresaId = this.empresa()?.id;
+    if (!empresaId) return;
+
+    if (formato === 'excel') this.isExportingExcel.set(true);
+    if (formato === 'pdf') this.isExportingPdf.set(true);
+
+    const formVal = this.filterForm.value;
+    const filtros: AsistenciaFiltros = {
+      empresa_id: empresaId,
+      buscar: formVal.buscar || undefined,
+      fecha: formVal.fecha || undefined,
+      desde: formVal.desde || undefined,
+      hasta: formVal.hasta || undefined
+    };
+
+    this.asistenciaService.exportarReporte(filtros, formato)
+      .pipe(
+        finalize(() => {
+          if (formato === 'excel') this.isExportingExcel.set(false);
+          if (formato === 'pdf') this.isExportingPdf.set(false);
+        })
+      )
+      .subscribe({
+        next: (blob) => {
+          const urlBlob = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = urlBlob;
+          const extension = formato === 'excel' ? 'xlsx' : 'pdf';
+          link.setAttribute('download', `reporte_asistencia.${extension}`);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          window.URL.revokeObjectURL(urlBlob);
+          this.setFeedback('success', `Reporte exportado a ${formato.toUpperCase()}`);
+        },
+        error: (err) => {
+          const msg = extractHttpErrorMessage(err, `Error al exportar a ${formato.toUpperCase()}`);
+          this.setFeedback('error', msg);
+        }
+      });
+  }
+
 
   openDeleteModal(id: number): void {
     this.registroToDeleteId.set(id);

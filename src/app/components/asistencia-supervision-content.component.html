@@ -160,6 +160,29 @@
     @if (activeTab() === 'reporte') {
       <!-- Tabla de Reporte -->
     <div class="bg-white dark:bg-dark-surface rounded-[2.5rem] border border-slate-200 dark:border-dark-border shadow-sm overflow-hidden transition-colors">
+      <!-- Barra de Acciones de Exportación -->
+      <div class="p-6 border-b border-slate-100 dark:border-dark-border flex flex-col sm:flex-row items-center justify-between gap-4">
+        <h3 class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Resultados del Reporte</h3>
+        <div class="flex items-center gap-3">
+          <button (click)="exportar('excel')" [disabled]="isExportingExcel()" class="h-10 px-5 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 font-black uppercase tracking-widest text-[10px] hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all active:scale-95 flex items-center gap-2 border border-emerald-200 dark:border-emerald-800">
+            @if (isExportingExcel()) {
+              <div class="h-4 w-4 border-2 border-emerald-600/30 dark:border-emerald-400/30 border-t-emerald-600 dark:border-t-emerald-400 rounded-full animate-spin"></div>
+            } @else {
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            }
+            Excel
+          </button>
+          <button (click)="exportar('pdf')" [disabled]="isExportingPdf()" class="h-10 px-5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 font-black uppercase tracking-widest text-[10px] hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all active:scale-95 flex items-center gap-2 border border-rose-200 dark:border-rose-800">
+            @if (isExportingPdf()) {
+              <div class="h-4 w-4 border-2 border-rose-600/30 dark:border-rose-400/30 border-t-rose-600 dark:border-t-rose-400 rounded-full animate-spin"></div>
+            } @else {
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            }
+            PDF
+          </button>
+        </div>
+      </div>
+
       <div class="overflow-x-auto custom-scrollbar">
         @if (isLoading() && registros().length === 0) {
           <div class="p-20 flex flex-col items-center justify-center space-y-4">

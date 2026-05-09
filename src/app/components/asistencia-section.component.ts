@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, signal, effect } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal, OnDestroy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { extractHttpErrorMessage } from '../core/http/http-error.utils';
 import { AuthService } from '../services/auth.service';
 import { AsistenciaService } from '../services/asistencia.service';
-import { AsistenciaRegistro, AsistenciaFiltros, Permiso } from '../core/asistencia/asistencia.models';
+import { AsistenciaRegistro } from '../core/asistencia/asistencia.models';
 
 type FeedbackTone = 'success' | 'error';
 
@@ -14,8 +14,6 @@ type FeedbackState = {
   readonly tone: FeedbackTone;
   readonly message: string;
 };
-
-type ActiveTab = 'mi-asistencia' | 'gestion';
 
 @Component({
   selector: 'app-asistencia-section',
@@ -29,7 +27,7 @@ type ActiveTab = 'mi-asistencia' | 'gestion';
   `],
   templateUrl: './asistencia-section.component.html'
 })
-export class AsistenciaSectionComponent implements OnInit {
+export class AsistenciaSectionComponent implements OnInit, OnDestroy {
   private readonly formBuilder = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly asistenciaService = inject(AsistenciaService);
@@ -38,12 +36,11 @@ export class AsistenciaSectionComponent implements OnInit {
   readonly empresa = this.authService.empresa;
   readonly user = this.authService.user;
   
-  readonly activeTab = signal<ActiveTab>('mi-asistencia');
   readonly feedback = signal<FeedbackState | null>(null);
 
   // Reloj
   readonly currentTime = signal<Date>(new Date());
-  private clockInterval?: ReturnType<typeof setInterval>;
+  private clockInterval?: any;
 
   // Estado: Mi Asistencia
   readonly miHistorial = signal<AsistenciaRegistro[]>([]);
@@ -64,10 +61,6 @@ export class AsistenciaSectionComponent implements OnInit {
     if (record.hora_entrada && record.hora_salida) return 'out';
     return 'none';
   });
-
-  // Estado: Gestión
-  readonly registrosGlobales = signal<AsistenciaRegistro[]>([]);
-  readonly isLoadingGlobal = signal(false);
 
   // Modal Confirmación
   readonly isConfirmModalOpen = signal(false);
@@ -96,15 +89,6 @@ export class AsistenciaSectionComponent implements OnInit {
     this.clockInterval = setInterval(() => {
       this.currentTime.set(new Date());
     }, 1000);
-  }
-
-  setActiveTab(tab: ActiveTab): void {
-    this.activeTab.set(tab);
-    if (tab === 'mi-asistencia' && this.miHistorial().length === 0) {
-      this.loadMiHistorial();
-    } else if (tab === 'gestion' && this.registrosGlobales().length === 0) {
-      this.loadRegistrosGlobales(1);
-    }
   }
 
   setFeedback(tone: FeedbackTone, message: string): void {
@@ -198,32 +182,6 @@ export class AsistenciaSectionComponent implements OnInit {
           this.closePermisoModal();
         },
         error: (error) => this.setFeedback('error', extractHttpErrorMessage(error, 'Error al enviar solicitud.'))
-      });
-  }
-
-  // --- Operaciones Admin ---
-
-  loadRegistrosGlobales(page: number): void {
-    const empresaId = this.empresa()?.id;
-    if (!empresaId) return;
-
-    this.isLoadingGlobal.set(true);
-    const filtros: AsistenciaFiltros = {
-      empresa_id: empresaId,
-      pag: page,
-      limite: 10
-    };
-
-    this.asistenciaService.getRegistrosGlobales(filtros)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isLoadingGlobal.set(false))
-      )
-      .subscribe({
-        next: (response) => {
-          this.registrosGlobales.set(response);
-        },
-        error: (error) => this.setFeedback('error', extractHttpErrorMessage(error, 'Error al cargar registros globales.'))
       });
   }
 

@@ -31,6 +31,7 @@ export interface Horario {
 export interface AsistenciaFiltros {
   empresa_id?: number;
   usuario_id?: number;
+  buscar?: string;
   estado?: string;
   desde?: string;
   hasta?: string;
@@ -38,7 +39,13 @@ export interface AsistenciaFiltros {
   limite?: number;
 }
 
-export type AsistenciaGlobalResponse = AsistenciaRegistro[];
+export interface AsistenciaReporteResponse {
+  success: boolean;
+  data: AsistenciaRegistro[];
+  total: number;
+  pagina: number;
+  limite: number;
+}
 
 export interface SolicitudPermisoPayload {
   fecha: string;

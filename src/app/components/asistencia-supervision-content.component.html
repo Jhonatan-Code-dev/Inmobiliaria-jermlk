@@ -7,347 +7,165 @@
       </div>
       <div>
         <h2 class="text-3xl font-black tracking-tighter text-slate-950 dark:text-white transition-colors">Supervisión RRHH</h2>
-        <p class="text-slate-500 dark:text-slate-400 font-medium text-sm transition-colors uppercase tracking-widest">Control y Gestión de Asistencia Global</p>
+        <p class="text-slate-500 dark:text-slate-400 font-medium text-sm transition-colors uppercase tracking-widest">Reporte Detallado de Asistencia</p>
       </div>
-    </div>
-
-    <!-- Pestañas Administrativas -->
-    <div class="flex items-center gap-2 bg-slate-100 dark:bg-dark-bg p-1.5 rounded-2xl border border-slate-200 dark:border-dark-border transition-colors">
-      <button
-        class="px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
-        [ngClass]="activeTab() === 'registros' ? 'bg-white dark:bg-dark-surface text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'"
-        (click)="setTab('registros')"
-      >
-        Registros
-      </button>
-      <button
-        class="px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
-        [ngClass]="activeTab() === 'permisos' ? 'bg-white dark:bg-dark-surface text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'"
-        (click)="setTab('permisos')"
-      >
-        Permisos
-        @if (permisosPendientes().length > 0) {
-          <span class="ml-2 px-1.5 py-0.5 rounded-md bg-indigo-600 text-white text-[8px] animate-pulse">{{ permisosPendientes().length }}</span>
-        }
-      </button>
-      <button
-        class="px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
-        [ngClass]="activeTab() === 'horarios' ? 'bg-white dark:bg-dark-surface text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'"
-        (click)="setTab('horarios')"
-      >
-        Horarios
-      </button>
     </div>
   </div>
 
-  <!-- Contenido: Listado de Registros -->
-  @if (activeTab() === 'registros') {
-    <div class="space-y-6 animate-zoom">
-      <!-- Filtros Avanzados -->
-      <div class="bg-white dark:bg-dark-surface p-6 rounded-[2rem] border border-slate-200 dark:border-dark-border shadow-sm">
-        <form [formGroup]="filterForm" (ngSubmit)="loadRegistros(1)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-          <div class="space-y-2">
-            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">ID Trabajador</label>
-            <input type="number" formControlName="usuario_id" placeholder="Cualquiera" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-          </div>
-          <div class="space-y-2">
-            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Estado</label>
-            <select formControlName="estado" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer">
-              <option value="">Todos los estados</option>
-              <option value="puntual">Puntual</option>
-              <option value="tarde">Tardanzas</option>
-              <option value="falta">Faltas</option>
-              <option value="justificado">Justificado</option>
-            </select>
-          </div>
-          <div class="space-y-2">
-            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Desde</label>
-            <input type="date" formControlName="desde" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-          </div>
-          <div class="space-y-2">
-            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Hasta</label>
-            <input type="date" formControlName="hasta" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-          </div>
-          <button type="submit" class="h-11 rounded-xl bg-indigo-600 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center gap-2">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            Filtrar
-          </button>
-        </form>
-      </div>
-
-      <!-- Tabla Global -->
-      <div class="bg-white dark:bg-dark-surface rounded-[2.5rem] border border-slate-200 dark:border-dark-border shadow-sm overflow-hidden transition-colors">
-        <div class="overflow-x-auto custom-scrollbar">
-          @if (isLoadingRegistros() && registros().length === 0) {
-            <div class="p-20 flex flex-col items-center justify-center space-y-4">
-              <div class="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          } @else if (registros().length > 0) {
-            <table class="w-full text-left">
-              <thead class="bg-slate-50/50 dark:bg-dark-bg/50 border-b border-slate-100 dark:border-dark-border">
-                <tr class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 transition-colors">
-                  <th scope="col" class="px-8 py-5">Trabajador</th>
-                  <th scope="col" class="px-8 py-5">Fecha</th>
-                  <th scope="col" class="px-8 py-5 text-center">Entrada / Salida</th>
-                  <th scope="col" class="px-8 py-5">Estado</th>
-                  <th scope="col" class="px-8 py-5 text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-dark-border transition-colors">
-                @for (r of registros(); track r.id) {
-                  <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
-                    <td class="px-8 py-5">
-                      <div class="flex items-center gap-3">
-                        <div class="h-10 w-10 rounded-full bg-indigo-50 dark:bg-indigo-900/10 flex items-center justify-center font-black text-indigo-600 text-[10px] shadow-sm">
-                          {{ r.usuario_nombre ? r.usuario_nombre.charAt(0).toUpperCase() : '#' }}
-                        </div>
-                        <div class="flex flex-col">
-                          <span class="font-bold text-sm text-slate-900 dark:text-white">{{ r.usuario_nombre || 'Usuario #' + r.usuario_id }}</span>
-                          <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">ID: {{ r.usuario_id }}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="px-8 py-5">
-                      <span class="text-sm font-bold text-slate-600 dark:text-slate-400">{{ formatDate(r.fecha) }}</span>
-                    </td>
-                    <td class="px-8 py-5 text-center">
-                      <div class="flex items-center justify-center gap-2">
-                        <span class="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 font-black text-[10px] tracking-widest shadow-sm">{{ formatTime(r.hora_entrada) }}</span>
-                        <div class="w-2 h-[2px] bg-slate-300 rounded-full"></div>
-                        @if (r.hora_salida) {
-                          <span class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 dark:text-indigo-400 font-black text-[10px] tracking-widest shadow-sm">{{ formatTime(r.hora_salida) }}</span>
-                        } @else {
-                          <span class="text-slate-300 dark:text-slate-600 font-black text-[10px] italic">Pendiente</span>
-                        }
-                      </div>
-                    </td>
-                    <td class="px-8 py-5">
-                      <span class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm inline-flex items-center gap-2"
-                        [ngClass]="{
-                          'bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400': r.estado === 'puntual',
-                          'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-900/20 dark:border-rose-800 dark:text-rose-400': r.estado === 'falta' || r.estado === 'tarde',
-                          'bg-amber-50 border-amber-200 text-amber-600 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400': r.estado === 'permiso' || r.estado === 'justificado'
-                        }">
-                        <div class="h-1.5 w-1.5 rounded-full" [ngClass]="r.estado === 'puntual' ? 'bg-emerald-500' : (r.estado === 'tarde' || r.estado === 'falta' ? 'bg-rose-500' : 'bg-amber-500')"></div>
-                        {{ r.estado }}
-                      </span>
-                    </td>
-                    <td class="px-8 py-5 text-right">
-                      <div class="flex items-center justify-end gap-2">
-                        <button (click)="deleteRegistro(r.id)" class="h-9 w-9 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100 transition-all flex items-center justify-center border border-rose-100 dark:border-rose-800 shadow-sm" title="Eliminar Registro">
-                          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          } @else {
-            <div class="p-20 text-center text-slate-500 font-bold uppercase text-xs tracking-widest">No se encontraron registros con estos filtros</div>
-          }
+  <div class="space-y-6 animate-zoom">
+    <!-- Filtros Avanzados -->
+    <div class="bg-white dark:bg-dark-surface p-6 rounded-[2rem] border border-slate-200 dark:border-dark-border shadow-sm">
+      <form [formGroup]="filterForm" (ngSubmit)="loadReporte(1)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Buscar Trabajador</label>
+          <input type="text" formControlName="buscar" placeholder="Nombre o ID..." class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
         </div>
-      </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Estado</label>
+          <select formControlName="estado" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer">
+            <option value="">Todos los estados</option>
+            <option value="puntual">Puntual</option>
+            <option value="tarde">Tardanza</option>
+            <option value="falta">Falta</option>
+          </select>
+        </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Desde</label>
+          <input type="date" formControlName="desde" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+        </div>
+        <div class="space-y-2">
+          <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Hasta</label>
+          <input type="date" formControlName="hasta" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+        </div>
+        <button type="submit" class="h-11 rounded-xl bg-indigo-600 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center gap-2">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          Filtrar
+        </button>
+      </form>
     </div>
-  }
 
-  <!-- Contenido: Permisos Pendientes -->
-  @if (activeTab() === 'permisos') {
-    <div class="animate-zoom space-y-6">
-      <div class="bg-white dark:bg-dark-surface rounded-[2.5rem] border border-slate-200 dark:border-dark-border shadow-sm overflow-hidden">
-        <div class="p-8 border-b border-slate-100 dark:border-dark-border">
-          <h3 class="text-xl font-black tracking-tighter text-slate-900 dark:text-white uppercase">Solicitudes Pendientes</h3>
-          <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">Justificaciones que requieren tu revisión</p>
-        </div>
-
-        <div class="overflow-x-auto custom-scrollbar">
-          @if (isLoadingPermisos()) {
-            <div class="p-20 flex flex-col items-center justify-center space-y-4">
-              <div class="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          } @else if (permisosPendientes().length > 0) {
-            <table class="w-full text-left">
-              <thead class="bg-slate-50/50 dark:bg-dark-bg/50 border-b border-slate-100 dark:border-dark-border">
-                <tr class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 transition-colors">
-                  <th scope="col" class="px-8 py-5">Trabajador</th>
-                  <th scope="col" class="px-8 py-5">Fecha Solicitada</th>
-                  <th scope="col" class="px-8 py-5">Motivo</th>
-                  <th scope="col" class="px-8 py-5 text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-dark-border transition-colors">
-                @for (p of permisosPendientes(); track p.id) {
-                  <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
-                    <td class="px-8 py-5">
-                      <div class="flex items-center gap-3">
-                        <div class="h-10 w-10 rounded-full bg-slate-100 dark:bg-dark-bg flex items-center justify-center font-black text-indigo-600 text-xs shadow-inner">#{{ p.usuario_id }}</div>
-                        <span class="font-bold text-sm text-slate-900 dark:text-white">ID: {{ p.usuario_id }}</span>
+    <!-- Tabla de Reporte -->
+    <div class="bg-white dark:bg-dark-surface rounded-[2.5rem] border border-slate-200 dark:border-dark-border shadow-sm overflow-hidden transition-colors">
+      <div class="overflow-x-auto custom-scrollbar">
+        @if (isLoading() && registros().length === 0) {
+          <div class="p-20 flex flex-col items-center justify-center space-y-4">
+            <div class="h-12 w-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        } @else if (registros().length > 0) {
+          <table class="w-full text-left">
+            <thead class="bg-slate-50/50 dark:bg-dark-bg/50 border-b border-slate-100 dark:border-dark-border">
+              <tr class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 transition-colors">
+                <th scope="col" class="px-8 py-5">Trabajador</th>
+                <th scope="col" class="px-8 py-5">Fecha</th>
+                <th scope="col" class="px-8 py-5 text-center">Entrada / Salida</th>
+                <th scope="col" class="px-8 py-5">Estado</th>
+                <th scope="col" class="px-8 py-5 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-dark-border transition-colors">
+              @for (r of registros(); track r.id) {
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
+                  <td class="px-8 py-5">
+                    <div class="flex items-center gap-3">
+                      <div class="h-10 w-10 rounded-full bg-indigo-50 dark:bg-indigo-900/10 flex items-center justify-center font-black text-indigo-600 text-[10px] shadow-sm">
+                        {{ r.usuario_nombre ? r.usuario_nombre.charAt(0).toUpperCase() : '#' }}
                       </div>
-                    </td>
-                    <td class="px-8 py-5">
-                      <span class="text-sm font-bold text-slate-600 dark:text-slate-400">{{ formatDate(p.fecha) }}</span>
-                    </td>
-                    <td class="px-8 py-5">
-                      <p class="text-sm font-medium text-slate-600 dark:text-slate-400 max-w-xs truncate" [title]="p.motivo">{{ p.motivo }}</p>
-                    </td>
-                    <td class="px-8 py-5 text-right">
-                      <button (click)="prepararEvaluacion(p)" class="h-10 px-5 rounded-xl bg-indigo-600 text-white font-black uppercase tracking-widest text-[9px] shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95">
-                        Evaluar
-                      </button>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          } @else {
-            <div class="p-24 text-center">
-              <div class="h-20 w-20 bg-slate-50 dark:bg-dark-bg rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300 dark:text-slate-600 shadow-inner">
-                <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              </div>
-              <h4 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tighter">No hay solicitudes pendientes</h4>
-              <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium max-w-[200px] mx-auto text-xs">Todo está al día. Las nuevas solicitudes de permisos aparecerán aquí.</p>
-            </div>
-          }
-        </div>
+                      <div class="flex flex-col">
+                        <span class="font-bold text-sm text-slate-900 dark:text-white">{{ r.usuario_nombre || 'Usuario #' + r.usuario_id }}</span>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">ID: {{ r.usuario_id }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-8 py-5">
+                    <span class="text-sm font-bold text-slate-600 dark:text-slate-400">{{ formatDate(r.fecha) }}</span>
+                  </td>
+                  <td class="px-8 py-5 text-center">
+                    <div class="flex items-center justify-center gap-2">
+                      <span class="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 font-black text-[10px] tracking-widest shadow-sm">{{ formatTime(r.hora_entrada) }}</span>
+                      <div class="w-2 h-[2px] bg-slate-300 rounded-full"></div>
+                      @if (r.hora_salida) {
+                        <span class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 dark:text-indigo-400 font-black text-[10px] tracking-widest shadow-sm">{{ formatTime(r.hora_salida) }}</span>
+                      } @else {
+                        <span class="text-slate-300 dark:text-slate-600 font-black text-[10px] italic">Pendiente</span>
+                      }
+                    </div>
+                  </td>
+                  <td class="px-8 py-5">
+                    <span class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm inline-flex items-center gap-2"
+                      [ngClass]="{
+                        'bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400': r.estado === 'puntual',
+                        'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-900/20 dark:border-rose-800 dark:text-rose-400': r.estado === 'falta' || r.estado === 'tarde',
+                        'bg-amber-50 border-amber-200 text-amber-600 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400': r.estado === 'permiso' || r.estado === 'justificado'
+                      }">
+                      <div class="h-1.5 w-1.5 rounded-full" [ngClass]="r.estado === 'puntual' ? 'bg-emerald-500' : (r.estado === 'tarde' || r.estado === 'falta' ? 'bg-rose-500' : 'bg-amber-500')"></div>
+                      {{ r.estado }}
+                    </span>
+                  </td>
+                  <td class="px-8 py-5 text-right">
+                    <button (click)="openDeleteModal(r.id)" class="h-9 w-9 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100 transition-all flex items-center justify-center border border-rose-100 dark:border-rose-800 shadow-sm" title="Eliminar Registro">
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <div class="p-20 text-center text-slate-500 font-bold uppercase text-xs tracking-widest">No se encontraron registros en el reporte</div>
+        }
       </div>
-    </div>
-  }
 
-  <!-- Contenido: Gestión de Horarios -->
-  @if (activeTab() === 'horarios') {
-    <div class="grid lg:grid-cols-2 gap-8 animate-zoom">
-      <!-- Formulario Asignación -->
-      <div class="bg-white dark:bg-dark-surface p-10 rounded-[2.5rem] border border-slate-200 dark:border-dark-border shadow-sm flex flex-col transition-colors">
-        <h3 class="text-xl font-black tracking-tighter text-slate-900 dark:text-white uppercase mb-8 border-l-4 border-indigo-600 pl-4 transition-colors">Configurar Horario</h3>
+      <!-- Paginación -->
+      @if (totalPaginas() > 1) {
+        <div class="bg-slate-50 dark:bg-dark-bg p-6 border-t border-slate-100 dark:border-dark-border flex items-center justify-between transition-colors">
+          <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+            Mostrando página {{ pagination().pagina }} de {{ totalPaginas() }} ({{ pagination().total }} registros en total)
+          </p>
+          <div class="flex items-center gap-2">
+            <button 
+              [disabled]="pagination().pagina <= 1"
+              (click)="loadReporte(pagination().pagina - 1)"
+              class="h-10 px-6 rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50">
+              Anterior
+            </button>
+            <button 
+              [disabled]="pagination().pagina >= totalPaginas()"
+              (click)="loadReporte(pagination().pagina + 1)"
+              class="h-10 px-6 rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50">
+              Siguiente
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Modal Eliminar Registro -->
+  @if (isDeleteModalOpen()) {
+    <div class="fixed inset-0 z-[600] flex items-center justify-center p-4">
+      <div class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm transition-opacity animate-fade-in" (click)="closeDeleteModal()"></div>
+      
+      <div class="relative w-full max-w-sm overflow-hidden rounded-[2.5rem] bg-white dark:bg-dark-surface shadow-2xl animate-zoom border border-slate-200 dark:border-dark-border p-8 text-center transition-colors">
+        <div class="h-20 w-20 rounded-3xl bg-rose-50 dark:bg-rose-900/20 text-rose-500 flex items-center justify-center mx-auto mb-6 shadow-inner transition-colors">
+          <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </div>
         
-        <form [formGroup]="horarioForm" (ngSubmit)="guardarHorario()" class="space-y-6">
-          <div class="space-y-2">
-            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">ID Trabajador a Configurar</label>
-            <div class="flex gap-2">
-              <input type="number" formControlName="usuario_id" placeholder="Ej: 4" class="flex-1 h-12 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
-              <button type="button" (click)="consultarHorario()" class="h-12 px-6 rounded-xl bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] hover:bg-slate-800 transition-all active:scale-95">Consultar Actual</button>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Hora Entrada</label>
-              <input type="time" formControlName="hora_entrada" class="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Hora Salida</label>
-              <input type="time" formControlName="hora_salida" class="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Tolerancia (Min)</label>
-              <input type="number" formControlName="tolerancia_minutos" class="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Días Laborables (1-7)</label>
-              <input type="text" formControlName="dias_laborables" placeholder="Ej: 1,2,3,4,5" class="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-          </div>
-
-          <button type="submit" [disabled]="isLoadingHorario()" class="w-full h-14 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center gap-3">
-            @if (isLoadingHorario()) {
-              <div class="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+        <h3 class="text-2xl font-black uppercase tracking-tighter text-slate-950 dark:text-white transition-colors">¿Eliminar registro?</h3>
+        <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium text-sm leading-relaxed transition-colors">
+          Esta acción no se puede deshacer. El registro de asistencia será borrado permanentemente del sistema.
+        </p>
+        
+        <div class="grid grid-cols-2 gap-3 mt-8">
+          <button (click)="closeDeleteModal()" class="h-12 rounded-xl bg-slate-100 dark:bg-dark-bg text-slate-600 dark:text-slate-400 font-black uppercase tracking-widest text-[10px] hover:bg-slate-200 transition-all active:scale-95">
+            Cancelar
+          </button>
+          <button (click)="confirmarEliminacion()" [disabled]="isDeleting()" class="h-12 rounded-xl bg-rose-600 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-rose-500/20 hover:bg-rose-700 transition-all active:scale-95 flex items-center justify-center gap-2">
+            @if (isDeleting()) {
+              <div class="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
             } @else {
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-              Guardar y Aplicar Horario
+              Eliminar
             }
           </button>
-        </form>
-      </div>
-
-      <!-- Resumen / Detalle Horario -->
-      <div class="flex flex-col gap-6">
-        <div class="bg-indigo-600 dark:bg-indigo-500 rounded-[2.5rem] p-10 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden">
-          <div class="absolute -right-8 -top-8 h-40 w-40 bg-white/10 rounded-full blur-3xl"></div>
-          <div class="relative z-10">
-            <h4 class="text-indigo-100 text-[10px] font-black uppercase tracking-widest mb-2">Horario Vigente</h4>
-            <div class="text-5xl font-black tracking-tighter mb-6">
-              @if (currentHorario()) {
-                {{ currentHorario().hora_entrada }} - {{ currentHorario().hora_salida }}
-              } @else {
-                -- : --
-              }
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest border border-white/10">Tolerancia: {{ currentHorario()?.tolerancia_minutos || 0 }} min</span>
-              <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest border border-white/10">Días: {{ currentHorario()?.dias_laborables || 'Ninguno' }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-dark-surface p-10 rounded-[2.5rem] border border-slate-200 dark:border-dark-border shadow-sm flex-1">
-          <h4 class="text-slate-900 dark:text-white font-black uppercase tracking-tighter text-lg mb-4">Información de Supervisión</h4>
-          <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">
-            Los horarios definidos aquí controlan automáticamente el cálculo de **Tardanzas** y **Faltas** en los reportes globales. Asegúrese de ingresar correctamente el ID del trabajador para no sobrescribir configuraciones por error.
-          </p>
-          <div class="mt-8 space-y-4">
-            <div class="flex items-center gap-4 text-indigo-600 dark:text-indigo-400">
-              <div class="h-8 w-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center font-black">1</div>
-              <span class="text-xs font-black uppercase tracking-widest">Días laborables: 1 (Lun) al 7 (Dom).</span>
-            </div>
-            <div class="flex items-center gap-4 text-emerald-600 dark:text-emerald-400">
-              <div class="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center font-black">2</div>
-              <span class="text-xs font-black uppercase tracking-widest">Los cambios se aplican al siguiente marcado.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- Modal Evaluación de Permiso -->
-  @if (selectedPermiso()) {
-    <div class="fixed inset-0 z-[200] flex items-center justify-center p-4">
-      <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" (click)="selectedPermiso.set(null)"></div>
-      <div class="relative w-full max-w-lg overflow-hidden rounded-[2.5rem] bg-white dark:bg-dark-surface shadow-2xl animate-zoom border border-white/10 dark:border-dark-border">
-        <div class="p-8 border-b border-slate-100 dark:border-dark-border flex items-center justify-between">
-          <div>
-            <h3 class="text-2xl font-black uppercase tracking-tighter text-slate-900 dark:text-white leading-none">Evaluar Justificación</h3>
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ID Permiso: #{{ selectedPermiso().id }}</span>
-          </div>
-          <button (click)="selectedPermiso.set(null)" class="h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-bg text-slate-400 transition-all flex items-center justify-center">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
-        </div>
-
-        <div class="p-8 space-y-6">
-          <div class="p-5 bg-slate-50 dark:bg-dark-bg rounded-2xl border border-slate-200 dark:border-dark-border">
-            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Motivo del Trabajador</p>
-            <p class="text-slate-700 dark:text-slate-300 font-bold leading-relaxed">"{{ selectedPermiso().motivo }}"</p>
-            <div class="mt-4 flex items-center gap-2">
-              <span class="px-3 py-1 rounded-lg bg-white dark:bg-dark-surface border border-slate-200 dark:border-dark-border text-[9px] font-black uppercase tracking-widest text-slate-500">{{ formatDate(selectedPermiso().fecha) }}</span>
-            </div>
-          </div>
-
-          <form [formGroup]="evaluacionForm" (ngSubmit)="submitEvaluacion()" class="space-y-6">
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Decisión RRHH</label>
-              <div class="grid grid-cols-2 gap-3">
-                <button type="button" (click)="evaluacionForm.patchValue({estado: 'aprobado'})" class="h-12 rounded-xl font-black uppercase tracking-widest text-[10px] border-2 transition-all" [ngClass]="evaluacionForm.get('estado')?.value === 'aprobado' ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600' : 'border-slate-100 dark:border-dark-border text-slate-400 opacity-60'">Aprobar</button>
-                <button type="button" (click)="evaluacionForm.patchValue({estado: 'rechazado'})" class="h-12 rounded-xl font-black uppercase tracking-widest text-[10px] border-2 transition-all" [ngClass]="evaluacionForm.get('estado')?.value === 'rechazado' ? 'border-rose-600 bg-rose-50 dark:bg-rose-900/20 text-rose-600' : 'border-slate-100 dark:border-dark-border text-slate-400 opacity-60'">Rechazar</button>
-              </div>
-            </div>
-
-            <div class="space-y-2">
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Respuesta / Observación</label>
-              <textarea formControlName="respuesta" rows="3" placeholder="Escriba la razón de su decisión..." class="w-full p-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 resize-none transition-all"></textarea>
-            </div>
-
-            <button type="submit" [disabled]="isEvaluatingPermiso()" class="w-full h-14 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center gap-3">
-              @if (isEvaluatingPermiso()) {
-                <div class="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              } @else {
-                Finalizar Evaluación
-              }
-            </button>
-          </form>
         </div>
       </div>
     </div>

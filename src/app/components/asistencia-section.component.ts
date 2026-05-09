@@ -66,13 +66,7 @@ export class AsistenciaSectionComponent implements OnInit, OnDestroy {
   readonly isConfirmModalOpen = signal(false);
   readonly confirmType = signal<'entrada' | 'salida' | null>(null);
 
-  // Modal Permiso
-  readonly isPermisoModalOpen = signal(false);
-  readonly isSubmittingPermiso = signal(false);
-  readonly permisoForm = this.formBuilder.nonNullable.group({
-    fecha: ['', [Validators.required]],
-    motivo: ['', [Validators.required, Validators.maxLength(100)]]
-  });
+
 
   ngOnInit(): void {
     this.startClock();
@@ -152,36 +146,6 @@ export class AsistenciaSectionComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (historial) => this.miHistorial.set(historial),
         error: (error) => this.setFeedback('error', extractHttpErrorMessage(error, 'Error al cargar historial.'))
-      });
-  }
-
-  openPermisoModal(): void {
-    this.permisoForm.reset({ fecha: new Date().toISOString().split('T')[0] });
-    this.isPermisoModalOpen.set(true);
-  }
-
-  closePermisoModal(): void {
-    this.isPermisoModalOpen.set(false);
-  }
-
-  submitPermiso(): void {
-    if (this.permisoForm.invalid) {
-      this.permisoForm.markAllAsTouched();
-      return;
-    }
-
-    this.isSubmittingPermiso.set(true);
-    this.asistenciaService.solicitarPermiso(this.permisoForm.getRawValue())
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isSubmittingPermiso.set(false))
-      )
-      .subscribe({
-        next: () => {
-          this.setFeedback('success', 'Solicitud de permiso enviada.');
-          this.closePermisoModal();
-        },
-        error: (error) => this.setFeedback('error', extractHttpErrorMessage(error, 'Error al enviar solicitud.'))
       });
   }
 

@@ -7,44 +7,158 @@
       </div>
       <div>
         <h2 class="text-3xl font-black tracking-tighter text-slate-950 dark:text-white transition-colors">Supervisión RRHH</h2>
-        <p class="text-slate-500 dark:text-slate-400 font-medium text-sm transition-colors uppercase tracking-widest">Reporte Detallado de Asistencia</p>
+        <p class="text-slate-500 dark:text-slate-400 font-medium text-sm transition-colors uppercase tracking-widest">{{ activeTab() === 'reporte' ? 'Reporte Detallado' : 'Configuración Global' }}</p>
       </div>
+    </div>
+
+    <!-- Pestañas -->
+    <div class="flex items-center gap-2 bg-slate-100 dark:bg-dark-bg p-1.5 rounded-2xl border border-slate-200 dark:border-dark-border transition-colors">
+      <button 
+        (click)="setTab('reporte')"
+        class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
+        [ngClass]="activeTab() === 'reporte' ? 'bg-white dark:bg-dark-surface text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-dark-border' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'">
+        Reporte
+      </button>
+      <button 
+        (click)="setTab('configuracion')"
+        class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
+        [ngClass]="activeTab() === 'configuracion' ? 'bg-white dark:bg-dark-surface text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-dark-border' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'">
+        Política Global
+      </button>
     </div>
   </div>
 
   <div class="space-y-6 animate-zoom">
-    <!-- Filtros Avanzados -->
-    <div class="bg-white dark:bg-dark-surface p-6 rounded-[2rem] border border-slate-200 dark:border-dark-border shadow-sm">
-      <form [formGroup]="filterForm" (ngSubmit)="loadReporte(1)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-        <div class="space-y-2">
-          <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Buscar Trabajador</label>
-          <input type="text" formControlName="buscar" placeholder="Nombre o ID..." class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-        </div>
-        <div class="space-y-2">
-          <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Estado</label>
-          <select formControlName="estado" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer">
-            <option value="">Todos los estados</option>
-            <option value="puntual">Puntual</option>
-            <option value="tarde">Tardanza</option>
-            <option value="falta">Falta</option>
-          </select>
-        </div>
-        <div class="space-y-2">
-          <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Desde</label>
-          <input type="date" formControlName="desde" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-        </div>
-        <div class="space-y-2">
-          <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Hasta</label>
-          <input type="date" formControlName="hasta" class="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-        </div>
-        <button type="submit" class="h-11 rounded-xl bg-indigo-600 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center gap-2">
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          Filtrar
-        </button>
-      </form>
-    </div>
+    @if (activeTab() === 'reporte') {
+      <!-- Filtros Avanzados -->
+      <div class="bg-white dark:bg-dark-surface p-8 rounded-[2rem] border border-slate-200 dark:border-dark-border shadow-sm">
+        <form [formGroup]="filterForm" (ngSubmit)="loadReporte(1)" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 items-end">
+          
+          <!-- Búsqueda por Nombre -->
+          <div class="space-y-3">
+            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1 flex items-center gap-2">
+              <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              Trabajador
+            </label>
+            <input type="text" formControlName="buscar" placeholder="Buscar por nombre..." class="w-full h-12 px-5 rounded-2xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
+          </div>
 
-    <!-- Tabla de Reporte -->
+          <!-- Filtro por Día Único -->
+          <div class="space-y-3">
+            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400 ml-1 flex items-center gap-2">
+              <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              Por Fecha
+            </label>
+            <input type="date" formControlName="fecha" class="w-full h-12 px-5 rounded-2xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
+          </div>
+
+          <!-- Rango: Desde -->
+          <div class="space-y-3">
+            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Rango: Desde</label>
+            <input type="date" formControlName="desde" class="w-full h-12 px-5 rounded-2xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
+          </div>
+
+          <!-- Rango: Hasta -->
+          <div class="space-y-3">
+            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Rango: Hasta</label>
+            <input type="date" formControlName="hasta" class="w-full h-12 px-5 rounded-2xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
+          </div>
+
+          <!-- Botón de Acción -->
+          <button type="submit" class="h-12 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center gap-2">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Refrescar
+          </button>
+        </form>
+      </div>
+    }
+
+    @if (activeTab() === 'configuracion') {
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Explicación -->
+        <div class="lg:col-span-1 space-y-6">
+          <div class="bg-indigo-600 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-indigo-500/20 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
+            <div class="relative z-10">
+              <h3 class="text-2xl font-black tracking-tighter mb-4">Política de Asistencia</h3>
+              <p class="text-indigo-100 font-medium leading-relaxed mb-6">
+                Define el horario base para toda la empresa. Este horario se aplicará automáticamente a todos los trabajadores que no tengan un horario específico asignado.
+              </p>
+              <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                  <div class="h-6 w-6 rounded-lg bg-white/20 flex items-center justify-center shrink-0 mt-1">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                  </div>
+                  <p class="text-xs font-bold text-indigo-50">Cálculo automático de puntualidad y tardanza.</p>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div class="h-6 w-6 rounded-lg bg-white/20 flex items-center justify-center shrink-0 mt-1">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                  </div>
+                  <p class="text-xs font-bold text-indigo-50">Margen de tolerancia personalizable por empresa.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario de Configuración -->
+        <div class="lg:col-span-2 bg-white dark:bg-dark-surface rounded-[2.5rem] border border-slate-200 dark:border-dark-border shadow-sm p-10 transition-colors">
+          <form [formGroup]="configForm" (ngSubmit)="saveConfig()" class="space-y-10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <div class="space-y-3">
+                <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Hora de Entrada (24h)</label>
+                <div class="relative">
+                  <input type="time" formControlName="hora_entrada" class="w-full h-14 px-6 rounded-2xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-black text-slate-900 dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
+                </div>
+              </div>
+              <div class="space-y-3">
+                <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Hora de Salida (24h)</label>
+                <div class="relative">
+                  <input type="time" formControlName="hora_salida" class="w-full h-14 px-6 rounded-2xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-black text-slate-900 dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Tolerancia de Entrada (Minutos)</label>
+              <div class="flex items-center gap-4">
+                <input type="number" formControlName="tolerancia_minutos" class="w-32 h-14 px-6 rounded-2xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-bg text-sm font-black text-slate-900 dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
+                <span class="text-sm font-bold text-slate-500">minutos de gracia antes de marcar tardanza.</span>
+              </div>
+            </div>
+
+            <div class="space-y-5">
+              <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Días Laborables</label>
+              <div class="flex flex-wrap gap-3">
+                @for (dia of diasSemana; track dia.id) {
+                  <button type="button" 
+                    (click)="toggleDay(dia.id)"
+                    [ngClass]="isDaySelected(dia.id) ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'bg-white dark:bg-dark-bg border-slate-200 dark:border-dark-border text-slate-400 dark:text-slate-600 hover:border-indigo-500 hover:text-indigo-600'"
+                    class="h-12 w-12 rounded-xl border-2 font-black text-xs transition-all active:scale-90 flex items-center justify-center">
+                    {{ dia.label }}
+                  </button>
+                }
+              </div>
+            </div>
+
+            <div class="pt-6 border-t border-slate-100 dark:border-dark-border flex justify-end">
+              <button type="submit" 
+                [disabled]="isSavingConfig()"
+                class="h-14 px-10 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest text-xs shadow-2xl shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 flex items-center gap-3">
+                @if (isSavingConfig()) {
+                  <div class="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                }
+                Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'reporte') {
+      <!-- Tabla de Reporte -->
     <div class="bg-white dark:bg-dark-surface rounded-[2.5rem] border border-slate-200 dark:border-dark-border shadow-sm overflow-hidden transition-colors">
       <div class="overflow-x-auto custom-scrollbar">
         @if (isLoading() && registros().length === 0) {
@@ -58,6 +172,7 @@
                 <th scope="col" class="px-8 py-5">Trabajador</th>
                 <th scope="col" class="px-8 py-5">Fecha</th>
                 <th scope="col" class="px-8 py-5 text-center">Entrada / Salida</th>
+                <th scope="col" class="px-8 py-5 text-center">Horas</th>
                 <th scope="col" class="px-8 py-5">Estado</th>
                 <th scope="col" class="px-8 py-5 text-right">Acciones</th>
               </tr>
@@ -80,15 +195,32 @@
                     <span class="text-sm font-bold text-slate-600 dark:text-slate-400">{{ formatDate(r.fecha) }}</span>
                   </td>
                   <td class="px-8 py-5 text-center">
-                    <div class="flex items-center justify-center gap-2">
-                      <span class="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 font-black text-[10px] tracking-widest shadow-sm">{{ formatTime(r.hora_entrada) }}</span>
-                      <div class="w-2 h-[2px] bg-slate-300 rounded-full"></div>
-                      @if (r.hora_salida) {
-                        <span class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 dark:text-indigo-400 font-black text-[10px] tracking-widest shadow-sm">{{ formatTime(r.hora_salida) }}</span>
-                      } @else {
-                        <span class="text-slate-300 dark:text-slate-600 font-black text-[10px] italic">Pendiente</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                      <div class="flex items-center justify-center gap-2">
+                        <span class="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 font-black text-[10px] tracking-widest shadow-sm">{{ formatTime(r.hora_entrada) }}</span>
+                        <div class="w-2 h-[2px] bg-slate-300 rounded-full"></div>
+                        @if (r.hora_salida) {
+                          <span class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 dark:text-indigo-400 font-black text-[10px] tracking-widest shadow-sm">{{ formatTime(r.hora_salida) }}</span>
+                        } @else {
+                          <span class="text-slate-300 dark:text-slate-600 font-black text-[10px] italic">Pendiente</span>
+                        }
+                      </div>
+                      @if (r.hora_entrada_esperada) {
+                        <div class="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                          <span>Ref: {{ r.hora_entrada_esperada }}</span>
+                          @if (r.hora_salida_esperada) {
+                            <span>- {{ r.hora_salida_esperada }}</span>
+                          }
+                        </div>
                       }
                     </div>
+                  </td>
+                  <td class="px-8 py-5 text-center">
+                    @if (r.horas_trabajadas !== null) {
+                      <span class="text-sm font-black text-slate-900 dark:text-white">{{ formatDuration(r.horas_trabajadas) }}</span>
+                    } @else {
+                      <span class="text-slate-300 dark:text-slate-600 text-[10px] font-black italic">--:--</span>
+                    }
                   </td>
                   <td class="px-8 py-5">
                     <span class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm inline-flex items-center gap-2"
@@ -138,6 +270,7 @@
         </div>
       }
     </div>
+    }
   </div>
 
   <!-- Modal Eliminar Registro -->

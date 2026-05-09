@@ -7,6 +7,7 @@ import {
   AsistenciaFiltros,
   AsistenciaRegistro,
   AsistenciaReporteResponse,
+  AsistenciaConfiguracion,
   Permiso,
   SolicitudPermisoPayload
 } from '../core/asistencia/asistencia.models';
@@ -43,6 +44,19 @@ export class AsistenciaService {
     return this.http.get<AsistenciaReporteResponse>(this.apiUrlBuilder.build('/user/asistencia/reporte'), {
       params
     });
+  }
+
+  getAsistenciaConfiguracion(empresaId: number): Observable<AsistenciaConfiguracion> {
+    return this.http.get<AsistenciaConfiguracion>(
+      this.apiUrlBuilder.build(`/user/asistencia/configuracion?empresa_id=${empresaId}`)
+    );
+  }
+
+  updateAsistenciaConfiguracion(empresaId: number, config: AsistenciaConfiguracion): Observable<AsistenciaConfiguracion> {
+    return this.http.post<AsistenciaConfiguracion>(
+      this.apiUrlBuilder.build(`/user/asistencia/configuracion?empresa_id=${empresaId}`),
+      config
+    );
   }
 
   deleteRegistro(empresaId: number, registroId: number): Observable<ApiMessageResponse> {

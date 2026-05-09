@@ -9,6 +9,8 @@ export interface AsistenciaRegistro {
   estado: 'puntual' | 'tarde' | 'falta' | 'permiso' | 'justificado';
   notas: string | null;
   horas_trabajadas: number | null;
+  hora_entrada_esperada?: string;
+  hora_salida_esperada?: string;
 }
 
 export interface Permiso {
@@ -32,6 +34,7 @@ export interface AsistenciaFiltros {
   empresa_id?: number;
   usuario_id?: number;
   buscar?: string;
+  fecha?: string;
   estado?: string;
   desde?: string;
   hasta?: string;
@@ -45,6 +48,13 @@ export interface AsistenciaReporteResponse {
   total: number;
   pagina: number;
   limite: number;
+}
+
+export interface AsistenciaConfiguracion {
+  hora_entrada: string;
+  hora_salida: string;
+  tolerancia_minutos: number;
+  dias_laborables: string;
 }
 
 export interface SolicitudPermisoPayload {

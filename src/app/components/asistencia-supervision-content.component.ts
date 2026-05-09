@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { finalize, debounceTime, distinctUntilChanged } from 'rxjs';
 import { extractHttpErrorMessage } from '../core/http/http-error.utils';
 import { AuthService } from '../services/auth.service';
 import { AsistenciaService } from '../services/asistencia.service';
@@ -32,6 +32,7 @@ export class AsistenciaSupervisionContentComponent implements OnInit {
 
   readonly empresa = this.authService.empresa;
   readonly feedback = signal<{ tone: FeedbackTone, message: string } | null>(null);
+  readonly activeTab = signal<'reporte' | 'configuracion'>('reporte');
 
   // --- Reporte de Asistencia ---
   readonly registros = signal<AsistenciaRegistro[]>([]);
@@ -52,13 +53,46 @@ export class AsistenciaSupervisionContentComponent implements OnInit {
   // Filtros
   readonly filterForm = this.formBuilder.group({
     buscar: [''],
-    estado: [''],
+    fecha: [''],
     desde: [''],
     hasta: ['']
   });
 
+  // --- Configuración Global ---
+  readonly isSavingConfig = signal(false);
+  readonly isLoadingConfig = signal(false);
+  readonly configForm = this.formBuilder.nonNullable.group({
+    hora_entrada: ['08:00', [Validators.required]],
+    hora_salida: ['17:00', [Validators.required]],
+    tolerancia_minutos: [15, [Validators.required, Validators.min(0)]],
+    dias_laborables: ['1,2,3,4,5', [Validators.required]]
+  });
+
+  readonly diasSemana = [
+    { id: '1', label: 'L' },
+    { id: '2', label: 'M' },
+    { id: '3', label: 'X' },
+    { id: '4', label: 'J' },
+    { id: '5', label: 'V' },
+    { id: '6', label: 'S' },
+    { id: '7', label: 'D' }
+  ];
+
   ngOnInit(): void {
     this.loadReporte(1);
+    this.loadConfig();
+
+    // Búsqueda y filtrado en tiempo real
+    this.filterForm.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
+      )
+      .subscribe(() => this.loadReporte(1));
+  }
+
+  setTab(tab: 'reporte' | 'configuracion'): void {
+    this.activeTab.set(tab);
   }
 
   private setFeedback(tone: FeedbackTone, message: string): void {
@@ -78,7 +112,7 @@ export class AsistenciaSupervisionContentComponent implements OnInit {
       pag: page,
       limite: this.pagination().limite,
       buscar: formVal.buscar || undefined,
-      estado: formVal.estado || undefined,
+      fecha: formVal.fecha || undefined,
       desde: formVal.desde || undefined,
       hasta: formVal.hasta || undefined
     };
@@ -130,7 +164,79 @@ export class AsistenciaSupervisionContentComponent implements OnInit {
       });
   }
 
+  // --- Gestión de Configuración ---
+
+  loadConfig(): void {
+    const empresaId = this.empresa()?.id;
+    if (!empresaId) return;
+
+    this.isLoadingConfig.set(true);
+    this.asistenciaService.getAsistenciaConfiguracion(empresaId)
+      .pipe(finalize(() => this.isLoadingConfig.set(false)))
+      .subscribe({
+        next: (config) => {
+          this.configForm.patchValue(config);
+        },
+        error: (err) => this.setFeedback('error', extractHttpErrorMessage(err, 'Error al cargar configuración'))
+      });
+  }
+
+  saveConfig(): void {
+    const empresaId = this.empresa()?.id;
+    if (!empresaId) return;
+
+    if (this.configForm.invalid) {
+      this.configForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSavingConfig.set(true);
+    this.asistenciaService.updateAsistenciaConfiguracion(empresaId, this.configForm.getRawValue())
+      .pipe(finalize(() => this.isSavingConfig.set(false)))
+      .subscribe({
+        next: () => {
+          this.setFeedback('success', 'Configuración actualizada correctamente');
+        },
+        error: (err) => this.setFeedback('error', extractHttpErrorMessage(err, 'Error al guardar configuración'))
+      });
+  }
+
+  toggleDay(dayId: string): void {
+    const currentDays = this.configForm.getRawValue().dias_laborables.split(',').filter(d => d !== '');
+    const index = currentDays.indexOf(dayId);
+    
+    if (index > -1) {
+      currentDays.splice(index, 1);
+    } else {
+      currentDays.push(dayId);
+    }
+    
+    this.configForm.patchValue({
+      dias_laborables: currentDays.sort().join(',')
+    });
+  }
+
+  isDaySelected(dayId: string): boolean {
+    return this.configForm.getRawValue().dias_laborables.split(',').includes(dayId);
+  }
+
   // Utils
+  formatDuration(hoursDecimal: number | null): string {
+    if (hoursDecimal === null) return '--:--';
+    
+    const totalSeconds = Math.round(hoursDecimal * 3600);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+
+    let result = '';
+    if (h > 0) result += `${h}h `;
+    if (m > 0 || h > 0) result += `${m}m `;
+    result += `${s}s`;
+    
+    return result.trim();
+  }
+
   formatTime(isoString: string | null): string {
     if (!isoString) return '--:--';
     const date = new Date(isoString);
@@ -142,6 +248,6 @@ export class AsistenciaSupervisionContentComponent implements OnInit {
     if (!isoString) return '';
     const date = new Date(isoString);
     if (isNaN(date.getTime())) return isoString;
-    return new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium' }).format(date);
+    return new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium', timeZone: 'UTC' }).format(date);
   }
 }

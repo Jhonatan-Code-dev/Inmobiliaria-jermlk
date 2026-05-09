@@ -197,6 +197,6 @@ export class AsistenciaSectionComponent implements OnInit, OnDestroy {
     if (!isoString) return '';
     const date = new Date(isoString);
     if (isNaN(date.getTime())) return isoString;
-    return new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium' }).format(date);
+    return new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium', timeZone: 'UTC' }).format(date);
   }
 }

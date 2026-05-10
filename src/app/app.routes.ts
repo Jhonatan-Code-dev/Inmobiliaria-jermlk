@@ -86,6 +86,11 @@ export const routes: Routes = [
         path: APP_ROUTE_SEGMENTS.supervision_asistencia,
         loadComponent: () => import('./pages/asistencia-supervision-page.component').then(m => m.AsistenciaSupervisionPageComponent),
         title: 'Inmobiliaria | Supervisión Asistencia'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.cola_trabajo,
+        loadComponent: () => import('./pages/cola-trabajo-page.component').then(m => m.ColaTrabajoPageComponent),
+        title: 'Inmobiliaria | Cola de Trabajo'
       }
     ]
   },

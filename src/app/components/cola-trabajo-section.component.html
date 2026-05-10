@@ -1,0 +1,104 @@
+<section class="max-w-7xl mx-auto space-y-8 p-4">
+  <!-- Header -->
+  <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between bg-white dark:bg-dark-surface p-8 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-dark-border transition-colors">
+    <div>
+      <h2 class="text-3xl font-black tracking-tighter text-slate-950 dark:text-white border-l-8 border-rose-600 dark:border-rose-500 pl-4 transition-colors uppercase">Cola de Trabajo</h2>
+      <p class="text-slate-500 dark:text-slate-400 font-medium mt-1 ml-4 transition-colors">Tareas de mantenimiento prioritarias y pendientes de atención.</p>
+    </div>
+  </div>
+
+  <!-- Tickets Grid -->
+  <div class="space-y-6">
+    <div class="flex items-center justify-between px-2">
+      <h3 class="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Tareas Prioritarias para Hoy</h3>
+      <span class="text-[10px] font-bold text-slate-400 italic">Ordenado por urgencia y antigüedad</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @if (isLoading()) {
+        <div class="col-span-full p-24 flex flex-col items-center justify-center space-y-4">
+           <div class="h-12 w-12 border-4 border-rose-600 dark:border-rose-400 border-t-transparent rounded-full animate-spin"></div>
+           <p class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Sincronizando tareas...</p>
+        </div>
+      } @else {
+        @if (tickets() && tickets()!.length > 0) {
+          @for (t of tickets(); track t.id) {
+            <div class="bg-white dark:bg-dark-surface border border-slate-200 dark:border-dark-border p-8 rounded-[2.5rem] space-y-5 hover:border-primary-500 dark:hover:border-primary-400 transition-all shadow-sm hover:shadow-xl hover:shadow-primary-500/5 group relative overflow-hidden">
+               <!-- Priority Bar -->
+               <div class="absolute top-0 left-0 w-2 h-full transition-colors" [ngClass]="{
+                 'bg-rose-500': t.prioridad === 'alta',
+                 'bg-amber-500': t.prioridad === 'media',
+                 'bg-emerald-500': t.prioridad === 'baja'
+               }"></div>
+
+               <div class="flex items-center justify-between">
+                  <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors shadow-sm" [ngClass]="getPriorityClass(t.prioridad)">{{ t.prioridad }}</span>
+                  <span class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">#{{ t.id }}</span>
+               </div>
+
+               <div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <svg class="h-3 w-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <span class="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-tighter">{{ t.unidad_nombre || 'Unidad ' + t.unidad_id }}</span>
+                  </div>
+                  <h3 class="text-sm font-black text-slate-950 dark:text-white uppercase tracking-tight group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{{ t.asunto }}</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-3 leading-relaxed transition-colors">{{ t.descripcion }}</p>
+                  
+                  @if (t.cliente_nombre) {
+                    <div class="flex items-center gap-2 mt-4 pt-4 border-t border-slate-50 dark:border-slate-800">
+                      <div class="h-6 w-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black text-slate-500">{{ t.cliente_nombre[0] }}</div>
+                      <span class="text-[10px] font-bold text-slate-500 uppercase">{{ t.cliente_nombre }}</span>
+                    </div>
+                  }
+               </div>
+
+               <!-- Status & Actions -->
+               <div class="pt-5 border-t border-slate-100 dark:border-dark-border flex items-center justify-between transition-colors">
+                  <div class="flex items-center gap-2">
+                    <div class="h-2 w-2 rounded-full" [ngClass]="{
+                      'bg-emerald-500 animate-pulse': t.estado === 'abierto',
+                      'bg-indigo-500': t.estado === 'en_progreso',
+                      'bg-blue-500': t.estado === 'resuelto',
+                      'bg-slate-400': t.estado === 'cerrado'
+                    }"></div>
+                    <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest transition-colors">{{ t.estado }}</span>
+                  </div>
+
+                  <div class="flex gap-2">
+                    @if (t.estado === 'abierto') {
+                      <button (click)="updateStatus(t.id, 'en_progreso')" title="Iniciar reparación" class="h-8 px-4 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-all text-[9px] font-black uppercase tracking-widest border border-indigo-100">Trabajar</button>
+                    } @else if (t.estado === 'en_progreso') {
+                      <button (click)="updateStatus(t.id, 'resuelto')" title="Marcar como resuelto" class="h-8 px-4 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all text-[9px] font-black uppercase tracking-widest border border-emerald-100">Resolver</button>
+                    }
+                  </div>
+               </div>
+            </div>
+          }
+        } @else {
+          <div class="col-span-full p-24 text-center">
+            <div class="h-24 w-24 bg-slate-50 dark:bg-dark-surface rounded-full flex items-center justify-center mx-auto mb-6 text-slate-400 dark:text-slate-500 transition-colors shadow-inner border border-slate-100 dark:border-dark-border">
+               <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter transition-colors">Sin Tareas Pendientes</h3>
+            <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium transition-colors max-w-xs mx-auto">¡Buen trabajo! No tienes tickets urgentes por atender ahora mismo.</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Feedback Toast -->
+  @if (feedback(); as f) {
+    <div class="fixed bottom-8 right-8 z-[500] animate-zoom">
+      <div class="px-6 py-4 rounded-2xl shadow-2xl border flex items-center gap-3 backdrop-blur-xl" [ngClass]="f.tone === 'success' ? 'bg-slate-900 border-white/10 text-white' : 'bg-rose-600 border-rose-500 text-white'">
+        <div class="h-2 w-2 rounded-full animate-pulse" [ngClass]="f.tone === 'success' ? 'bg-emerald-400' : 'bg-white'"></div>
+        <p class="text-[10px] font-black uppercase tracking-widest">{{ f.message }}</p>
+      </div>
+    </div>
+  }
+</section>
+
+<style>
+  .animate-zoom { animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+</style>

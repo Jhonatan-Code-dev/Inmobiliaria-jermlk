@@ -12,7 +12,7 @@ import { ClientesService } from '../services/clientes.service';
 import { InmueblesService } from '../services/inmuebles.service';
 
 // Models
-import { Alquiler, AlquilerPayload, AlquileresFilters, AlquileresPaginacion, PagoPendiente, PagoPayload, Plantilla, GeneradorBorradorPayload } from '../core/alquileres/alquileres.models';
+import { Alquiler, AlquilerPayload, AlquileresFilters, AlquileresPaginacion, PagoPendiente, PagoPayload, GeneradorBorradorPayload } from '../core/alquileres/alquileres.models';
 import { Cliente } from '../core/clientes/clientes.models';
 import { Inmueble, Unidad } from '../core/inmuebles/inmuebles.models';
 
@@ -42,7 +42,7 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
         <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 class="text-3xl font-black tracking-tighter text-slate-950 dark:text-white border-l-8 border-primary-600 dark:border-primary-500 pl-4 transition-colors">Alquileres y Contratos</h2>
-            <p class="text-slate-500 dark:text-slate-400 font-medium mt-1 ml-4 transition-colors">Gestiona tus contratos, plantillas y recibe pagos de forma centralizada.</p>
+            <p class="text-slate-500 dark:text-slate-400 font-medium mt-1 ml-4 transition-colors">Gestiona tus contratos, emite documentos legales y centraliza tus recaudaciones.</p>
           </div>
           @if (activeTab() === 'activos') {
             <button (click)="openComposer()" class="bg-primary-600 dark:bg-primary-500 text-white rounded-xl px-5 py-3.5 font-bold text-xs uppercase tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-all flex items-center gap-2 group shadow-xl shadow-primary-500/20 active:scale-95">
@@ -61,16 +61,10 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
             Contratos Activos
           </button>
           <button 
-            (click)="setTab('plantillas')"
+            (click)="setTab('emision')"
             class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
-            [ngClass]="activeTab() === 'plantillas' ? 'bg-white dark:bg-dark-surface text-primary-600 dark:text-primary-400 shadow-sm border border-slate-200 dark:border-dark-border' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'">
-            Plantillas
-          </button>
-          <button 
-            (click)="setTab('borrador')"
-            class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
-            [ngClass]="activeTab() === 'borrador' ? 'bg-white dark:bg-dark-surface text-primary-600 dark:text-primary-400 shadow-sm border border-slate-200 dark:border-dark-border' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'">
-            Borrador Rápido
+            [ngClass]="activeTab() === 'emision' ? 'bg-white dark:bg-dark-surface text-primary-600 dark:text-primary-400 shadow-sm border border-slate-200 dark:border-dark-border' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'">
+            Emisión de Contrato
           </button>
         </div>
       </div>
@@ -231,91 +225,29 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                 <button (click)="openPago(selectedAlquiler()!); closeDetail()" class="w-full h-12 rounded-xl bg-primary-600 dark:bg-primary-500 text-white font-black uppercase tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-colors shadow-lg active:scale-95 mb-4">Cobrar Cuota</button>
                 
                 <div class="bg-slate-50 dark:bg-dark-bg p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-                  <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Generar Contrato</label>
-                  <select #templateSelect (change)="docTemplateId.set(+templateSelect.value)" class="w-full h-10 px-3 rounded-lg bg-white dark:bg-dark-surface border border-slate-200 dark:border-slate-700 outline-none text-xs font-bold text-slate-800 dark:text-slate-200 mb-3">
-                     <option value="0">Formato Estándar</option>
-                     @for (p of plantillas(); track p.id) {
-                       <option [value]="p.id">{{ p.nombre }}</option>
-                     }
-                  </select>
-                  <button (click)="generarDocumentoFromAlquiler(); closeDetail()" class="w-full h-10 rounded-lg bg-slate-900 dark:bg-slate-800 text-white font-black uppercase tracking-widest text-[10px] hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors shadow-sm active:scale-95 flex items-center justify-center gap-2">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    Generar
+                  <button (click)="generarDocumentoFromAlquiler(); closeDetail()" class="w-full h-12 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-black uppercase tracking-widest text-[10px] hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors shadow-sm active:scale-95 flex items-center justify-center gap-2">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Emitir Contrato
                   </button>
                 </div>
             </div>
           </div>
         </div>
       }
-      <!-- Vista Plantillas -->
-      @if (activeTab() === 'plantillas') {
-        <div class="bg-white dark:bg-dark-surface border border-slate-200 dark:border-dark-border rounded-[2rem] shadow-sm overflow-hidden transition-colors">
-          <div class="p-8 border-b border-slate-100 dark:border-dark-border flex items-center justify-between">
-            <div>
-              <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Plantillas de Contrato</h3>
-              <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">Administra los textos base para tus alquileres.</p>
-            </div>
-            <button (click)="openPlantillaForm()" class="h-10 px-6 rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-black uppercase tracking-widest text-[10px] hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-colors shadow-sm active:scale-95">Nueva Plantilla</button>
-          </div>
-          
-          <div class="overflow-x-auto custom-scrollbar">
-            @if (isLoadingPlantillas()) {
-              <div class="p-20 flex flex-col items-center justify-center space-y-4">
-                <div class="h-10 w-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
-              </div>
-            } @else if (plantillas().length > 0) {
-              <table class="w-full text-left">
-                <thead class="bg-slate-50/50 dark:bg-dark-bg/50 border-b border-slate-100 dark:border-dark-border">
-                  <tr class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em]">
-                    <th class="px-8 py-5">Nombre</th>
-                    <th class="px-8 py-5">Última Modificación</th>
-                    <th class="px-8 py-5 text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-dark-border">
-                  @for (p of plantillas(); track p.id) {
-                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                      <td class="px-8 py-6">
-                        <p class="text-sm font-bold text-slate-900 dark:text-white">{{ p.nombre }}</p>
-                      </td>
-                      <td class="px-8 py-6">
-                        <p class="text-[10px] font-bold text-slate-500">{{ p.creado_en | date:'medium' }}</p>
-                      </td>
-                      <td class="px-8 py-6 text-right">
-                        <button (click)="openPlantillaForm(p)" class="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-primary-600 mx-1 transition-colors"><svg class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
-                        <button (click)="confirmDeletePlantilla(p)" class="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-rose-600 mx-1 transition-colors"><svg class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            } @else {
-              <div class="p-20 text-center text-slate-500 font-bold uppercase text-xs tracking-widest">No hay plantillas registradas</div>
-            }
-          </div>
-        </div>
-      }
 
-      <!-- Vista Borrador Rápido -->
-      @if (activeTab() === 'borrador') {
+
+
+      <!-- Vista Emisión de Contrato -->
+      @if (activeTab() === 'emision') {
         <div class="bg-white dark:bg-dark-surface p-8 rounded-[2rem] shadow-sm border border-slate-200 dark:border-dark-border">
            <div class="mb-8 pb-6 border-b border-slate-100 dark:border-dark-border">
-             <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Borrador de Contrato Rápido</h3>
-             <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">Genera un contrato al vuelo sin registrarlo permanentemente en el sistema. Los datos del cliente se autocompletarán si el documento ya existe.</p>
+             <h3 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Emisión de Contrato Independiente</h3>
+             <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">Genera un contrato legal de forma inmediata sin registro previo en la base de datos. Ideal para cierres rápidos o pre-visualizaciones legales.</p>
            </div>
            
-           <form [formGroup]="borradorForm" (ngSubmit)="generarBorrador()" class="space-y-8">
+           <form [formGroup]="contratoDirectoForm" (ngSubmit)="emitirContratoDirecto()" class="space-y-8">
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                 <!-- Plantilla -->
-                 <div class="space-y-1.5 lg:col-span-3">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Plantilla a Usar</label>
-                    <select formControlName="plantilla_id" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors">
-                      <option [value]="0">Formato Estándar por Defecto</option>
-                      @for (p of plantillas(); track p.id) {
-                        <option [value]="p.id">{{ p.nombre }}</option>
-                      }
-                    </select>
-                 </div>
+
                  
                  <div class="space-y-1.5">
                     <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Documento Cliente</label>
@@ -373,10 +305,7 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                  </div>
               </div>
               
-              <div class="space-y-1.5">
-                 <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Observaciones</label>
-                 <textarea formControlName="observaciones" rows="2" class="w-full p-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors custom-scrollbar"></textarea>
-              </div>
+
 
               <div class="flex justify-end pt-4">
                  <button type="submit" [disabled]="isGenerating()" class="h-14 px-8 rounded-2xl bg-primary-600 dark:bg-primary-500 text-white font-black uppercase tracking-widest shadow-xl shadow-primary-500/20 hover:bg-primary-700 transition-all active:scale-95 flex items-center gap-2">
@@ -385,89 +314,10 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                     } @else {
                       <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     }
-                    Generar Borrador
+                    Descargar Contrato
                  </button>
               </div>
            </form>
-        </div>
-      }
-
-      <!-- Plantilla Form Modal -->
-      @if (isPlantillaFormOpen()) {
-        <div class="fixed inset-0 z-[200] flex justify-end overflow-hidden">
-           <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" (click)="closePlantillaForm()"></div>
-           <div class="relative w-full max-w-xl bg-white dark:bg-dark-surface shadow-2xl animate-slide flex flex-col transition-colors border-l border-slate-200 dark:border-slate-800">
-              <div class="px-8 py-6 bg-primary-600 dark:bg-primary-700 text-white flex items-center justify-between border-b border-primary-500">
-                 <div>
-                   <h3 class="text-xl font-black uppercase tracking-tighter">{{ plantillaForm.value.id ? 'Editar' : 'Nueva' }} Plantilla</h3>
-                   <p class="text-[10px] font-bold text-primary-100 mt-1 uppercase tracking-widest">Editor de Documentos</p>
-                 </div>
-                 <button (click)="closePlantillaForm()" class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-primary-700 transition-colors">
-                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
-                 </button>
-              </div>
-              
-              <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
-                 <form [formGroup]="plantillaForm" (ngSubmit)="submitPlantilla()" class="space-y-6 h-full flex flex-col">
-                    <div class="space-y-1.5 shrink-0">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Nombre de Plantilla</label>
-                       <input type="text" formControlName="nombre" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors" placeholder="Ej: Contrato de Alquiler Residencial"/>
-                    </div>
-                    
-                    <div class="p-5 bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-800 rounded-2xl shrink-0">
-                       <p class="text-xs font-black text-indigo-700 dark:text-indigo-400 mb-3 uppercase tracking-widest flex items-center gap-2">
-                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                         Diccionario de Variables
-                       </p>
-                       <div class="grid grid-cols-2 gap-2 text-[10px] font-mono text-indigo-900 dark:text-indigo-200">
-                          <div>{{ '{' + '{cliente_nombre}' + '}' }}</div>
-                          <div>{{ '{' + '{cliente_apellidos}' + '}' }}</div>
-                          <div>{{ '{' + '{cliente_documento}' + '}' }}</div>
-                          <div>{{ '{' + '{cliente_correo}' + '}' }}</div>
-                          <div>{{ '{' + '{cliente_direccion}' + '}' }}</div>
-                          <div>{{ '{' + '{unidad_codigo}' + '}' }}</div>
-                          <div>{{ '{' + '{monto_renta}' + '}' }}</div>
-                          <div>{{ '{' + '{monto_deposito}' + '}' }}</div>
-                          <div>{{ '{' + '{moneda}' + '}' }}</div>
-                          <div>{{ '{' + '{fecha_inicio}' + '}' }}</div>
-                          <div>{{ '{' + '{fecha_fin}' + '}' }}</div>
-                          <div>{{ '{' + '{dia_vencimiento}' + '}' }}</div>
-                          <div>{{ '{' + '{observaciones}' + '}' }}</div>
-                       </div>
-                    </div>
-
-                    <div class="space-y-1.5 flex-1 flex flex-col min-h-[300px]">
-                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Contenido (Markdown)</label>
-                       <textarea formControlName="contenido" class="flex-1 w-full p-5 rounded-2xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-mono text-sm text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-primary-500 transition-colors resize-none custom-scrollbar" placeholder="# Contrato de Arrendamiento..."></textarea>
-                    </div>
-
-                    <button type="submit" [disabled]="isSaving()" class="shrink-0 w-full h-14 rounded-2xl bg-primary-600 dark:bg-primary-500 text-white font-black uppercase tracking-widest shadow-xl shadow-primary-500/20 hover:bg-primary-700 transition-all active:scale-95 flex items-center justify-center gap-2">
-                       @if (isSaving()) {
-                         <div class="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                       }
-                       Guardar Plantilla
-                    </button>
-                 </form>
-              </div>
-           </div>
-        </div>
-      }
-
-      <!-- Delete Plantilla Modal -->
-      @if (pendingDeletePlantilla()) {
-        <div class="fixed inset-0 z-[250] flex items-center justify-center p-4">
-           <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" (click)="pendingDeletePlantilla.set(null)"></div>
-           <div class="relative w-full max-w-sm bg-white dark:bg-dark-surface p-8 rounded-[2rem] shadow-2xl animate-zoom text-center transition-colors border border-slate-100 dark:border-dark-border">
-              <div class="h-16 w-16 bg-rose-50 dark:bg-rose-950/30 rounded-full flex items-center justify-center mx-auto mb-4 text-rose-600 dark:text-rose-400 transition-colors">
-                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-              </div>
-              <h3 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tighter pb-2">¿Eliminar Plantilla?</h3>
-              <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-4 mb-8 italic">Se borrará permanentemente la plantilla "{{ pendingDeletePlantilla()?.nombre }}".</p>
-              <div class="flex gap-2">
-                 <button (click)="pendingDeletePlantilla.set(null)" class="flex-1 h-11 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Cancelar</button>
-                 <button (click)="onConfirmDeletePlantilla()" [disabled]="isSaving()" class="flex-1 h-11 rounded-xl bg-rose-600 dark:bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-rose-700 active:scale-95 transition-all">Eliminar</button>
-              </div>
-           </div>
         </div>
       }
 
@@ -705,7 +555,7 @@ export class AlquileresSectionComponent implements OnInit {
   readonly feedback = signal<FeedbackState | null>(null);
 
   // Tabs
-  readonly activeTab = signal<'activos' | 'plantillas' | 'borrador'>('activos');
+  readonly activeTab = signal<'activos' | 'emision'>('activos');
 
   // States Alquileres
   readonly isLoadingList = signal(false);
@@ -727,11 +577,7 @@ export class AlquileresSectionComponent implements OnInit {
   readonly pendingFinalizarAlquiler = signal<Alquiler | null>(null);
   readonly pendingDeleteAlquiler = signal<Alquiler | null>(null);
 
-  // States Plantillas
-  readonly plantillas = signal<Plantilla[]>([]);
-  readonly isLoadingPlantillas = signal(false);
-  readonly isPlantillaFormOpen = signal(false);
-  readonly pendingDeletePlantilla = signal<Plantilla | null>(null);
+
 
   // States Generador de Contratos (Unificado a Word)
   readonly isGenerating = signal(false);
@@ -764,14 +610,7 @@ export class AlquileresSectionComponent implements OnInit {
     mes_correspondiente: [this.currentMonth(), [Validators.required, Validators.min(1), Validators.max(12)]]
   });
 
-  readonly plantillaForm = this.fb.nonNullable.group({
-    id: [0],
-    nombre: ['', [Validators.required]],
-    contenido: ['', [Validators.required]]
-  });
-
-  readonly borradorForm = this.fb.nonNullable.group({
-    plantilla_id: [0],
+  readonly contratoDirectoForm = this.fb.nonNullable.group({
     cliente_documento: ['', [Validators.required]],
     cliente_nombre: ['', [Validators.required]],
     cliente_apellidos: ['', [Validators.required]],
@@ -783,22 +622,18 @@ export class AlquileresSectionComponent implements OnInit {
     moneda: ['PEN', [Validators.required]],
     fecha_inicio: ['', [Validators.required]],
     fecha_fin: ['', [Validators.required]],
-    dia_vencimiento: [5, [Validators.required, Validators.min(1), Validators.max(31)]],
-    observaciones: ['Ninguna']
+    dia_vencimiento: [5, [Validators.required, Validators.min(1), Validators.max(31)]]
   });
 
   ngOnInit(): void { 
     this.loadAlquileres(1);
     this.checkPagosPendientes();
-    this.loadPlantillas();
   }
 
-  setTab(tab: 'activos' | 'plantillas' | 'borrador'): void {
+  setTab(tab: 'activos' | 'emision'): void {
     this.activeTab.set(tab);
-    if (tab === 'plantillas') this.loadPlantillas();
-    if (tab === 'borrador') {
-      this.loadPlantillas();
-      this.borradorForm.patchValue({
+    if (tab === 'emision') {
+      this.contratoDirectoForm.patchValue({
         fecha_inicio: this.todayDate(),
         fecha_fin: this.nextYearDate()
       });
@@ -980,64 +815,7 @@ export class AlquileresSectionComponent implements OnInit {
       });
   }
 
-  // --- Plantillas Logic ---
-  loadPlantillas(): void {
-    this.isLoadingPlantillas.set(true);
-    this.alquileresService.getPlantillas()
-      .pipe(finalize(() => this.isLoadingPlantillas.set(false)))
-      .subscribe({
-        next: (res) => this.plantillas.set(res),
-        error: () => {}
-      });
-  }
 
-  openPlantillaForm(item?: Plantilla): void {
-    if (item) {
-      this.plantillaForm.patchValue(item);
-    } else {
-      this.plantillaForm.reset({ id: 0, nombre: '', contenido: '' });
-    }
-    this.isPlantillaFormOpen.set(true);
-  }
-
-  closePlantillaForm(): void { this.isPlantillaFormOpen.set(false); }
-
-  submitPlantilla(): void {
-    if (this.plantillaForm.invalid) {
-      this.plantillaForm.markAllAsTouched();
-      return;
-    }
-    this.isSaving.set(true);
-    this.alquileresService.savePlantilla(this.plantillaForm.getRawValue())
-      .pipe(finalize(() => this.isSaving.set(false)))
-      .subscribe({
-        next: () => {
-          this.setFeedback('success', 'Plantilla guardada correctamente.');
-          this.closePlantillaForm();
-          this.loadPlantillas();
-        },
-        error: e => this.setFeedback('error', extractHttpErrorMessage(e, 'Error al guardar plantilla.'))
-      });
-  }
-
-  confirmDeletePlantilla(item: Plantilla): void {
-    this.pendingDeletePlantilla.set(item);
-  }
-
-  onConfirmDeletePlantilla(): void {
-    const item = this.pendingDeletePlantilla();
-    if (!item) return;
-    this.isSaving.set(true);
-    this.alquileresService.deletePlantilla(item.id)
-      .pipe(finalize(() => { this.isSaving.set(false); this.pendingDeletePlantilla.set(null); }))
-      .subscribe({
-        next: () => {
-          this.setFeedback('success', 'Plantilla eliminada.');
-          this.loadPlantillas();
-        },
-        error: e => this.setFeedback('error', extractHttpErrorMessage(e, 'Error al eliminar.'))
-      });
-  }
 
   // --- Generación de Contratos Logic ---
   closeDocumentView(): void {
@@ -1046,7 +824,6 @@ export class AlquileresSectionComponent implements OnInit {
   }
 
   openDocumentGenerator(alquiler: Alquiler): void {
-    this.loadPlantillas();
     this.selectedAlquilerForDoc.set(alquiler);
     this.docTemplateId.set(0);
   }
@@ -1067,20 +844,20 @@ export class AlquileresSectionComponent implements OnInit {
       });
   }
 
-  generarBorrador(): void {
-    if (this.borradorForm.invalid) {
-      this.borradorForm.markAllAsTouched();
+  emitirContratoDirecto(): void {
+    if (this.contratoDirectoForm.invalid) {
+      this.contratoDirectoForm.markAllAsTouched();
       return;
     }
     this.isGenerating.set(true);
-    this.alquileresService.generarBorradorWord(this.borradorForm.getRawValue())
+    this.alquileresService.generarBorradorWord(this.contratoDirectoForm.getRawValue())
       .pipe(finalize(() => this.isGenerating.set(false)))
       .subscribe({
         next: (blob) => {
-          this.triggerDownload(blob, 'borrador_contrato.doc');
-          this.setFeedback('success', 'Borrador Word generado y descargado.');
+          this.triggerDownload(blob, 'contrato_emision_directa.doc');
+          this.setFeedback('success', 'Contrato generado y listo para descarga.');
         },
-        error: e => this.setFeedback('error', 'Error al generar borrador Word.')
+        error: e => this.setFeedback('error', 'Error al emitir contrato legal.')
       });
   }
 

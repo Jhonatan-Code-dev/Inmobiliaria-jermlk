@@ -10,7 +10,10 @@ import {
   AlquileresListResponse,
   PagoPayload,
   PagoPendiente,
-  PagoResponse
+  PagoResponse,
+  Plantilla,
+  GenerarDocumentoResponse,
+  GeneradorBorradorPayload
 } from '../core/alquileres/alquileres.models';
 
 @Injectable({
@@ -63,5 +66,47 @@ export class AlquileresService {
   getPagosPendientes(empresaId: number): Observable<PagoPendiente[]> {
     const params = new HttpParams().set('empresa_id', String(empresaId));
     return this.http.get<PagoPendiente[]>(`${this.apiUrlBuilder.build('/user/pagos')}/pendientes`, { params });
+  }
+
+  // --- Plantillas ---
+  getPlantillas(): Observable<Plantilla[]> {
+    return this.http.get<Plantilla[]>(this.apiUrlBuilder.build('/user/alquileres/plantillas'));
+  }
+
+  savePlantilla(payload: { id: number, nombre: string, contenido: string }): Observable<Plantilla> {
+    return this.http.post<Plantilla>(this.apiUrlBuilder.build('/user/alquileres/plantillas'), payload);
+  }
+
+  deletePlantilla(id: number): Observable<ApiMessageResponse> {
+    return this.http.delete<ApiMessageResponse>(`${this.apiUrlBuilder.build('/user/alquileres/plantillas')}/${id}`);
+  }
+
+  // --- Generación de Contratos (Unificado a Word) ---
+  generarDocumentoWord(alquilerId: number, plantillaId?: number): Observable<Blob> {
+    let params = new HttpParams();
+    if (plantillaId && plantillaId > 0) {
+      params = params.set('plantilla_id', String(plantillaId));
+    }
+    return this.http.get(`${this.apiUrlBuilder.build('/user/alquileres')}/${alquilerId}/descargar-word`, {
+      params,
+      responseType: 'blob'
+    });
+  }
+
+  generarBorradorWord(payload: any): Observable<Blob> {
+    return this.http.post(this.apiUrlBuilder.build('/user/alquileres/generar-borrador'), payload, {
+      responseType: 'blob'
+    });
+  }
+
+  descargarDocumento(alquilerId: number, tipo: 'pdf' | 'word', plantillaId?: number): Observable<Blob> {
+    let params = new HttpParams();
+    if (plantillaId && plantillaId > 0) {
+      params = params.set('plantilla_id', String(plantillaId));
+    }
+    return this.http.get(`${this.apiUrlBuilder.build('/user/alquileres')}/${alquilerId}/descargar-${tipo}`, {
+      params,
+      responseType: 'blob'
+    });
   }
 }

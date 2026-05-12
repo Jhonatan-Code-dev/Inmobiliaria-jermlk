@@ -73,3 +73,33 @@ export interface PagoPendiente {
   fecha_vencimiento: string;
   estado: string;
 }
+
+export interface Plantilla {
+  id: number;
+  empresa_id: number;
+  nombre: string;
+  contenido: string;
+  creado_en: string;
+}
+
+export interface GenerarDocumentoResponse {
+  alquiler_id?: number;
+  contenido: string;
+}
+
+export interface GeneradorBorradorPayload {
+  plantilla_id: number;
+  cliente_documento: string;
+  cliente_nombre: string;
+  cliente_apellidos: string;
+  cliente_direccion: string;
+  cliente_correo: string;
+  unidad_codigo: string;
+  monto_renta: number;
+  monto_deposito: number;
+  moneda: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  dia_vencimiento: number;
+  observaciones: string;
+}

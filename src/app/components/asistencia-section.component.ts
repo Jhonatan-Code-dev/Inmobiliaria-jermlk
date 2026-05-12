@@ -50,8 +50,13 @@ export class AsistenciaSectionComponent implements OnInit, OnDestroy {
   readonly todayRecord = computed(() => {
     const history = this.miHistorial() || [];
     if (history.length === 0) return null;
-    const today = new Date().toISOString().split('T')[0];
-    return history.find(r => r.fecha.startsWith(today)) || null;
+    
+    // Comparar por fecha local (YYYY-MM-DD)
+    const today = new Date().toLocaleDateString('en-CA');
+    return history.find(r => {
+      const fechaBase = r.hora_entrada || r.fecha;
+      return new Date(fechaBase).toLocaleDateString('en-CA') === today;
+    }) || null;
   });
 
   readonly attendanceStatus = computed(() => {
@@ -161,6 +166,7 @@ export class AsistenciaSectionComponent implements OnInit, OnDestroy {
     if (!isoString) return '';
     const date = new Date(isoString);
     if (isNaN(date.getTime())) return isoString;
-    return new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium', timeZone: 'UTC' }).format(date);
+    // Eliminamos timeZone: 'UTC' para que use la hora local del navegador
+    return new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium' }).format(date);
   }
 }

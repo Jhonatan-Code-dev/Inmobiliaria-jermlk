@@ -105,11 +105,12 @@
               @for (registro of miHistorial(); track registro.id) {
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                   <td class="whitespace-nowrap px-8 py-5">
-                    <span class="font-bold text-sm text-slate-900 dark:text-white">{{ formatDate(registro.fecha) }}</span>
+                    <span class="font-bold text-sm text-slate-900 dark:text-white">{{ formatDate(registro.hora_entrada || registro.fecha) }}</span>
                   </td>
                   <td class="whitespace-nowrap px-8 py-5 text-center">
                     <span class="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 font-black text-xs">{{ formatTime(registro.hora_entrada) }}</span>
                   </td>
+
                   <td class="whitespace-nowrap px-8 py-5 text-center">
                     @if (registro.hora_salida) {
                       <span class="px-3 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/10 text-amber-600 dark:text-amber-400 font-black text-xs">{{ formatTime(registro.hora_salida) }}</span>

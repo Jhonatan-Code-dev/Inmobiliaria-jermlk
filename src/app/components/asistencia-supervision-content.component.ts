@@ -294,6 +294,7 @@ export class AsistenciaSupervisionContentComponent implements OnInit {
     if (!isoString) return '';
     const date = new Date(isoString);
     if (isNaN(date.getTime())) return isoString;
-    return new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium', timeZone: 'UTC' }).format(date);
+    // Eliminamos timeZone: 'UTC' para que use la hora local del navegador
+    return new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium' }).format(date);
   }
 }

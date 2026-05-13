@@ -36,7 +36,7 @@ export interface AlquilerPayload {
 }
 
 export interface AlquileresFilters {
-  empresa_id: number;
+  empresa_id?: number;
   pag?: number;
   por_pagina?: number;
   buscar?: string;

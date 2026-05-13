@@ -21,6 +21,24 @@ export class ServiciosService {
     return this.http.get<MedicionesListResponse>(this.apiUrlBuilder.build('/user/servicios'), { params });
   }
 
+  getUltimaLectura(contratoId: number, tipo: 'luz' | 'agua' = 'luz'): Observable<Partial<Medicion>> {
+    const params = new HttpParams().set('tipo', tipo);
+    return this.http.get<Partial<Medicion>>(this.apiUrlBuilder.build(`/user/servicios/ultimo/${contratoId}`), { params });
+  }
+
+  registrarYCobrar(payload: MedicionPayload): Observable<any> {
+    return this.http.post<any>(this.apiUrlBuilder.build('/user/servicios/registrar-y-cobrar'), payload);
+  }
+
+  registrarMasivo(payload: MedicionPayload[]): Observable<any> {
+    return this.http.post<any>(this.apiUrlBuilder.build('/user/servicios/masivo'), payload);
+  }
+
+  getPendientes(tipo: 'luz' | 'agua' = 'luz'): Observable<any[]> {
+    const params = new HttpParams().set('tipo', tipo);
+    return this.http.get<any[]>(this.apiUrlBuilder.build('/user/servicios/pendientes'), { params });
+  }
+
   getById(id: number): Observable<Medicion> {
     return this.http.get<Medicion>(`${this.apiUrlBuilder.build('/user/servicios')}/${id}`);
   }

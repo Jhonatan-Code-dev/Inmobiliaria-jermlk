@@ -25,10 +25,7 @@ type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
           <h2 class="text-3xl font-black tracking-tighter text-slate-950 dark:text-white border-l-8 border-primary-600 dark:border-primary-500 pl-4 transition-colors">Gestión de Cargos</h2>
           <p class="text-slate-500 dark:text-slate-400 font-medium mt-1 ml-4 transition-colors">Administra deudas, penalizaciones y cargos adicionales.</p>
         </div>
-        <button (click)="openComposer()" class="bg-primary-600 dark:bg-primary-500 text-white rounded-xl px-6 py-3.5 font-bold text-xs uppercase tracking-widest hover:bg-primary-700 dark:hover:bg-primary-400 transition-all flex items-center gap-2 group shadow-xl shadow-primary-500/20 active:scale-95">
-          <svg class="h-4 w-4 transition-transform group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="3" d="M12 5v14M5 12h14"/></svg>
-          Nuevo Cargo
-        </button>
+
       </div>
 
       <!-- Filters -->

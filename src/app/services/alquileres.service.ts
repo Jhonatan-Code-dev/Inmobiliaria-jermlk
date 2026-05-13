@@ -42,6 +42,10 @@ export class AlquileresService {
     return this.http.get<Alquiler>(`${this.apiUrlBuilder.build('/user/alquileres')}/${id}`, { params });
   }
 
+  getActivosSelector(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrlBuilder.build('/user/alquileres/activos/selector'));
+  }
+
   create(payload: AlquilerPayload): Observable<Alquiler> {
     return this.http.post<Alquiler>(this.apiUrlBuilder.build('/user/alquileres'), payload);
   }

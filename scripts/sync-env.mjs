@@ -13,11 +13,11 @@ const proxyConfigPath = resolve(projectRoot, 'proxy.conf.json');
 const envSchema = z.object({
   NG_APP_BACKEND_URL: z
     .string({
-      required_error: 'NG_APP_BACKEND_URL es obligatorio en el archivo .env',
+      required_error: 'NG_APP_BACKEND_URL es obligatorio (en .env o variables de sistema)',
       invalid_type_error: 'NG_APP_BACKEND_URL debe ser una cadena de texto'
     })
     .trim()
-    .url('NG_APP_BACKEND_URL debe ser una URL valida en el archivo .env (ej: http://localhost:5000/api)')
+    .url('NG_APP_BACKEND_URL debe ser una URL valida (ej: http://localhost:5000/api)')
 });
 
 const removeTrailingSlash = (value) => value.replace(/\/+$/, '');
@@ -32,56 +32,61 @@ const readFileIfExists = async (filePath) => {
 };
 
 const envBuffer = await readFileIfExists(envFilePath);
+let fileEnv = {};
 
-if (!envBuffer) {
-  console.error('❌ Error: El archivo .env no existe. Por favor, crealo en la raiz del proyecto.');
-  process.exit(1);
+if (envBuffer) {
+  const envContent = envBuffer[0] === 0xff && envBuffer[1] === 0xfe
+    ? envBuffer.toString('utf16le')
+    : envBuffer.toString('utf8');
+  fileEnv = parse(envContent.replace(/^\uFEFF/, ''));
+} else {
+  console.log('ℹ️ Nota: No se encontro el archivo .env, usando variables de sistema.');
 }
 
-const envContent = envBuffer[0] === 0xff && envBuffer[1] === 0xfe
-  ? envBuffer.toString('utf16le')
-  : envBuffer.toString('utf8');
-
-const fileEnv = parse(envContent.replace(/^\uFEFF/, ''));
-
-// Validate variables
+// Validate variables (prioritize system env over .env file)
 let parsedEnv;
 try {
   parsedEnv = envSchema.parse({
-    ...process.env,
-    ...fileEnv
+    ...fileEnv,
+    ...process.env
   });
 } catch (error) {
-  console.error('❌ Error de validacion en .env:');
-  if (error instanceof z.ZodError) {
-    error.errors.forEach(err => console.error(`   - ${err.message}`));
+  // En entornos de CI (como Cloudflare), si falta la variable, solo mostramos un aviso 
+  // para no romper la instalacion de dependencias si no es un build
+  if (process.env.CI || process.env.NODE_ENV === 'production') {
+    console.warn('⚠️ Advertencia: NG_APP_BACKEND_URL no esta definida. Esto podria causar fallos en el build.');
   } else {
-    console.error(error);
+    console.error('❌ Error de validacion de entorno:');
+    if (error instanceof z.ZodError) {
+      error.errors.forEach(err => console.error(`   - ${err.message}`));
+    }
+    process.exit(1);
   }
-  process.exit(1);
 }
 
-const backendUrl = removeTrailingSlash(parsedEnv.NG_APP_BACKEND_URL);
-const backend = new URL(backendUrl);
-const backendOrigin = `${backend.protocol}//${backend.host}`;
+if (parsedEnv) {
+  const backendUrl = removeTrailingSlash(parsedEnv.NG_APP_BACKEND_URL);
+  const backend = new URL(backendUrl);
+  const backendOrigin = `${backend.protocol}//${backend.host}`;
 
-// Solo actualizamos el proxy.conf.json
-// El environment.ts ahora es gestionado directamente por @ngx-env/builder
-await writeFile(
-  proxyConfigPath,
-  JSON.stringify(
-    {
-      '/api': {
-        target: backendOrigin,
-        secure: false,
-        changeOrigin: true,
-        logLevel: 'info'
-      }
-    },
-    null,
-    2
-  ),
-  'utf8'
-);
-
-console.log(`✅ Proxy sincronizado: target=${backendOrigin}`);
+  // Solo actualizamos el proxy.conf.json si estamos en desarrollo
+  if (!process.env.CI) {
+    await writeFile(
+      proxyConfigPath,
+      JSON.stringify(
+        {
+          '/api': {
+            target: backendOrigin,
+            secure: false,
+            changeOrigin: true,
+            logLevel: 'info'
+          }
+        },
+        null,
+        2
+      ),
+      'utf8'
+    );
+    console.log(`✅ Proxy sincronizado localmente: target=${backendOrigin}`);
+  }
+}

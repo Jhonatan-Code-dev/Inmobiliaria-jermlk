@@ -10,5 +10,8 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
-  ]
+  ],
+  "vars": {
+    "NG_APP_BACKEND_URL": "https://alquila.duckdns.org/api"
+  }
 }

@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { SessionStore } from '../auth/session.store';
-import { API_BASE_URL } from '../config/api.config';
+import { API_BASE_URL } from '../config/environment';
 import { SKIP_AUTH } from './request-context.tokens';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {

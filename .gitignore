@@ -49,3 +49,7 @@ Thumbs.db
 !.dev.vars.example
 .env*
 !.env.example
+
+# Auto-generated environments
+public/env.js
+proxy.conf.json

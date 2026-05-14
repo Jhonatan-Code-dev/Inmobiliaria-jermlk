@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { App } from './app';
 import { routes } from './app.routes';
-import { API_BASE_URL } from './core/config/api.config';
+import { API_BASE_URL } from './core/config/environment';
 import { authInterceptor } from './core/http/auth.interceptor';
 import { APP_ROUTE_PATHS } from './core/routing/app-routes.constants';
 

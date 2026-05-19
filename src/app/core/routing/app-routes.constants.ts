@@ -14,7 +14,8 @@ export const APP_ROUTE_SEGMENTS = {
   tickets: 'tickets',
   asistencia: 'asistencia',
   supervision_asistencia: 'supervision-asistencia',
-  cola_trabajo: 'cola-trabajo'
+  cola_trabajo: 'cola-trabajo',
+  reportes: 'reportes'
 } as const;
 
 export const APP_ROUTE_PATHS = {
@@ -33,5 +34,6 @@ export const APP_ROUTE_PATHS = {
   menuTickets: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.tickets}`,
   menuAsistencia: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.asistencia}`,
   menuSupervisionAsistencia: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.supervision_asistencia}`,
-  menuColaTrabajo: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.cola_trabajo}`
+  menuColaTrabajo: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.cola_trabajo}`,
+  menuReportes: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.reportes}`
 } as const;

@@ -8,7 +8,7 @@
 
   @if (resumen(); as data) {
     <!-- Main KPIs Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <article [class]="shellPanelClass + ' p-5 transition-transform hover:-translate-y-1'">
         <div class="flex items-center justify-between mb-2">
           <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Balance Neto (Mes)</p>
@@ -47,141 +47,67 @@
            <span class="text-slate-500 dark:text-slate-400 font-medium truncate">{{ data.contratos_vencidos }} vencidos, {{ data.contratos_borrador }} en borrador</span>
         </div>
       </article>
-
-      <article [class]="shellPanelClass + ' p-5 bg-slate-950 dark:bg-slate-800 text-white transition-transform hover:-translate-y-1 !border-transparent'">
-        <div class="flex items-center justify-between mb-2">
-          <p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-300">Deuda Pendiente</p>
-          <div class="h-6 w-6 rounded flex items-center justify-center bg-white/10 dark:bg-black/20">
-            <svg viewBox="0 0 24 24" class="h-3 w-3 text-white dark:text-slate-200" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          </div>
-        </div>
-        <p class="text-xl sm:text-2xl font-bold text-white dark:text-white truncate" [title]="formatCurrency(data.monto_pendiente_cobro)">{{ formatCurrency(data.monto_pendiente_cobro) }}</p>
-        <div class="mt-4 flex items-center justify-between text-xs border-t border-slate-800 dark:border-slate-700/50 pt-3">
-           <span class="text-slate-400 dark:text-slate-300 font-medium truncate">{{ data.total_morosos }} inquilinos con mora</span>
-        </div>
-      </article>
     </div>
   }
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <div class="lg:col-span-2 space-y-6">
-      @if (financiero(); as finData) {
-        <article [class]="shellPanelClass + ' p-6'">
-          <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white mb-4">Reporte Financiero (Últimos Meses)</h3>
-          <div class="space-y-3">
-             @for (mes of finData.serie_mensual; track mes.periodo) {
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-600 transition-colors bg-white dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-default gap-3">
-                  <div class="flex flex-col">
-                     <span class="text-sm font-bold text-slate-950 dark:text-slate-100 capitalize">{{ formatMonth(mes.periodo) }}</span>
-                     <span class="text-[0.7rem] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Balance: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ formatCurrency(mes.balance) }}</span></span>
-                  </div>
-                  <div class="flex items-center gap-3 sm:gap-5 bg-slate-50 dark:bg-slate-950/50 sm:bg-transparent rounded-lg p-2 sm:p-0">
-                     <div class="flex flex-col sm:items-end flex-1 sm:flex-none">
-                       <span class="text-[0.6rem] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ingresos</span>
-                       <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">{{ formatCurrency(mes.ingresos) }}</span>
-                     </div>
-                     <div class="h-8 w-[1px] bg-slate-200 dark:bg-slate-700"></div>
-                     <div class="flex flex-col flex-1 sm:flex-none sm:w-24">
-                       <span class="text-[0.6rem] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Egresos</span>
-                       <span class="text-sm font-semibold text-rose-600 dark:text-rose-400">{{ formatCurrency(mes.gastos) }}</span>
-                     </div>
-                  </div>
+  <div class="space-y-6">
+    @if (financiero(); as finData) {
+      <article [class]="shellPanelClass + ' p-6'">
+        <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white mb-4">Reporte Financiero (Últimos Meses)</h3>
+        <div class="space-y-3">
+           @for (mes of finData.serie_mensual; track mes.periodo) {
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-600 transition-colors bg-white dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-default gap-3">
+                <div class="flex flex-col">
+                   <span class="text-sm font-bold text-slate-950 dark:text-slate-100 capitalize">{{ formatMonth(mes.periodo) }}</span>
+                   <span class="text-[0.7rem] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Balance: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ formatCurrency(mes.balance) }}</span></span>
                 </div>
-             }
-          </div>
-        </article>
-      }
+                <div class="flex items-center gap-3 sm:gap-5 bg-slate-50 dark:bg-slate-950/50 sm:bg-transparent rounded-lg p-2 sm:p-0">
+                   <div class="flex flex-col sm:items-end flex-1 sm:flex-none">
+                     <span class="text-[0.6rem] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Ingresos</span>
+                     <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">{{ formatCurrency(mes.ingresos) }}</span>
+                   </div>
+                   <div class="h-8 w-[1px] bg-slate-200 dark:bg-slate-700"></div>
+                   <div class="flex flex-col flex-1 sm:flex-none sm:w-24">
+                     <span class="text-[0.6rem] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Egresos</span>
+                     <span class="text-sm font-semibold text-rose-600 dark:text-rose-400">{{ formatCurrency(mes.gastos) }}</span>
+                   </div>
+                </div>
+              </div>
+           }
+        </div>
+      </article>
+    }
 
-      @if (topUnidades(); as topData) {
-        <article [class]="shellPanelClass + ' p-6'">
-          <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white mb-4">Top Unidades Rentables</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
-              <thead class="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
-                <tr>
-                  <th class="pb-3 px-2 font-semibold uppercase text-[0.65rem] tracking-wider whitespace-nowrap">Unidad</th>
-                  <th class="pb-3 px-2 font-semibold uppercase text-[0.65rem] tracking-wider whitespace-nowrap">Propiedad</th>
-                  <th class="pb-3 px-2 font-semibold uppercase text-[0.65rem] tracking-wider text-right whitespace-nowrap">Pagos</th>
-                  <th class="pb-3 px-2 font-semibold uppercase text-[0.65rem] tracking-wider text-right whitespace-nowrap">Ingresos</th>
+    @if (topUnidades(); as topData) {
+      <article [class]="shellPanelClass + ' p-6'">
+        <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white mb-4">Top Unidades Rentables</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+              <tr>
+                <th class="pb-3 px-2 font-semibold uppercase text-[0.65rem] tracking-wider whitespace-nowrap">Unidad</th>
+                <th class="pb-3 px-2 font-semibold uppercase text-[0.65rem] tracking-wider whitespace-nowrap">Propiedad</th>
+                <th class="pb-3 px-2 font-semibold uppercase text-[0.65rem] tracking-wider text-right whitespace-nowrap">Pagos</th>
+                <th class="pb-3 px-2 font-semibold uppercase text-[0.65rem] tracking-wider text-right whitespace-nowrap">Ingresos</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
+              @for (unidad of topData; track unidad.unidad_id) {
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <td class="py-3 px-2 font-bold text-slate-950 dark:text-white whitespace-nowrap">{{ unidad.codigo }}</td>
+                  <td class="py-3 px-2 font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{{ unidad.propiedad_nombre }}</td>
+                  <td class="py-3 px-2 text-right font-medium text-slate-600 dark:text-slate-400 whitespace-nowrap">{{ unidad.total_pagos }}</td>
+                  <td class="py-3 px-2 text-right font-bold text-slate-950 dark:text-white whitespace-nowrap">{{ formatCurrency(unidad.total_ingresos) }}</td>
                 </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
-                @for (unidad of topData; track unidad.unidad_id) {
-                  <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td class="py-3 px-2 font-bold text-slate-950 dark:text-white whitespace-nowrap">{{ unidad.codigo }}</td>
-                    <td class="py-3 px-2 font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{{ unidad.propiedad_nombre }}</td>
-                    <td class="py-3 px-2 text-right font-medium text-slate-600 dark:text-slate-400 whitespace-nowrap">{{ unidad.total_pagos }}</td>
-                    <td class="py-3 px-2 text-right font-bold text-slate-950 dark:text-white whitespace-nowrap">{{ formatCurrency(unidad.total_ingresos) }}</td>
-                  </tr>
-                } @empty {
-                  <tr>
-                    <td colspan="4" class="py-6 text-center text-sm font-medium text-slate-500 dark:text-slate-400">No hay datos disponibles en el periodo.</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        </article>
-      }
-    </div>
-
-    <div class="space-y-6">
-       @if (morosidad(); as morData) {
-        <article [class]="shellPanelClass + ' overflow-hidden border-slate-200 dark:border-slate-800 shadow-sm'">
-          <div class="p-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex justify-between items-center">
-             <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white">Inquilinos en Mora</h3>
-             <span class="px-2 py-0.5 bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-100 text-[0.65rem] font-bold rounded">{{ morData.total_morosos }}</span>
-          </div>
-          <div class="p-5 space-y-3 bg-slate-50/30 dark:bg-slate-950/50">
-             @for (moroso of morData.morosos; track moroso.contrato_id) {
-                <div class="flex flex-col p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-[0_2px_4px_rgba(0,0,0,0.02)] hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                   <div class="flex justify-between items-start mb-1.5">
-                     <span class="text-sm font-bold text-slate-950 dark:text-white">{{ moroso.nombre_completo }}</span>
-                     <span class="text-sm font-black tracking-tight text-slate-950 dark:text-white">{{ formatCurrency(moroso.monto_pendiente) }}</span>
-                   </div>
-                   <div class="flex justify-between items-center mt-2">
-                     <span class="text-[0.7rem] font-medium text-slate-500 dark:text-slate-400">{{ moroso.propiedad_nombre }} • {{ moroso.unidad_codigo }}</span>
-                     <span class="font-bold px-2 py-1 text-[0.65rem] uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 rounded border border-slate-200 dark:border-slate-700">{{ moroso.dias_vencido }} días vencido</span>
-                   </div>
-                </div>
-             } @empty {
-               <div class="text-center py-8">
-                 <div class="mx-auto h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-3">
-                   <svg viewBox="0 0 24 24" class="h-6 w-6 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                 </div>
-                 <p class="text-sm font-semibold text-slate-900 dark:text-white">Al día</p>
-                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">No hay morosidad registrada.</p>
-               </div>
-             }
-          </div>
-        </article>
-      }
-
-      @if (contratosVencer(); as contratosData) {
-        <article [class]="shellPanelClass + ' overflow-hidden'">
-          <div class="p-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-             <h3 class="text-sm font-bold uppercase tracking-widest text-slate-950 dark:text-white">Contratos por Vencer</h3>
-          </div>
-          <div class="p-5 space-y-4 bg-slate-50/30 dark:bg-slate-950/50">
-             @for (contrato of contratosData; track contrato.contrato_id) {
-                <div class="flex flex-col pb-4 border-b border-slate-200 dark:border-slate-800 last:border-0 last:pb-0">
-                   <div class="flex justify-between items-start mb-1">
-                     <span class="text-sm font-bold text-slate-950 dark:text-white">{{ contrato.cliente_nombre }}</span>
-                     <span class="text-[0.65rem] font-bold px-2 py-0.5 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 uppercase tracking-wider">En {{ contrato.dias_restantes }} días</span>
-                   </div>
-                   <div class="text-xs font-medium text-slate-500 dark:text-slate-400 flex justify-between mt-1">
-                     <span>{{ contrato.propiedad_nombre }} • {{ contrato.unidad_codigo }}</span>
-                     <span>Expira: <span class="text-slate-700 dark:text-slate-300">{{ formatDate(contrato.fecha_fin) }}</span></span>
-                   </div>
-                </div>
-             } @empty {
-                <div class="text-center py-6 text-sm text-slate-500 dark:text-slate-400">
-                 No hay contratos próximos a vencer.
-               </div>
-             }
-          </div>
-        </article>
-      }
-    </div>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="py-6 text-center text-sm font-medium text-slate-500 dark:text-slate-400">No hay datos disponibles en el periodo.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+    }
   </div>
 </section>

@@ -91,6 +91,11 @@ export const routes: Routes = [
         path: APP_ROUTE_SEGMENTS.cola_trabajo,
         loadComponent: () => import('./pages/cola-trabajo-page.component').then(m => m.ColaTrabajoPageComponent),
         title: 'Inmobiliaria | Cola de Trabajo'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.reportes,
+        loadComponent: () => import('./pages/reportes-page.component').then(m => m.ReportesPageComponent),
+        title: 'Inmobiliaria | Reportes Gerenciales'
       }
     ]
   },

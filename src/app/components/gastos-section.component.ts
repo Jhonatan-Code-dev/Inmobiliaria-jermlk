@@ -927,7 +927,8 @@ export class GastosSectionComponent implements OnInit {
     }
 
     return new Intl.DateTimeFormat('es-PE', {
-      dateStyle: 'medium'
+      dateStyle: 'medium',
+      timeZone: 'UTC'
     }).format(date);
   }
 
@@ -1093,6 +1094,12 @@ export class GastosSectionComponent implements OnInit {
   private normalizeInputDate(value: string): string {
     if (!value) {
       return this.todayDate();
+    }
+
+    // Extract YYYY-MM-DD directly from the ISO string to prevent local timezone shifting
+    const parts = value.split('T');
+    if (parts[0] && /^\d{4}-\d{2}-\d{2}$/.test(parts[0])) {
+      return parts[0];
     }
 
     const date = new Date(value);

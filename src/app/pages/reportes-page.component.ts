@@ -490,7 +490,7 @@ export class ReportesPageComponent implements OnInit {
   }
 
   private initRentabilidadChart(data: any[]): void {
-    const properties = data.map(r => r.propiedad);
+    const properties = data.map(r => r.nombre || r.propiedad || '');
     const ingresos = data.map(r => r.ingresos);
     const gastos = data.map(r => r.gastos);
     const rentabilidad = data.map(r => r.rentabilidad);

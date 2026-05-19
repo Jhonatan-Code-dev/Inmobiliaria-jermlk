@@ -1,4 +1,4 @@
-# Inmobiliaria - Sistema de Gestión Inmobiliaria
+# Inmobiliaria - Sistema de Gestión Inmobiliaria.
 
 Inmobiliaria es una plataforma web desarrollada para la administración y gestión integral de propiedades residenciales y comerciales. El sistema facilita la relación entre propietarios, inquilinos y personal administrativo, centralizando las operaciones de cobro, mantenimiento, control de asistencia y generación de reportes financieros.
 

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { extractHttpErrorMessage } from '../core/http/http-error.utils';
 
@@ -250,58 +250,118 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
 
                  
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Documento Cliente</label>
-                    <input type="text" formControlName="cliente_documento" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors" placeholder="DNI o Pasaporte"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Documento Cliente</label>
+                       @if (isInvalid('contratoDirecto', 'cliente_documento')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'cliente_documento') }}</span>
+                       }
+                    </div>
+                    <input type="text" formControlName="cliente_documento" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors" [ngClass]="isInvalid('contratoDirecto', 'cliente_documento') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'" placeholder="Ej. 72081492 / Pasaporte"/>
                  </div>
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Nombres</label>
-                    <input type="text" formControlName="cliente_nombre" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Nombres</label>
+                       @if (isInvalid('contratoDirecto', 'cliente_nombre')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'cliente_nombre') }}</span>
+                       }
+                    </div>
+                    <input type="text" formControlName="cliente_nombre" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors" [ngClass]="isInvalid('contratoDirecto', 'cliente_nombre') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'" placeholder="Ej. Juan Manuel"/>
                  </div>
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Apellidos</label>
-                    <input type="text" formControlName="cliente_apellidos" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Apellidos</label>
+                       @if (isInvalid('contratoDirecto', 'cliente_apellidos')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'cliente_apellidos') }}</span>
+                       }
+                    </div>
+                    <input type="text" formControlName="cliente_apellidos" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors" [ngClass]="isInvalid('contratoDirecto', 'cliente_apellidos') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'" placeholder="Ej. Pérez Gómez"/>
                  </div>
 
                  <div class="space-y-1.5 lg:col-span-2">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Dirección</label>
-                    <input type="text" formControlName="cliente_direccion" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Dirección</label>
+                       @if (isInvalid('contratoDirecto', 'cliente_direccion')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'cliente_direccion') }}</span>
+                       }
+                    </div>
+                    <input type="text" formControlName="cliente_direccion" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors" [ngClass]="isInvalid('contratoDirecto', 'cliente_direccion') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'" placeholder="Ej. Av. Larco 456, Dpto 302"/>
                  </div>
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Correo</label>
-                    <input type="email" formControlName="cliente_correo" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Correo</label>
+                       @if (isInvalid('contratoDirecto', 'cliente_correo')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'cliente_correo') }}</span>
+                       }
+                    </div>
+                    <input type="email" formControlName="cliente_correo" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors" [ngClass]="isInvalid('contratoDirecto', 'cliente_correo') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'" placeholder="Ej. juan.perez@email.com"/>
                  </div>
 
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Código Unidad</label>
-                    <input type="text" formControlName="unidad_codigo" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Código Unidad</label>
+                       @if (isInvalid('contratoDirecto', 'unidad_codigo')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'unidad_codigo') }}</span>
+                       }
+                    </div>
+                    <input type="text" formControlName="unidad_codigo" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors" [ngClass]="isInvalid('contratoDirecto', 'unidad_codigo') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'" placeholder="Ej. DPTO-302"/>
                  </div>
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Moneda</label>
-                    <select formControlName="moneda" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors">
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Moneda</label>
+                       @if (isInvalid('contratoDirecto', 'moneda')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'moneda') }}</span>
+                       }
+                    </div>
+                    <select formControlName="moneda" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors" [ngClass]="isInvalid('contratoDirecto', 'moneda') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'">
                        <option value="PEN">Soles (PEN)</option>
                        <option value="USD">Dólares (USD)</option>
                     </select>
                  </div>
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Renta Mensual</label>
-                    <input type="number" formControlName="monto_renta" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors text-center"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Renta Mensual</label>
+                       @if (isInvalid('contratoDirecto', 'monto_renta')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'monto_renta') }}</span>
+                       }
+                    </div>
+                    <input type="number" formControlName="monto_renta" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors text-center" [ngClass]="isInvalid('contratoDirecto', 'monto_renta') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'" placeholder="Ej. 1200"/>
                  </div>
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Depósito Garantía</label>
-                    <input type="number" formControlName="monto_deposito" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors text-center"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Depósito Garantía</label>
+                       @if (isInvalid('contratoDirecto', 'monto_deposito')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'monto_deposito') }}</span>
+                       }
+                    </div>
+                    <input type="number" formControlName="monto_deposito" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors text-center" [ngClass]="isInvalid('contratoDirecto', 'monto_deposito') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'" placeholder="Ej. 1200"/>
                  </div>
 
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Fecha Inicio</label>
-                    <input type="date" formControlName="fecha_inicio" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Fecha Inicio</label>
+                       @if (isInvalid('contratoDirecto', 'fecha_inicio')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'fecha_inicio') }}</span>
+                       }
+                    </div>
+                    <input type="date" formControlName="fecha_inicio" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors" [ngClass]="isInvalid('contratoDirecto', 'fecha_inicio') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'"/>
                  </div>
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Fecha Fin</label>
-                    <input type="date" formControlName="fecha_fin" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Fecha Fin</label>
+                       @if (isInvalid('contratoDirecto', 'fecha_fin')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'fecha_fin') }}</span>
+                       }
+                    </div>
+                    <input type="date" formControlName="fecha_fin" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors" [ngClass]="isInvalid('contratoDirecto', 'fecha_fin') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'"/>
                  </div>
                  <div class="space-y-1.5">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Día de Pago</label>
-                    <input type="number" formControlName="dia_vencimiento" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 text-sm transition-colors text-center"/>
+                    <div class="flex justify-between items-center">
+                       <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Día de Pago</label>
+                       @if (isInvalid('contratoDirecto', 'dia_vencimiento')) {
+                          <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('contratoDirecto', 'dia_vencimiento') }}</span>
+                       }
+                    </div>
+                    <input type="number" formControlName="dia_vencimiento" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 text-sm transition-colors text-center" [ngClass]="isInvalid('contratoDirecto', 'dia_vencimiento') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'" placeholder="Ej. 5"/>
                  </div>
               </div>
               
@@ -336,8 +396,13 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                    <!-- Inquilino y Unidad -->
                    <div class="grid grid-cols-2 gap-4">
                       <div class="space-y-1.5">
-                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Inquilino <span class="text-primary-600 dark:text-primary-400">*</span></label>
-                         <select formControlName="cliente_id" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border focus:bg-white dark:focus:bg-dark-bg focus:ring-2 focus:ring-primary-500 outline-none font-bold text-slate-900 dark:text-slate-200 transition-colors text-sm">
+                         <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Inquilino <span class="text-primary-600 dark:text-primary-400">*</span></label>
+                            @if (isInvalid('alquiler', 'cliente_id')) {
+                               <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('alquiler', 'cliente_id') }}</span>
+                            }
+                         </div>
+                         <select formControlName="cliente_id" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-slate-200 transition-colors text-sm focus:ring-2" [ngClass]="isInvalid('alquiler', 'cliente_id') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'">
                            <option value="">Seleccione Cliente...</option>
                            @for(cli of cachedClientes(); track cli.id) {
                              <option [value]="cli.id">{{ cli.nombres }} {{ cli.apellidos }} - {{ cli.documento_numero }}</option>
@@ -345,8 +410,13 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                          </select>
                       </div>
                       <div class="space-y-1.5">
-                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Unidad <span class="text-primary-600 dark:text-primary-400">*</span></label>
-                         <select formControlName="unidad_id" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border focus:bg-white dark:focus:bg-dark-bg focus:ring-2 focus:ring-primary-500 outline-none font-bold text-slate-900 dark:text-slate-200 transition-colors text-sm">
+                         <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Unidad <span class="text-primary-600 dark:text-primary-400">*</span></label>
+                            @if (isInvalid('alquiler', 'unidad_id')) {
+                               <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('alquiler', 'unidad_id') }}</span>
+                            }
+                         </div>
+                         <select formControlName="unidad_id" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-slate-200 transition-colors text-sm focus:ring-2" [ngClass]="isInvalid('alquiler', 'unidad_id') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'">
                            <option value="">Seleccione Unidad Libre...</option>
                            @for(uni of cachedUnidadesLibres(); track uni.id) {
                              <option [value]="uni.id">{{ uni.codigo }} ({{ uni.precio_base }} PEN)</option>
@@ -358,35 +428,65 @@ const DEFAULT_PAGINATION: AlquileresPaginacion = { total: 0, paginas: 0, pagina:
                    <!-- Tiempos -->
                    <div class="grid grid-cols-3 gap-4">
                       <div class="space-y-1.5">
-                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Inicio <span class="text-primary-600 dark:text-primary-400">*</span></label>
-                         <input type="date" formControlName="fecha_inicio" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 transition-all text-sm"/>
+                         <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Inicio <span class="text-primary-600 dark:text-primary-400">*</span></label>
+                            @if (isInvalid('alquiler', 'fecha_inicio')) {
+                               <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('alquiler', 'fecha_inicio') }}</span>
+                            }
+                         </div>
+                         <input type="date" formControlName="fecha_inicio" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white transition-all text-sm focus:ring-2" [ngClass]="isInvalid('alquiler', 'fecha_inicio') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'"/>
                       </div>
                       <div class="space-y-1.5">
-                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Fin <span class="text-primary-600 dark:text-primary-400">*</span></label>
-                         <input type="date" formControlName="fecha_fin" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 transition-all text-sm"/>
+                         <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Fin <span class="text-primary-600 dark:text-primary-400">*</span></label>
+                            @if (isInvalid('alquiler', 'fecha_fin')) {
+                               <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('alquiler', 'fecha_fin') }}</span>
+                            }
+                         </div>
+                         <input type="date" formControlName="fecha_fin" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white transition-all text-sm focus:ring-2" [ngClass]="isInvalid('alquiler', 'fecha_fin') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'"/>
                       </div>
                       <div class="space-y-1.5">
-                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Día Pago <span class="text-primary-600 dark:text-primary-400">*</span></label>
-                         <input type="number" formControlName="vencimiento_dia_pago" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 transition-all text-sm text-center"/>
+                         <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Día Pago <span class="text-primary-600 dark:text-primary-400">*</span></label>
+                            @if (isInvalid('alquiler', 'vencimiento_dia_pago')) {
+                               <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('alquiler', 'vencimiento_dia_pago') }}</span>
+                            }
+                         </div>
+                         <input type="number" formControlName="vencimiento_dia_pago" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white transition-all text-sm text-center focus:ring-2" [ngClass]="isInvalid('alquiler', 'vencimiento_dia_pago') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'"/>
                       </div>
                    </div>
 
                    <!-- Montos -->
                    <div class="grid grid-cols-3 gap-4">
                       <div class="space-y-1.5">
-                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Moneda <span class="text-primary-600 dark:text-primary-400">*</span></label>
-                         <select formControlName="moneda" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-slate-200 focus:ring-2 focus:ring-primary-500 transition-all text-sm">
+                         <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Moneda <span class="text-primary-600 dark:text-primary-400">*</span></label>
+                            @if (isInvalid('alquiler', 'moneda')) {
+                               <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('alquiler', 'moneda') }}</span>
+                            }
+                         </div>
+                         <select formControlName="moneda" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-slate-200 focus:ring-2 transition-all text-sm" [ngClass]="isInvalid('alquiler', 'moneda') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'">
                             <option value="PEN">Soles (PEN)</option>
                             <option value="USD">Dólares (USD)</option>
                          </select>
                       </div>
                       <div class="space-y-1.5">
-                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Renta Mensual <span class="text-primary-600 dark:text-primary-400">*</span></label>
-                         <input type="number" formControlName="monto_renta" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 transition-all text-sm text-center"/>
+                         <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Renta Mensual <span class="text-primary-600 dark:text-primary-400">*</span></label>
+                            @if (isInvalid('alquiler', 'monto_renta')) {
+                               <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('alquiler', 'monto_renta') }}</span>
+                            }
+                         </div>
+                         <input type="number" formControlName="monto_renta" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white transition-all text-sm text-center focus:ring-2" [ngClass]="isInvalid('alquiler', 'monto_renta') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'"/>
                       </div>
                       <div class="space-y-1.5">
-                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Depósito <span class="text-primary-600 dark:text-primary-400">*</span></label>
-                         <input type="number" formControlName="deposito_garantia" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border outline-none font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 transition-all text-sm text-center"/>
+                         <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Depósito <span class="text-primary-600 dark:text-primary-400">*</span></label>
+                            @if (isInvalid('alquiler', 'deposito_garantia')) {
+                               <span class="text-[9px] font-bold text-rose-500 uppercase tracking-wider animate-pulse">{{ getErrorMessage('alquiler', 'deposito_garantia') }}</span>
+                            }
+                         </div>
+                         <input type="number" formControlName="deposito_garantia" class="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-dark-bg border outline-none font-bold text-slate-900 dark:text-white transition-all text-sm text-center focus:ring-2" [ngClass]="isInvalid('alquiler', 'deposito_garantia') ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 focus:ring-rose-500' : 'border-slate-200 dark:border-dark-border focus:ring-primary-500'"/>
                       </div>
                    </div>
 
@@ -597,10 +697,10 @@ export class AlquileresSectionComponent implements OnInit {
     fecha_inicio: ['', [Validators.required]],
     fecha_fin: ['', [Validators.required]],
     vencimiento_dia_pago: [5, [Validators.required, Validators.min(1), Validators.max(31)]],
-    monto_renta: [0, [Validators.required, Validators.min(0)]],
-    deposito_garantia: [0, [Validators.required]],
+    monto_renta: [0, [Validators.required, Validators.min(0.01)]],
+    deposito_garantia: [0, [Validators.required, Validators.min(0)]],
     moneda: ['PEN', [Validators.required]]
-  });
+  }, { validators: [control => this.dateRangeValidator(control)] });
 
   readonly pagoForm = this.fb.nonNullable.group({
     monto_pagado: [0, [Validators.required, Validators.min(0.01)]],
@@ -611,19 +711,19 @@ export class AlquileresSectionComponent implements OnInit {
   });
 
   readonly contratoDirectoForm = this.fb.nonNullable.group({
-    cliente_documento: ['', [Validators.required]],
-    cliente_nombre: ['', [Validators.required]],
-    cliente_apellidos: ['', [Validators.required]],
+    cliente_documento: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
+    cliente_nombre: ['', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$')]],
+    cliente_apellidos: ['', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$')]],
     cliente_direccion: ['', [Validators.required]],
-    cliente_correo: ['', [Validators.required]],
+    cliente_correo: ['', [Validators.required, Validators.email]],
     unidad_codigo: ['', [Validators.required]],
-    monto_renta: [0, [Validators.required, Validators.min(0)]],
+    monto_renta: [0, [Validators.required, Validators.min(0.01)]],
     monto_deposito: [0, [Validators.required, Validators.min(0)]],
     moneda: ['PEN', [Validators.required]],
     fecha_inicio: ['', [Validators.required]],
     fecha_fin: ['', [Validators.required]],
     dia_vencimiento: [5, [Validators.required, Validators.min(1), Validators.max(31)]]
-  });
+  }, { validators: [control => this.dateRangeValidator(control)] });
 
   ngOnInit(): void { 
     this.loadAlquileres(1);
@@ -878,6 +978,46 @@ export class AlquileresSectionComponent implements OnInit {
   private todayDate(): string { return new Date().toISOString().split('T')[0]; }
   private nextYearDate(): string { const d = new Date(); d.setFullYear(d.getFullYear() + 1); return d.toISOString().split('T')[0]; }
   private currentMonth(): number { return new Date().getMonth() + 1; }
+
+  isInvalid(form: 'contratoDirecto' | 'alquiler' | 'pago', controlName: string): boolean {
+    const group = (form === 'contratoDirecto' ? this.contratoDirectoForm 
+                : form === 'alquiler' ? this.alquilerForm 
+                : this.pagoForm) as any;
+    const control = group.get(controlName);
+    const hasControlError = !!(control && control.invalid && (control.dirty || control.touched));
+    const hasFormError = controlName === 'fecha_fin' && group.errors?.['dateRangeInvalid'] && (control.dirty || control.touched);
+    return hasControlError || !!hasFormError;
+  }
+
+  getErrorMessage(form: 'contratoDirecto' | 'alquiler' | 'pago', controlName: string): string {
+    const group = (form === 'contratoDirecto' ? this.contratoDirectoForm 
+                : form === 'alquiler' ? this.alquilerForm 
+                : this.pagoForm) as any;
+    const control = group.get(controlName);
+    
+    if (controlName === 'fecha_fin' && group.errors?.['dateRangeInvalid']) {
+      return 'Fin debe ser posterior';
+    }
+    
+    if (!control || !control.errors) return '';
+    if (control.errors['required']) return 'Obligatorio';
+    if (control.errors['email']) return 'Correo inválido';
+    if (control.errors['min']) return 'Mínimo ' + control.errors['min'].min;
+    if (control.errors['max']) return 'Máximo ' + control.errors['max'].max;
+    if (control.errors['minlength']) return 'Muy corto';
+    if (control.errors['maxlength']) return 'Muy largo';
+    if (control.errors['pattern']) {
+      if (['cliente_nombre', 'cliente_apellidos'].includes(controlName)) return 'Solo letras';
+      return 'Formato inválido';
+    }
+    return 'Dato inválido';
+  }
+
+  private dateRangeValidator(control: AbstractControl): ValidationErrors | null {
+    const inicio = control.get('fecha_inicio')?.value;
+    const fin = control.get('fecha_fin')?.value;
+    return inicio && fin && new Date(fin) < new Date(inicio) ? { dateRangeInvalid: true } : null;
+  }
 
   setFeedback(tone: FeedbackTone, message: string): void {
     this.feedback.set({ tone, message });

@@ -958,7 +958,7 @@ export class GastosSectionComponent implements OnInit {
           const link = document.createElement('a');
           link.href = url;
           
-          const timestamp = new Date().toISOString().split('T')[0];
+          const timestamp = this.todayDate();
           const extension = formato === 'excel' ? 'xlsx' : 'pdf';
           link.setAttribute('download', `reporte_gastos_${timestamp}.${extension}`);
           

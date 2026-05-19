@@ -975,8 +975,22 @@ export class AlquileresSectionComponent implements OnInit {
 
 
   // --- Helpers ---
-  private todayDate(): string { return new Date().toISOString().split('T')[0]; }
-  private nextYearDate(): string { const d = new Date(); d.setFullYear(d.getFullYear() + 1); return d.toISOString().split('T')[0]; }
+  private todayDate(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = `${now.getMonth() + 1}`.padStart(2, '0');
+    const day = `${now.getDate()}`.padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private nextYearDate(): string {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() + 1);
+    const year = d.getFullYear();
+    const month = `${d.getMonth() + 1}`.padStart(2, '0');
+    const day = `${d.getDate()}`.padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
   private currentMonth(): number { return new Date().getMonth() + 1; }
 
   isInvalid(form: 'contratoDirecto' | 'alquiler' | 'pago', controlName: string): boolean {

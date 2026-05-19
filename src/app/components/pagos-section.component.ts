@@ -9,6 +9,14 @@ import { Pago, PagoPayload, PagoPendiente } from '../core/pagos/pagos.models';
 type FeedbackTone = 'success' | 'error';
 type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
 
+function getLocalTodayDate(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = `${now.getMonth() + 1}`.padStart(2, '0');
+  const day = `${now.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 @Component({
   selector: 'app-pagos-section',
   standalone: true,
@@ -259,7 +267,7 @@ export class PagosSectionComponent implements OnInit {
   readonly pagoForm = this.fb.nonNullable.group({
     alquiler_id: [0, [Validators.required]],
     monto_pagado: [0, [Validators.required]],
-    fecha_pago: [new Date().toISOString().split('T')[0], [Validators.required]],
+    fecha_pago: [getLocalTodayDate(), [Validators.required]],
     metodo_pago: ['efectivo', [Validators.required]],
     mes_correspondiente: [new Date().getMonth() + 1, [Validators.required]],
     nota: ['']
@@ -306,7 +314,7 @@ export class PagosSectionComponent implements OnInit {
     this.pagoForm.reset({
       alquiler_id: p ? p.alquiler_id : 0,
       monto_pagado: p ? p.monto : 0,
-      fecha_pago: new Date().toISOString().split('T')[0],
+      fecha_pago: getLocalTodayDate(),
       metodo_pago: 'efectivo',
       mes_correspondiente: new Date().getMonth() + 1,
       nota: ''

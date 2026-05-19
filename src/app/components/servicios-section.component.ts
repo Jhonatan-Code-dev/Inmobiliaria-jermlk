@@ -10,6 +10,14 @@ import { Medicion, MedicionPayload, AlquilerSelector } from '../core/servicios/s
 type FeedbackTone = 'success' | 'error';
 type FeedbackState = { readonly tone: FeedbackTone; readonly message: string; };
 
+function getLocalTodayDate(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = `${now.getMonth() + 1}`.padStart(2, '0');
+  const day = `${now.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 @Component({
   selector: 'app-servicios-section',
   standalone: true,
@@ -318,7 +326,7 @@ export class ServiciosSectionComponent implements OnInit {
   // Bulk process helpers
   bulkReadings: any[] = [];
   bulkUnitPrice = 1.5;
-  bulkDate = new Date().toISOString().split('T')[0];
+  bulkDate = getLocalTodayDate();
 
   readonly medicionForm = this.fb.nonNullable.group({
     contrato_id: [0, [Validators.required, Validators.min(1)]],
@@ -326,7 +334,7 @@ export class ServiciosSectionComponent implements OnInit {
     lectura_anterior: [0],
     lectura_actual: [0, [Validators.required]],
     precio_unitario: [1.5, [Validators.required]],
-    fecha_lectura: [new Date().toISOString().split('T')[0], [Validators.required]],
+    fecha_lectura: [getLocalTodayDate(), [Validators.required]],
     factor: [1.0],
     cargo_fijo: [0.0]
   });
@@ -447,7 +455,7 @@ export class ServiciosSectionComponent implements OnInit {
       tipo_servicio: 'luz', 
       lectura_anterior: 0,
       precio_unitario: 1.5,
-      fecha_lectura: new Date().toISOString().split('T')[0],
+      fecha_lectura: getLocalTodayDate(),
       factor: 1.0,
       cargo_fijo: 0.0
     });

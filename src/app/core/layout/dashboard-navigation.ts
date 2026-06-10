@@ -1,6 +1,6 @@
 import { APP_ROUTE_SEGMENTS } from '../routing/app-routes.constants';
 
-export type DashboardSectionId = 'overview' | 'expenses' | 'clients' | 'inmuebles' | 'alquileres' | 'staff' | 'cargos' | 'pagos' | 'servicios' | 'tickets' | 'asistencia' | 'supervision_asistencia' | 'cola_trabajo' | 'reportes';
+export type DashboardSectionId = 'overview' | 'expenses' | 'clients' | 'inmuebles' | 'alquileres' | 'staff' | 'cargos' | 'pagos' | 'servicios' | 'tickets' | 'asistencia' | 'supervision_asistencia' | 'cola_trabajo' | 'reportes' | 'citas';
 
 export type DashboardNavItem = {
   readonly id: DashboardSectionId;
@@ -57,6 +57,12 @@ export const DASHBOARD_NAVIGATION_ITEMS: readonly DashboardNavItem[] = [
     path: APP_ROUTE_SEGMENTS.clientes,
     label: 'Clientes',
     icon: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'
+  },
+  {
+    id: 'citas',
+    path: APP_ROUTE_SEGMENTS.citas,
+    label: 'Visitas/Citas',
+    icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
   },
   {
     id: 'tickets',

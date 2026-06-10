@@ -96,6 +96,11 @@ export const routes: Routes = [
         path: APP_ROUTE_SEGMENTS.reportes,
         loadComponent: () => import('./pages/reportes-page.component').then(m => m.ReportesPageComponent),
         title: 'Inmobiliaria | Reportes Gerenciales'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.citas,
+        loadComponent: () => import('./pages/citas-page.component').then(m => m.CitasPageComponent),
+        title: 'Inmobiliaria | Calendario de Visitas'
       }
     ]
   },

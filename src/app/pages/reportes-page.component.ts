@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { ReportesService } from '../services/reportes.service';
+import { ThemeService } from '../core/theme/theme.service';
 
 @Component({
   selector: 'app-reportes-page',
@@ -139,7 +140,7 @@ import { ReportesService } from '../services/reportes.service';
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Ingresos vs Gastos vs Utilidad Neta</p>
               </div>
             </div>
-            <div class="w-full overflow-hidden">
+            <div class="w-full overflow-hidden" *ngIf="hasFinancieroData()">
               <apx-chart
                 [series]="financieroChart.series"
                 [chart]="financieroChart.chart"
@@ -151,8 +152,15 @@ import { ReportesService } from '../services/reportes.service';
                 [legend]="financieroChart.legend"
                 [markers]="financieroChart.markers"
                 [tooltip]="financieroChart.tooltip"
-                [theme]="chartTheme"
+                [theme]="chartTheme()"
               ></apx-chart>
+            </div>
+            <div *ngIf="!hasFinancieroData()" class="w-full flex flex-col justify-center items-center py-20 text-center">
+              <div class="h-16 w-16 rounded-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" /></svg>
+              </div>
+              <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sin datos financieros</p>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">No hay transacciones registradas en este período.</p>
             </div>
           </div>
 
@@ -164,7 +172,7 @@ import { ReportesService } from '../services/reportes.service';
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Distribución porcentual de recaudación</p>
               </div>
             </div>
-            <div class="w-full flex justify-center items-center py-4">
+            <div class="w-full flex justify-center items-center py-4" *ngIf="hasPagosData()">
               <apx-chart
                 [series]="pagosChart.series"
                 [chart]="pagosChart.chart"
@@ -172,8 +180,15 @@ import { ReportesService } from '../services/reportes.service';
                 [colors]="pagosChart.colors"
                 [legend]="pagosChart.legend"
                 [responsive]="pagosChart.responsive"
-                [theme]="chartTheme"
+                [theme]="chartTheme()"
               ></apx-chart>
+            </div>
+            <div *ngIf="!hasPagosData()" class="w-full flex flex-col justify-center items-center py-12 text-center">
+              <div class="h-16 w-16 rounded-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" /></svg>
+              </div>
+              <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sin datos de recaudación</p>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">No se registraron cobros en el período seleccionado.</p>
             </div>
           </div>
         </div>
@@ -188,7 +203,7 @@ import { ReportesService } from '../services/reportes.service';
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Gastos clasificados por categorías</p>
               </div>
             </div>
-            <div class="w-full flex justify-center items-center py-4">
+            <div class="w-full flex justify-center items-center py-4" *ngIf="hasGastosData()">
               <apx-chart
                 [series]="gastosChart.series"
                 [chart]="gastosChart.chart"
@@ -196,8 +211,15 @@ import { ReportesService } from '../services/reportes.service';
                 [colors]="gastosChart.colors"
                 [legend]="gastosChart.legend"
                 [responsive]="gastosChart.responsive"
-                [theme]="chartTheme"
+                [theme]="chartTheme()"
               ></apx-chart>
+            </div>
+            <div *ngIf="!hasGastosData()" class="w-full flex flex-col justify-center items-center py-12 text-center">
+              <div class="h-16 w-16 rounded-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
+              </div>
+              <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sin gastos registrados</p>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">No se reportaron egresos en el período seleccionado.</p>
             </div>
           </div>
 
@@ -209,7 +231,7 @@ import { ReportesService } from '../services/reportes.service';
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Desempeño financiero prorrateado</p>
               </div>
             </div>
-            <div class="w-full overflow-hidden">
+            <div class="w-full overflow-hidden" *ngIf="hasRentabilidadData()">
               <apx-chart
                 [series]="rentabilidadChart.series"
                 [chart]="rentabilidadChart.chart"
@@ -218,8 +240,15 @@ import { ReportesService } from '../services/reportes.service';
                 [colors]="rentabilidadChart.colors"
                 [legend]="rentabilidadChart.legend"
                 [tooltip]="rentabilidadChart.tooltip"
-                [theme]="chartTheme"
+                [theme]="chartTheme()"
               ></apx-chart>
+            </div>
+            <div *ngIf="!hasRentabilidadData()" class="w-full flex flex-col justify-center items-center py-20 text-center">
+              <div class="h-16 w-16 rounded-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.339a.75.75 0 0 0-.208-.518L12 3.75l-8.292 6.071a.75.75 0 0 0-.208.518V21h17.25Z" /></svg>
+              </div>
+              <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sin datos de propiedades</p>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">No hay datos financieros asignados a las propiedades.</p>
             </div>
           </div>
         </div>
@@ -234,7 +263,7 @@ import { ReportesService } from '../services/reportes.service';
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Clasificación de solicitudes críticas</p>
               </div>
             </div>
-            <div class="w-full flex justify-center items-center py-4">
+            <div class="w-full flex justify-center items-center py-4" *ngIf="hasTicketsData()">
               <apx-chart
                 [series]="ticketsChart.series"
                 [chart]="ticketsChart.chart"
@@ -242,8 +271,15 @@ import { ReportesService } from '../services/reportes.service';
                 [colors]="ticketsChart.colors"
                 [legend]="ticketsChart.legend"
                 [responsive]="ticketsChart.responsive"
-                [theme]="chartTheme"
+                [theme]="chartTheme()"
               ></apx-chart>
+            </div>
+            <div *ngIf="!hasTicketsData()" class="w-full flex flex-col justify-center items-center py-12 text-center">
+              <div class="h-16 w-16 rounded-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+              </div>
+              <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sin incidencias de soporte</p>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">No se registraron incidentes técnicos en este período.</p>
             </div>
           </div>
 
@@ -303,9 +339,16 @@ export class ReportesPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly reportesService = inject(ReportesService);
+  private readonly themeService = inject(ThemeService);
 
   readonly empresa = this.authService.empresa;
   readonly isLoading = signal(false);
+
+  readonly hasFinancieroData = signal(false);
+  readonly hasPagosData = signal(false);
+  readonly hasGastosData = signal(false);
+  readonly hasRentabilidadData = signal(false);
+  readonly hasTicketsData = signal(false);
 
   readonly filterForm = this.fb.group({
     desde: [''],
@@ -330,22 +373,12 @@ export class ReportesPageComponent implements OnInit {
   rentabilidadChart: any = {};
   ticketsChart: any = {};
 
-  chartTheme: {
-    mode: 'light' | 'dark';
-    palette: string;
-  } = {
-    mode: 'light',
+  readonly chartTheme = computed(() => ({
+    mode: this.themeService.isDarkActive() ? 'dark' : 'light' as 'light' | 'dark',
     palette: 'palette1'
-  };
+  }));
 
   ngOnInit(): void {
-    // Automatically toggle chart dark mode theme based on document class
-    const isDark = document.documentElement.classList.contains('dark');
-    this.chartTheme = {
-      mode: isDark ? 'dark' : 'light',
-      palette: 'palette1'
-    };
-
     // Load initial data
     this.loadData();
   }
@@ -401,6 +434,10 @@ export class ReportesPageComponent implements OnInit {
   }
 
   private initFinancieroChart(data: any): void {
+    const hasData = data && data.serie_mensual && data.serie_mensual.length > 0 && data.serie_mensual.some((s: any) => s.ingresos > 0 || s.gastos > 0);
+    this.hasFinancieroData.set(hasData);
+    if (!hasData) return;
+
     const meses = data.serie_mensual.map((s: any) => s.periodo);
     const ingresos = data.serie_mensual.map((s: any) => s.ingresos);
     const gastos = data.serie_mensual.map((s: any) => s.gastos);
@@ -418,7 +455,8 @@ export class ReportesPageComponent implements OnInit {
         height: 350,
         type: 'line',
         toolbar: { show: false },
-        animations: { enabled: true, easing: 'easeinout', speed: 850 }
+        animations: { enabled: true, easing: 'easeinout', speed: 850 },
+        background: 'transparent'
       },
       colors: ['#10B981', '#EF4444', '#3B82F6'],
       stroke: { width: [0, 0, 4.5], curve: 'smooth' },
@@ -440,6 +478,10 @@ export class ReportesPageComponent implements OnInit {
   }
 
   private initPagosChart(data: any[]): void {
+    const hasData = data && data.length > 0 && data.some(d => d.total > 0);
+    this.hasPagosData.set(hasData);
+    if (!hasData) return;
+
     const labels = data.map(d => d.metodo.toUpperCase());
     const series = data.map(d => d.total);
 
@@ -449,6 +491,7 @@ export class ReportesPageComponent implements OnInit {
       chart: {
         type: 'donut',
         height: 310,
+        background: 'transparent'
       },
       colors: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'],
       legend: { position: 'bottom', horizontalAlign: 'center' },
@@ -465,6 +508,10 @@ export class ReportesPageComponent implements OnInit {
   }
 
   private initGastosChart(data: any[]): void {
+    const hasData = data && data.length > 0 && data.some(d => d.total > 0);
+    this.hasGastosData.set(hasData);
+    if (!hasData) return;
+
     const labels = data.map(d => d.categoria.toUpperCase());
     const series = data.map(d => d.total);
 
@@ -474,6 +521,7 @@ export class ReportesPageComponent implements OnInit {
       chart: {
         type: 'donut',
         height: 310,
+        background: 'transparent'
       },
       colors: ['#F59E0B', '#EF4444', '#10B981', '#3B82F6', '#64748B'],
       legend: { position: 'bottom', horizontalAlign: 'center' },
@@ -490,6 +538,10 @@ export class ReportesPageComponent implements OnInit {
   }
 
   private initRentabilidadChart(data: any[]): void {
+    const hasData = data && data.length > 0 && data.some(d => d.ingresos > 0 || d.gastos > 0);
+    this.hasRentabilidadData.set(hasData);
+    if (!hasData) return;
+
     const properties = data.map(r => r.nombre || r.propiedad || '');
     const ingresos = data.map(r => r.ingresos);
     const gastos = data.map(r => r.gastos);
@@ -506,7 +558,8 @@ export class ReportesPageComponent implements OnInit {
       chart: {
         type: 'bar',
         height: 350,
-        toolbar: { show: false }
+        toolbar: { show: false },
+        background: 'transparent'
       },
       plotOptions: {
         bar: {
@@ -532,9 +585,12 @@ export class ReportesPageComponent implements OnInit {
   }
 
   private initTicketsChart(data: any): void {
-    const baja = data.por_prioridad?.baja || 0;
-    const media = data.por_prioridad?.media || 0;
-    const alta = data.por_prioridad?.alta || 0;
+    const baja = data?.por_prioridad?.baja || 0;
+    const media = data?.por_prioridad?.media || 0;
+    const alta = data?.por_prioridad?.alta || 0;
+    const hasData = (baja + media + alta) > 0;
+    this.hasTicketsData.set(hasData);
+    if (!hasData) return;
 
     this.ticketsChart = {
       series: [baja, media, alta],
@@ -542,6 +598,7 @@ export class ReportesPageComponent implements OnInit {
       chart: {
         type: 'pie',
         height: 310,
+        background: 'transparent'
       },
       colors: ['#10B981', '#F59E0B', '#EF4444'], // Traffic light priority mapping
       legend: { position: 'bottom', horizontalAlign: 'center' },

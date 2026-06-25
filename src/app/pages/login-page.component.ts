@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { extractHttpErrorMessage, isNetworkError } from '../core/http/http-error.utils';
 import { APP_ROUTE_PATHS } from '../core/routing/app-routes.constants';
@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login-page.component.html'
 })
 export class LoginPageComponent {

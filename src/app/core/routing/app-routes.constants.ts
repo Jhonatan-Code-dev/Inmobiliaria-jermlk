@@ -16,7 +16,10 @@ export const APP_ROUTE_SEGMENTS = {
   supervision_asistencia: 'supervision-asistencia',
   cola_trabajo: 'cola-trabajo',
   reportes: 'reportes',
-  citas: 'citas'
+  citas: 'citas',
+  libroReclamaciones: 'libro-reclamaciones',
+  manualUsuario: 'manual-usuario',
+  reclamacionesAdmin: 'reclamaciones'
 } as const;
 
 export const APP_ROUTE_PATHS = {
@@ -37,5 +40,8 @@ export const APP_ROUTE_PATHS = {
   menuSupervisionAsistencia: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.supervision_asistencia}`,
   menuColaTrabajo: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.cola_trabajo}`,
   menuReportes: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.reportes}`,
-  menuCitas: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.citas}`
+  menuCitas: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.citas}`,
+  libroReclamaciones: `/${APP_ROUTE_SEGMENTS.libroReclamaciones}`,
+  manualUsuario: `/${APP_ROUTE_SEGMENTS.manualUsuario}`,
+  menuReclamaciones: `/${APP_ROUTE_SEGMENTS.menu}/${APP_ROUTE_SEGMENTS.reclamacionesAdmin}`
 } as const;

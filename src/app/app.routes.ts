@@ -101,8 +101,28 @@ export const routes: Routes = [
         path: APP_ROUTE_SEGMENTS.citas,
         loadComponent: () => import('./pages/citas-page.component').then(m => m.CitasPageComponent),
         title: 'Inmobiliaria | Calendario de Visitas'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.reclamacionesAdmin,
+        loadComponent: () => import('./pages/reclamaciones-admin-page.component').then(m => m.ReclamacionesAdminPageComponent),
+        title: 'Inmobiliaria | Libro de Reclamaciones'
+      },
+      {
+        path: APP_ROUTE_SEGMENTS.manualUsuario,
+        loadComponent: () => import('./pages/manual-usuario-page.component').then(m => m.ManualUsuarioPageComponent),
+        title: 'Inmobiliaria | Manual de Usuario'
       }
     ]
+  },
+  {
+    path: APP_ROUTE_SEGMENTS.libroReclamaciones,
+    loadComponent: () => import('./pages/libro-reclamaciones-page.component').then(m => m.LibroReclamacionesPageComponent),
+    title: 'Inmobiliaria | Libro de Reclamaciones'
+  },
+  {
+    path: APP_ROUTE_SEGMENTS.manualUsuario,
+    loadComponent: () => import('./pages/manual-usuario-page.component').then(m => m.ManualUsuarioPageComponent),
+    title: 'Inmobiliaria | Manual de Usuario'
   },
   {
     path: 'panel',

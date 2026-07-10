@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "alquilamax-jermlk",
+  "name": "inmobiliaria-jermlk",
   "compatibility_date": "2026-04-04",
   "observability": {
     "enabled": true
